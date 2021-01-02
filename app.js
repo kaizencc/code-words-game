@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const socket = require('socket.io')
+const socket = require('socket.io');
 const {getRooms, users} = require('./utils/getUsers');
-
+const {alertMessage} = require('./utils/messages');
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -10,32 +10,39 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 var port = process.env.PORT || 3000;
 
+// Alert banner defaults to hidden
+var alert = alertMessage.NONE;
+
 // Render Index page
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('index', {
+        alert: alert
+    })
+    alert = alertMessage.NONE
 })
 
 // Middleware to validate room creation
 app.use('/room',function (req, res, next) {
+    alert = alertMessage.NONE
     const action = req.query.action
     const rooms = getRooms(users)
     const roomname = req.body.roomname
-    console.log(req.params.action)
     console.log(action)
-    if (action) {
-        if (action == "create") {
-            if (rooms.has(roomname)){
-                console.log('invalid') // must error out 
-                return
-            } else {
-                rooms.add(roomname)
-            }
-        } else 
-        if (action == "join" && !rooms.has(roomname)) {
-            console.log("invalid")
+    if (action == "create") {
+        if (rooms.has(roomname)){
+            console.log('invalid') 
+            alert = alertMessage.CREATE_FAIL
+            res.redirect('/')
             return
+        } else {
+            rooms.add(roomname)
         }
-    } 
+    } else if (action == "join" && !rooms.has(roomname)) {
+        console.log("invalid")
+        alert = alertMessage.JOIN_FAIL
+        res.redirect('/')
+        return
+    }
     next()
 })
 

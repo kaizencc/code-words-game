@@ -41,18 +41,21 @@ function socket(io) {
             var rooms = Object.keys(socket.rooms);
             var socketId = rooms[0];
             var roomname = rooms[1];
-            users[roomname].forEach((user, index) => {
-                if(user[socketId]){
-                    users[roomname].splice(index, 1)
+            if (users.hasOwnProperty(roomname)){
+                if (users[roomname].length == 1){
+                    delete users[roomname]
+                } else {
+                    users[roomname].forEach((user, index) => {
+                        if(user[socketId]){
+                            users[roomname].splice(index, 1)
+                        }
+                    });
+    
+                    //Send online users array
+                    io.to(roomname).emit('online-users', getUsers(users[roomname]))
                 }
-            });
-
-            if (users[roomname].length == 0){
-                delete users[roomname]
-            } else {
-                //Send online users array
-                io.to(roomname).emit('online-users', getUsers(users[roomname]))
             }
+            console.log("users")
             console.log(users)
 
             
