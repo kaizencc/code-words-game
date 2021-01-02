@@ -8,7 +8,7 @@ I started my project by following a [tutorial](https://medium.com/better-program
 
 ## Technologies Used
 
-The backend is written in **Javascript** and **Node.js**. In addition, I used the **Express** framework to build the web application and **Socket.io** to communicate between server and browser. I used the **EJS** template to build HTML and **Bootstrap** to design the frontend.
+The backend is written in **Javascript** and **Node.js**. In addition, I used the **Express** framework to build the web application along with **body-parser** for the middleware and **Socket.io** to communicate between server and browser. I used the **EJS** template to build HTML and **Bootstrap** to design the frontend.
 
 ## Usage
 
