@@ -10,4 +10,8 @@ function getUsers(arr){
     return onlineUsers
 }
 
-module.exports = {getUsers, users};
+function getRooms(){
+    return Objects.keys(users)
+}
+
+module.exports = {getUsers, getRooms, users};

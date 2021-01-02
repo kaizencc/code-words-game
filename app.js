@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const socket = require('socket.io')
-const {rooms} = require('./utils/roomStorage');
+const {getRooms, users} = require('./utils/getUsers');
 
 
 const app = express();
@@ -17,17 +17,21 @@ app.get('/', (req, res) => {
 
 // Middleware to validate room creation
 app.use('/room',function (req, res, next) {
-    console.log(req.query.action)
-    if (req.query.action) {
-        if (req.query.action == "create") {
-            if (rooms.has(req.body.roomname)){
+    const action = req.query.action
+    const rooms = getRooms(users)
+    const roomname = req.body.roomname
+    console.log(req.params.action)
+    console.log(action)
+    if (action) {
+        if (action == "create") {
+            if (rooms.has(roomname)){
                 console.log('invalid') // must error out 
                 return
             } else {
-                rooms.add(req.body.roomname)
+                rooms.add(roomname)
             }
         } else 
-        if (req.query.action == "join" && !rooms.has(req.body.roomname)) {
+        if (action == "join" && !rooms.has(roomname)) {
             console.log("invalid")
             return
         }
