@@ -1,7 +1,7 @@
-//Store connected Users
+// Store connected Users
 var users = {}
 
-//Funtion to get users online in a room
+// Funtion to get users online in a room
 function getUsers(arr){
     onlineUsers = []
     arr.forEach((onlineUser) => {
