@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
-const {getRooms, users} = require('./utils/getUsers');
+const {getRooms, users, getUsers} = require('./utils/getUsers');
 const {alertMessage} = require('./utils/messages');
 
 const app = express();
@@ -26,20 +26,23 @@ app.use('/room',function (req, res, next) {
     alert = alertMessage.NONE
     const action = req.query.action
     const rooms = getRooms(users)
+    const username = req.body.username
     const roomname = req.body.roomname
     console.log(action)
     if (action == "create") {
         if (rooms.has(roomname)){
-            console.log('invalid') 
-            alert = alertMessage.CREATE_FAIL
+            alert = alertMessage.CREATE_ALREADY_EXISTs
             res.redirect('/')
             return
         } else {
             rooms.add(roomname)
         }
     } else if (action == "join" && !rooms.has(roomname)) {
-        console.log("invalid")
-        alert = alertMessage.JOIN_FAIL
+        alert = alertMessage.JOIN_DOES_NOT_EXIST
+        res.redirect('/')
+        return
+    } else if (action == "join" && getUsers(users[roomname]).includes(username)) {
+        alert = alertMessage.JOIN_USERNAME_EXISTS
         res.redirect('/')
         return
     }
