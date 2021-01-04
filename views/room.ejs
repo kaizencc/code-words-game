@@ -9,14 +9,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
 </head>
-<style>
-html,body {
-    height: 100%;
-  }
-body {
-    background-color: #f5f5f5;
-}
-</style>
 <body>
     <div class="container-fluid h-100">
         <div class="row h-100">
@@ -32,7 +24,7 @@ body {
             </div>
             <div class="col-4" style="border:1px solid #cecece;">    
                 <div class="container h-100 p-0">
-                    <h3 id="room-message" style="text-align: center;"></h3>
+                    <h3 id="room-message"></h3>
                     <div class="container h-75 overflow-auto text-wrap text-break rounded" style="border:1px solid #3708e0; max-width: 500px; max-height: 500px;" id="chat-message">
                         <div id="output"></div>
                         <div id="feedback"></div>
