@@ -16,7 +16,7 @@ const roomname = urlParams.get('roomname');
 console.log(username, roomname);
 
 //Display the roomname the user is connected to
-roomMessage.innerHTML = `Connected in room ${roomname}`
+roomMessage.innerHTML = `${roomname} Chat`
 
 //Emitting username and roomname of newly joined user to server
 socket.emit('joined-user', {

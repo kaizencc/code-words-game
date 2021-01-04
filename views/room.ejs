@@ -5,23 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat APP</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
 </head>
+<style>
+html,body {
+    height: 100%;
+  }
+</style>
 <body>
-    <h1 class="room-message"></h1>
-    <div class="window">
-        <div class="chat-message">
-            <div id="output"></div>
-            <div id="feedback"></div>
+    <div class="container-fluid h-100" style="border:1px solid #e00808;">
+        <div class="row h-75">
+            <div class="col-8" style="border:1px solid #cecece;">
+                <h1>Code Words</h1>
+            </div>
+            <div class="col-4" style="border:1px solid #cecece;">
+                
+                <h2 class="room-message"></h2>
+                <div class="chat-message">
+                    <div id="output"></div>
+                    <div id="feedback"></div>
+                </div>
+                <input class="form-control" type="text" id="message" placeholder="Enter message">
+                <button class="w-100 btn btn-lg btn-outline-primary" id="send">Send</button>
+            </div>
         </div>
-        <div class='fields'>
-            <input type="text" id="message" placeholder="Enter message">
-            <button id="send">Send</button>
-        </div>
-    </div>
-    <div class="online">
-        <p class="users-online">Users Online</p>
-        <div class="users">
+        <div class="row h-25" style="border:1px solid #cecece;">
+                <p class="users-online">Users Online</p>
+                <div class="users">
+                </div>
         </div>
     </div>
     <script src="/chat.js"></script>
