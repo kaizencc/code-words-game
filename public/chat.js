@@ -46,11 +46,11 @@ socket.on('joined-user', (data)=>{
 
 //Displaying the message sent from user
 socket.on('chat', (data) => {
-    output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
-    feedback.innerHTML = '';
-    // document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight
-    //document.querySelector('.chat-message').scrollTop = document.querySelector('.chat-message').scrollHeight
-
+    if (data.message != ""){
+        output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
+        feedback.innerHTML = '';
+        document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight
+    }
 })
 
 //Displaying if a user is typing

@@ -118,3 +118,14 @@ button {
     border-radius: 25px;
 }
 
+::placeholder {
+    font-weight: 700;
+  }
+
+.control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
