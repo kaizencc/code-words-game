@@ -111,9 +111,6 @@ button {
     cursor: pointer;
 }
 
-::placeholder {
-    font-weight: 700;
-}
 
 .content div {
     border: 2px solid black;

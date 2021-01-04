@@ -2,7 +2,7 @@ const output = document.getElementById('output');
 const message = document.getElementById('message');
 const send = document.getElementById('send');
 const feedback = document.getElementById('feedback');
-const roomMessage = document.querySelector('.room-message');
+const roomMessage = document.getElementById('room-message');
 const users = document.querySelector('.users');
 
 //Socket server URL
@@ -48,7 +48,8 @@ socket.on('joined-user', (data)=>{
 socket.on('chat', (data) => {
     output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
     feedback.innerHTML = '';
-    document.querySelector('.chat-message').scrollTop = document.querySelector('.chat-message').scrollHeight
+    // document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight
+    //document.querySelector('.chat-message').scrollTop = document.querySelector('.chat-message').scrollHeight
 
 })
 
