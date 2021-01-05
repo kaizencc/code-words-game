@@ -34,6 +34,12 @@ send.addEventListener('click', () =>{
     message.value = '';
 })
 
+window.addEventListener('keypress', function(e){
+    if(e.key === "Enter"){
+        document.getElementById('send').click();
+    }
+})
+
 //Sending username if the user is typing
 message.addEventListener('keypress', () => {
     socket.emit('typing', {username: username, roomname: roomname})
