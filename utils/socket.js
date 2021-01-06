@@ -65,10 +65,6 @@ function socket(io) {
             }
             console.log("users")
             console.log(users)
-
-            
-    
-            
         })
     })
 }
