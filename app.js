@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const socket = require('socket.io');
 const {getRooms, users, getUsers} = require('./utils/getUsers');
 const {alertMessage} = require('./utils/messages');
+const {words, newGame} = require('./utils/wordButton');
+
+newGame();
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -59,7 +62,9 @@ app.post('/room', (req, res) => {
 
 //Rooms
 app.get('/room', (req, res)=>{
-    res.render('room')
+    res.render('room', {
+        words: words
+    })
 })
 
 //Start Server

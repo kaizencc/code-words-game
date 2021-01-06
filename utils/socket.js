@@ -1,4 +1,5 @@
 const {getUsers, users} = require('./getUsers');
+const {words, getWords, newGame} = require('./wordButton');
 
 //Socket connection
 function socket(io) {
@@ -14,10 +15,17 @@ function socket(io) {
             else{
                 users[data.roomname] = [user];
             }
-            
+
+            // Kaizen's Work
+            if(!words[data.roomname]){
+                words[data.roomname] = newGame();
+            }
+
             //Joining the Socket Room
             socket.join(data.roomname);
     
+            io.to(data.roomname).emit('board-game', getWords(words[data.roomname]))
+            
             //Emitting New Username to Clients
             io.to(data.roomname).emit('joined-user', {username: data.username});
     

@@ -1,13 +1,24 @@
-var words = ['one', 'two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty','twentyone','twentytwo','twentythree','twentyfour','twentyfive'];
+const board = document.getElementById('board');
 
-function createBoard() {
-    for (var i = 0; i < words.length; i++) {
-       var btn = document.createElement("button");
-       btn.style.width = "18%";
-       btn.style.height= "20%";
-       btn.className = "btn btn-warning m-1 p-auto";
-       var t = document.createTextNode(words[i]);
-       btn.appendChild(t);
-       document.getElementById('board').appendChild(btn);
-    }
+socket.on('board-game', (data) => {
+    data.forEach(word => {
+        board.appendChild(createButton(word));
+    })
+})
+
+function createButton(word){
+    var btn = document.createElement("button");
+    btn.style.width = "18%";
+    btn.style.height= "20%";
+    btn.id = word;
+    btn.className = "btn btn-secondary m-1 p-auto";
+    var t = document.createTextNode(word);
+    btn.appendChild(t);
+    return btn;
 }
+
+board.addEventListener('click', function(e){
+    const name = e.target.id;
+    console.log(name);
+})
+

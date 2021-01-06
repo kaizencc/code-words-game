@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
-    <script src="board.js"></script>
 </head>
-<body onload=createBoard();>
+<body>
     <div class="container-fluid h-100">
         <div class="row h-100">
-            <div class="col-8" style="border:1px solid #e40c0c;">
-                <div class="container h-100 cta-item" style="border:1px solid #0c8ee4;">
-                    <div class="row align-items-start" style="border:1px solid #e40cc0;">
+            <div class="col-8">
+                <div class="container h-100 cta-item">
+                    <div class="row align-items-start">
                         <div class="col-12">
                             <h1><span style="color: rgb(71, 197, 255);">
                                 <i class="fas fa-trophy"></i>
@@ -27,12 +26,12 @@
                             </h1>
                         </div>
                     </div>
-                    <div class="row" style="border:1px solid #e40cc0;">
+                    <div class="row bottom-aligned">
                         <div id="board" class="col-12 text-center">
                         </div>
                     </div>
-                    <div class="row bottom-aligned" style="border:1px solid #e40cc0;">
-                        <div class="col-12" style="border:1px solid #e40cc0;">
+                    <div class="row bottom-aligned">
+                        <div class="col-12">
                             <p class="users-online">Users Online</p>
                             <div class="users"></div>
                         </div>
@@ -41,7 +40,7 @@
                 
                 
             </div>
-            <div class="col-4" style="border:1px solid #cecece;">    
+            <div class="col-4" style="border-style: hidden hidden hidden solid;">    
                 <div class="container h-100 p-0">
                     <h3 id="room-message"></h3>
                     <div class="container h-75 overflow-auto text-wrap text-break rounded" style="border:1px solid #3708e0; max-width: 500px; max-height: 500px;" id="chat-message">
@@ -56,5 +55,6 @@
         </div>
     </div>
     <script src="/chat.js"></script>
+    <script src="/board.js"></script>
 </body>
 </html>
