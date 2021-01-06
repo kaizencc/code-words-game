@@ -1,23 +1,21 @@
 const {getUsers, users} = require('./getUsers');
 const {words, getWords, newGame} = require('./wordButton');
 
-//Socket connection
+// Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
 
         socket.on('joined-user', (data) =>{
-            //Storing users connected in a room in memory
+            // Storing users connected in a room in memory.
             var user = {};
             user[socket.id] = data.username;
             if(users[data.roomname]){
                 users[data.roomname].push(user);
             }
             else{
+                // First user to enter a room.
                 users[data.roomname] = [user];
-            }
-
-            // Kaizen's Work
-            if(!words[data.roomname]){
+                // Initialize the board for the room.
                 words[data.roomname] = newGame();
             }
 
@@ -43,10 +41,6 @@ function socket(io) {
         socket.on('typing', (data) => {
             socket.broadcast.to(data.roomname).emit('typing', data.username)
         })
-
-        // socket.on('clicked-button', (data) =>{
-        //     io.to(data.roomname).emit('clicked-button', {username: data.username, text: text});
-        // })
     
         // Remove user from memory when they disconnect.
         socket.on('disconnecting', ()=>{

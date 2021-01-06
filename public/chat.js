@@ -15,16 +15,16 @@ const username = urlParams.get('username');
 const roomname = urlParams.get('roomname');
 console.log(username, roomname);
 
-//Display the roomname the user is connected to
+// Display the roomname the user is connected to.
 roomMessage.innerHTML = `${roomname} Chat`
 
-//Emitting username and roomname of newly joined user to server
+// Emitting username and roomname of newly joined user to server.
 socket.emit('joined-user', {
     username: username,
     roomname: roomname
 })
 
-//Sending data when user clicks send
+// Sending data when user clicks send.
 send.addEventListener('click', () =>{
     socket.emit('chat', {
         username: username,
@@ -40,23 +40,17 @@ window.addEventListener('keypress', function(e){
     }
 })
 
-//Sending username if the user is typing
+// Sending username if the user is typing.
 message.addEventListener('keypress', () => {
     socket.emit('typing', {username: username, roomname: roomname})
 })
 
-// Displaying if new user has joined the room
+// Displaying if new user has joined the room.
 socket.on('joined-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
 })
 
-// Displaying the button that was clicked
-// socket.on('clicked-button', (data) =>{
-//     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.text + '</em></p>';
-// })
-
-
-// Displaying the message sent from user
+// Displaying the message sent from user/
 socket.on('chat', (data) => {
     if (data.message != ""){
         output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
@@ -65,12 +59,12 @@ socket.on('chat', (data) => {
     }
 })
 
-//Displaying if a user is typing
+// Displaying if a user is typing.
 socket.on('typing', (user) => {
     feedback.innerHTML = '<p><em>' + user + ' is typing...</em></p>';
 })
 
-//Displaying online users
+// Displaying online users.
 socket.on('online-users', (data) =>{
     users.innerHTML = ''
     data.forEach(user => {
