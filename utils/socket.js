@@ -31,6 +31,12 @@ function socket(io) {
             // Send online users array.
             io.to(data.roomname).emit('online-users', getUsers(users[data.roomname]))
         })
+
+        // Creating a new game.
+        socket.on('new-game', (data) => {
+            words[data.roomname] = newGame();
+            io.to(data.roomname).emit('board-game', getWords(words[data.roomname]))
+        })
     
         // Emitting messages to Clients.
         socket.on('chat', (data) =>{

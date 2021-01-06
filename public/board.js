@@ -1,4 +1,5 @@
 const board = document.getElementById('board');
+const newGameBtn = document.getElementById('newgame');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
@@ -28,5 +29,10 @@ board.addEventListener('click', function(e){
     const text = e.target.id;
     console.log(text);
     output.innerHTML += '<p>--> <strong><em>' + username + ' </strong>clicked ' + text + '</em></p>';
+})
+
+// Listening for new game
+newGameBtn.addEventListener('click', () =>{
+    socket.emit('new-game',{username: username, roomname: roomname});
 })
 
