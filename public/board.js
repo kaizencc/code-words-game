@@ -11,7 +11,7 @@ socket.on('board-game', (data) => {
     })
 })
 
-// Helper function to create buttons
+// Helper function to create buttons.
 function createButton(word){
     var btn = document.createElement("button");
     btn.style.width = "18%";
@@ -31,7 +31,7 @@ board.addEventListener('click', function(e){
     output.innerHTML += '<p>--> <strong><em>' + username + ' </strong>clicked ' + text + '</em></p>';
 })
 
-// Listening for new game
+// Listening for new game request.
 newGameBtn.addEventListener('click', () =>{
     socket.emit('new-game',{username: username, roomname: roomname});
 })
