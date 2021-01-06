@@ -21,7 +21,8 @@ function createButton(word){
 }
 
 board.addEventListener('click', function(e){
-    const name = e.target.id;
-    console.log(name);
+    const text = e.target.id;
+    console.log(text);
+    output.innerHTML += '<p>--> <strong><em>' + username + ' </strong>clicked ' + text + '</em></p>';
 })
 

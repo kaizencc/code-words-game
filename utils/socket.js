@@ -21,29 +21,34 @@ function socket(io) {
                 words[data.roomname] = newGame();
             }
 
-            //Joining the Socket Room
+            // Joining the Socket Room.
             socket.join(data.roomname);
     
+            // Creating new board in the room.
             io.to(data.roomname).emit('board-game', getWords(words[data.roomname]))
             
-            //Emitting New Username to Clients
+            // Emitting New Username to Clients.
             io.to(data.roomname).emit('joined-user', {username: data.username});
     
-            //Send online users array
+            // Send online users array.
             io.to(data.roomname).emit('online-users', getUsers(users[data.roomname]))
         })
     
-        //Emitting messages to Clients
+        // Emitting messages to Clients.
         socket.on('chat', (data) =>{
             io.to(data.roomname).emit('chat', {username: data.username, message: data.message});
         })
     
-        //Broadcasting the user who is typing
+        // Broadcasting the user who is typing.
         socket.on('typing', (data) => {
             socket.broadcast.to(data.roomname).emit('typing', data.username)
         })
+
+        // socket.on('clicked-button', (data) =>{
+        //     io.to(data.roomname).emit('clicked-button', {username: data.username, text: text});
+        // })
     
-        //Remove user from memory when they disconnect
+        // Remove user from memory when they disconnect.
         socket.on('disconnecting', ()=>{
             console.log(socket.rooms)
             var rooms = Object.keys(socket.rooms);

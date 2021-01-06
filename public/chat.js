@@ -45,12 +45,18 @@ message.addEventListener('keypress', () => {
     socket.emit('typing', {username: username, roomname: roomname})
 })
 
-//Displaying if new user has joined the room
+// Displaying if new user has joined the room
 socket.on('joined-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
 })
 
-//Displaying the message sent from user
+// Displaying the button that was clicked
+// socket.on('clicked-button', (data) =>{
+//     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.text + '</em></p>';
+// })
+
+
+// Displaying the message sent from user
 socket.on('chat', (data) => {
     if (data.message != ""){
         output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
