@@ -64,9 +64,10 @@ app.get('/room', (req, res)=>{
     res.render('room')
 })
 
+// Open Mongo Connection to populate the `client` and `db` variables in mongoDB.js.
 openMongoConnection();
 
-//Start Server
+// Start Server
 const server = app.listen(port, () => {
     console.log(`Server Running on ${port}`)
 })
@@ -74,7 +75,11 @@ const server = app.listen(port, () => {
 const io = socket(server);
 require('./utils/socket')(io);
 
+// Close Mongo Connection when exiting program.
 process.on('SIGINT', function() {
     closeMongoConnection();
+    process.exit();
   });
+
+
   

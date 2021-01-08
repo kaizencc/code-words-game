@@ -7,44 +7,48 @@ const {MongoClient} = require('mongodb');
 const dbPassword = "bJr6m5UqPuYoZMaR";
 const dbName = "Cluster0";
 const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-var client;
 
+// Storage variables for client connection and database
+var client;
+var db;
+
+// Called when app opens to populate `client` and `db`.
 async function openMongoConnection(){
     client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
         // Connect to the MongoDB cluster
         await client.connect();
+        db = client.db('rooms');
     } catch (e) {
         console.error(e);
     }
+
 }
 
 async function closeMongoConnection(){
     await client.close();
 }
 
-async function create(data){
- 
-    try { 
-        // Make the appropriate DB calls
-        await createRoom(client, data);
- 
-    } catch (e) {
-        console.error(e);
-    }
+// Create room in users collection.
+async function createRoom(data){
+    const result = await db.collection("users").insertOne(data);
+    console.log(`New listing created with the following id: ${result.insertedId}`);
 }
 
-async function listDatabases(client){
+// Delete room in users collection.
+async function deleteRoom(name){
+    const result = await db.collection("users").deleteOne({ _id: name });
+    console.log(`${result.deletedCount} document(s) was/were deleted.`);
+}
+
+async function listDatabases(){
     databasesList = await client.db().admin().listDatabases();
  
     console.log("Databases:");
     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
 };
 
-async function createRoom(client, room){
-    const result = await client.db('rooms').collection("users").insertOne(room);
-    console.log(`New listing created with the following id: ${result.insertedId}`);
-}
 
-module.exports = {create, openMongoConnection, closeMongoConnection};
+
+module.exports = {createRoom, deleteRoom, openMongoConnection, closeMongoConnection};
  
