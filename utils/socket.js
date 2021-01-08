@@ -1,11 +1,13 @@
 const {getUsers, getRoles, users, Player, switchRoles, resetRoles} = require('./getUsers');
 const {words, getWords, newGame} = require('./wordButton');
 
+const {create} = require('../database/mongoDB');
+
 // Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
 
-        socket.on('joined-user', (data) =>{
+        socket.on('joined-user', (data) =>{ 
             // Storing users connected in a room in memory.
             var user = new Player(socket.id, data.username);
             console.log("hereeee")
@@ -16,6 +18,10 @@ function socket(io) {
             else{
                 // First user to enter a room.
                 users[data.roomname] = [user];
+                create({
+                    _id: data.roomname,
+                    players: [user]
+                })
                 // Initialize the board for the room.
                 words[data.roomname] = newGame();
             }

@@ -4,6 +4,8 @@ const socket = require('socket.io');
 const {getRooms, users, getUsers} = require('./utils/getUsers');
 const {alertMessage} = require('./utils/messages');
 
+const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
+
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('public'));
@@ -62,6 +64,8 @@ app.get('/room', (req, res)=>{
     res.render('room')
 })
 
+openMongoConnection();
+
 //Start Server
 const server = app.listen(port, () => {
     console.log(`Server Running on ${port}`)
@@ -69,3 +73,8 @@ const server = app.listen(port, () => {
 
 const io = socket(server);
 require('./utils/socket')(io);
+
+process.on('SIGINT', function() {
+    closeMongoConnection();
+  });
+  

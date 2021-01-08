@@ -13,6 +13,7 @@
     "bootstrap-icons": "^1.2.2",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
+    "mongodb": "^3.6.3",
     "socket.io": "^2.3.0"
   }
 }
