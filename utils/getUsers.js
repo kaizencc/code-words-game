@@ -25,6 +25,7 @@ function resetRoles(room){
     })
 }
 
+// Function to switch the role of a user in a given room.
 function switchRoles(user, room){
     answer = false;
     users[room].forEach((onlineUser) => {
@@ -46,6 +47,8 @@ function getUsers(arr){
     return onlineUsers
 }
 
+// Function to get the role of users in a room.
+// Returns an object of username -> role
 function getRoles(arr){
     roles = {}
     arr.forEach((onlineUser) => {
