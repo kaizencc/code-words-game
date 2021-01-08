@@ -1,4 +1,4 @@
-const {getUsers, users} = require('./getUsers');
+const {getUsers, getRoles, users, Player, switchRoles, resetRoles} = require('./getUsers');
 const {words, getWords, newGame} = require('./wordButton');
 
 // Socket connection.
@@ -7,8 +7,9 @@ function socket(io) {
 
         socket.on('joined-user', (data) =>{
             // Storing users connected in a room in memory.
-            var user = {};
-            user[socket.id] = data.username;
+            var user = new Player(socket.id, data.username);
+            console.log("hereeee")
+            console.log(user)
             if(users[data.roomname]){
                 users[data.roomname].push(user);
             }
@@ -23,7 +24,7 @@ function socket(io) {
             socket.join(data.roomname);
     
             // Creating new board in the room.
-            io.to(data.roomname).emit('board-game', getWords(words[data.roomname]))
+            io.to(data.roomname).emit('board-game', {roles: getRoles(users[data.roomname]), words: getWords(words[data.roomname])})
             
             // Emitting New Username to Clients.
             io.to(data.roomname).emit('joined-user', {username: data.username});
@@ -35,7 +36,15 @@ function socket(io) {
         // Creating a new game.
         socket.on('new-game', (data) => {
             words[data.roomname] = newGame();
-            io.to(data.roomname).emit('board-game', getWords(words[data.roomname]))
+            resetRoles(data.roomname);
+            io.to(data.roomname).emit('board-game', {roles: getRoles(users[data.roomname]), words: getWords(words[data.roomname])})
+        })
+
+        // Changing roles.
+        socket.on('role-change', (data) =>{
+            switchRoles(data.username, data.roomname);
+            console.log(getRoles(users[data.roomname]))
+            io.to(data.roomname).emit('board-game', {roles: getRoles(users[data.roomname]), words: getWords(words[data.roomname])})
         })
     
         // Emitting messages to Clients.
