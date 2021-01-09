@@ -11,6 +11,7 @@ const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbN
 // Storage variables for client connection and database
 var client;
 var db;
+var users;
 
 // Called when app opens to populate `client` and `db`.
 async function openMongoConnection(){
@@ -19,26 +20,46 @@ async function openMongoConnection(){
         // Connect to the MongoDB cluster
         await client.connect();
         db = client.db('rooms');
+        users = db.collection("users");
     } catch (e) {
         console.error(e);
     }
 
 }
 
+// Called when app exits.
 async function closeMongoConnection(){
     await client.close();
 }
 
 // Create room in users collection.
-async function createRoom(data){
-    const result = await db.collection("users").insertOne(data);
+async function createRoom(room){
+    const result = await users.insertOne(room);
     console.log(`New listing created with the following id: ${result.insertedId}`);
 }
 
 // Delete room in users collection.
 async function deleteRoom(name){
-    const result = await db.collection("users").deleteOne({ _id: name });
+    const result = await users.deleteOne({ _id: name });
     console.log(`${result.deletedCount} document(s) was/were deleted.`);
+}
+
+// Add to a room that already exists.
+async function addPlayer(room, player){
+    const result = await users.updateOne(
+        { _id: room },
+        { $push: { "players": player}}
+    );
+    console.log(`${player.username} added to ${result.modifiedCount} room`);
+}
+
+// Remove from a room that already exists.
+async function removePlayer(room, player){
+    const result = await users.updateOne(
+        { _id: room },
+        { $pull: { "players": player }}
+    );
+    console.log(`${player.username} removed from ${result.modifiedCount} room`);
 }
 
 async function listDatabases(){
@@ -48,7 +69,12 @@ async function listDatabases(){
     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
 };
 
-
-
-module.exports = {createRoom, deleteRoom, openMongoConnection, closeMongoConnection};
+module.exports = {
+    openMongoConnection, 
+    closeMongoConnection,
+    createRoom, 
+    deleteRoom, 
+    addPlayer,
+    removePlayer,
+};
  

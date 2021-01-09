@@ -1,7 +1,7 @@
 const {getUsers, getRoles, users, Player, switchRoles, resetRoles} = require('./getUsers');
 const {words, getWords, newGame} = require('./wordButton');
 
-const {createRoom, deleteRoom} = require('../database/mongoDB');
+const Mongo = require('../database/mongoDB');
 
 // Socket connection.
 function socket(io) {
@@ -13,12 +13,13 @@ function socket(io) {
             console.log("hereeee")
             console.log(user)
             if(users[data.roomname]){
-                users[data.roomname].push(user);
+                users[data.roomname].push(user); // TO DELETE
+                Mongo.addPlayer(data.roomname, user)
             }
             else{
                 // First user to enter a room.
-                users[data.roomname] = [user];
-                createRoom({
+                users[data.roomname] = [user]; // TO DELETE
+                Mongo.createRoom({
                     _id: data.roomname,
                     players: [user]
                 })
@@ -71,12 +72,13 @@ function socket(io) {
             var roomname = rooms[1];
             if (users.hasOwnProperty(roomname)){
                 if (users[roomname].length == 1){
-                    delete users[roomname];
-                    deleteRoom(roomname);
+                    delete users[roomname]; // TO DELETE
+                    Mongo.deleteRoom(roomname);
                 } else {
                     users[roomname].forEach((user, index) => {
-                        if(user[socketId]){
-                            users[roomname].splice(index, 1)
+                        if(user.socket === socketId){
+                            users[roomname].splice(index, 1) // TO DELETE
+                            Mongo.removePlayer(roomname, user)
                         }
                     });
     
