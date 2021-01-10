@@ -53,6 +53,14 @@ async function addPlayer(room, player){
     console.log(`${player.username} added to ${result.modifiedCount} room`);
 }
 
+// Find a room by roomname (_id).
+async function roomExists(room) {
+    const result = await users.find({ "_id": room});
+    if (result) {
+        return true;
+    } else return false;
+}
+
 // Remove from a room that already exists.
 async function removePlayer(room, player){
     const result = await users.updateOne(
