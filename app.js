@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
-const {getRooms, users, getUsers} = require('./utils/getUsers');
+const {getRooms, users, getUsers} = require('./utils/getUsers'); // TO DELETE
+const Mongo = require('./database/mongoDB');
 const {alertMessage} = require('./utils/messages');
 
 const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
@@ -24,31 +25,28 @@ app.get('/', (req, res) => {
 })
 
 // Middleware to validate room creation
-app.use('/room',function (req, res, next) {
-    alert = alertMessage.NONE
-    const action = req.query.action
-    const rooms = getRooms(users)
-    const username = req.body.username
-    const roomname = req.body.roomname
-    console.log(action)
-    if (action == "create") {
-        if (rooms.has(roomname)){
-            alert = alertMessage.CREATE_ALREADY_EXISTs
-            res.redirect('/')
-            return
-        } else {
-            rooms.add(roomname)
-        }
-    } else if (action == "join" && !rooms.has(roomname)) {
-        alert = alertMessage.JOIN_DOES_NOT_EXIST
-        res.redirect('/')
-        return
-    } else if (action == "join" && getUsers(users[roomname]).includes(username)) {
-        alert = alertMessage.JOIN_USERNAME_EXISTS
-        res.redirect('/')
-        return
+app.use('/room', async function (req, res, next) {
+    alert = alertMessage.NONE;
+    const action = req.query.action;
+    const username = req.body.username;
+    const roomname = req.body.roomname;
+    const exists = await Mongo.roomExists(roomname);
+    console.log(exists);
+    console.log(action);
+    if (action == "create" && exists) {
+        alert = alertMessage.CREATE_ALREADY_EXISTS;
+        res.redirect('/');
+        return;
+    } else if (action == "join" && !exists) { 
+        alert = alertMessage.JOIN_DOES_NOT_EXIST;
+        res.redirect('/');
+        return;
+    } else if (action == "join" && (await Mongo.getPlayersInRoom(roomname)).includes(username)){
+        alert = alertMessage.JOIN_USERNAME_EXISTS;
+        res.redirect('/');
+        return;
     }
-    next()
+    next();
 })
 
 // Get username and roomname from form and pass it to room

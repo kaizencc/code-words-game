@@ -62,8 +62,9 @@ async function addPlayer(room, player){
 }
 
 // Find a room by roomname (_id).
-function roomExists(room) {
-    const result = users.countDocuments({_id: room}, { limit: 1 })
+async function roomExists(room) {
+    const result = await users.countDocuments({_id: room}, { limit: 1 })
+    console.log(result);
     if (result === 1) {
         return true;
     } else return false;
@@ -78,12 +79,17 @@ async function removePlayer(room, player){
     console.log(`${player.username} removed from ${result.modifiedCount} room`);
 }
 
-async function listDatabases(){
-    databasesList = await client.db().admin().listDatabases();
- 
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
+async function getPlayersInRoom(room){
+    const document = await users.findOne({ _id: room});
+    var players = []
+    if (document.players){
+        document.players.forEach((player) => {
+            players.push(player.username);
+        }); 
+    }
+    console.log(players);
+    return players;
+}
 
 module.exports = {
     openMongoConnection, 
@@ -93,5 +99,6 @@ module.exports = {
     addPlayer,
     removePlayer,
     roomExists,
+    getPlayersInRoom,
 };
  

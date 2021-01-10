@@ -1,18 +1,18 @@
-const {getUsers, getRoles, users, Player, switchRoles, resetRoles} = require('./getUsers');
+const {getUsers, getRoles, users, Player, switchRoles, resetRoles} = require('./getUsers'); // TO DELETE
 const {words, getWords, newGame} = require('./wordButton');
-
 const Mongo = require('../database/mongoDB');
 
 // Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
 
-        socket.on('joined-user', (data) =>{ 
+        socket.on('joined-user', async (data) =>{ 
             // Storing users connected in a room in memory.
             var user = new Player(socket.id, data.username);
             console.log("hereeee")
             console.log(user)
-            if(Mongo.roomExists(data.roomname)){
+            const exists = await Mongo.roomExists(data.roomname);
+            if(exists){
                 users[data.roomname].push(user); // TO DELETE
                 Mongo.addPlayer(data.roomname, user)
             }
