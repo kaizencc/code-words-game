@@ -12,7 +12,7 @@ function socket(io) {
             var user = new Player(socket.id, data.username);
             console.log("hereeee")
             console.log(user)
-            if(users[data.roomname]){
+            if(Mongo.roomExists(data.roomname)){
                 users[data.roomname].push(user); // TO DELETE
                 Mongo.addPlayer(data.roomname, user)
             }

@@ -21,10 +21,18 @@ async function openMongoConnection(){
         await client.connect();
         db = client.db('rooms');
         users = db.collection("users");
+        // Remove all documents in collection at start of application.
+        clearAll();
     } catch (e) {
         console.error(e);
     }
 
+}
+
+// Helper function in openMongoConnection. DO NOT CALL ANYWHERE ELSE!
+async function clearAll(){
+    const result = await users.deleteMany({});
+    console.log(`Removed ${result.deletedCount} document(s).`)
 }
 
 // Called when app exits.
@@ -54,9 +62,9 @@ async function addPlayer(room, player){
 }
 
 // Find a room by roomname (_id).
-async function roomExists(room) {
-    const result = await users.find({ "_id": room});
-    if (result) {
+function roomExists(room) {
+    const result = users.countDocuments({_id: room}, { limit: 1 })
+    if (result === 1) {
         return true;
     } else return false;
 }
@@ -84,5 +92,6 @@ module.exports = {
     deleteRoom, 
     addPlayer,
     removePlayer,
+    roomExists,
 };
  
