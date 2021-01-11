@@ -82,11 +82,14 @@ function socket(io) {
             var socketId = rooms[0];
             var roomname = rooms[1];
             if ((await Mongo.getUsernamesInRoom(roomname)).length === 1){
-                console.log("deleting")
+                console.log("deleting room");
                 Mongo.deleteRoom(roomname);
             } else {
-                Mongo.removePlayerBySocketId(roomname, socketId);
-                //Send online users array
+                const username = await Mongo.removePlayerBySocketId(roomname, socketId);
+                // Send disconnect message in chat
+                io.to(roomname).emit('disconnected-user', {username: username});
+                
+                // Send online users array.
                 io.to(roomname).emit('online-users', (await Mongo.getUsernamesInRoom(roomname)))
             }
         })

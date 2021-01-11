@@ -87,10 +87,21 @@ async function roomExists(room) {
 
 // Remove player from a room that already exists.
 async function removePlayerBySocketId(room, socketId){
+    // First, find username of player.
+    const doc = await users.findOne({ _id: room});
+    console.log(doc.players);
+    const socketUser = doc.players.filter(function (player) {
+        return player.socket === socketId;
+    });
+    const username = socketUser[0].username;
+
+    // Remove user.
     const query = { _id: room};
     const updateDocument = { $pull: { "players": { "socket": socketId} }};
-    const result = await updateMongoDocument(query, updateDocument);
-    console.log(`${result.modifiedCount} player removed from ${room}`);
+    await updateMongoDocument(query, updateDocument);
+    
+    console.log(`${username} removed from ${room}`);
+    return username;
 }
 
 // Returns an array of all the usernames in a room.
