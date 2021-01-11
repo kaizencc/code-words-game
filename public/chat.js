@@ -68,6 +68,12 @@ socket.on('clear-messages', () => {
 socket.on('chat', (data) => {
     if (data.event === "button"){
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';
+    } else if (data.event === "disconnected"){
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
+    } else if (data.event === "joined"){
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
+    } else if (data.event === "new"){
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>created a ' + data.message + '</em></p>';
     } else if (data.event === "switch") {
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
     } else if (data.event === "chat" && data.message != ""){

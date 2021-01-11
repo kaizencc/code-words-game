@@ -51,7 +51,13 @@ function socket(io) {
             }
 
             // Emitting New Username to Clients.
-            io.to(data.roomname).emit('joined-user', {username: data.username});
+            const messageObject = {
+                username: data.username, 
+                message: "", 
+                event: "joined"
+            };
+            await Mongo.addMessage(data.roomname, messageObject);
+            io.to(data.roomname).emit('chat', messageObject);
     
             // Send online users array.
             io.to(data.roomname).emit('online-users', (await Mongo.getUsernamesInRoom(data.roomname)))
@@ -59,6 +65,12 @@ function socket(io) {
 
         // Creating a new game.
         socket.on('new-game', async (data) => {
+            const messageObject = {
+                username: data.username, 
+                message: "new game", 
+                event: "new"
+            };
+            io.to(data.roomname).emit('chat', messageObject);
             await Mongo.updateWords(data.roomname, newGame());
             await Mongo.resetRoles(data.roomname); // untested
             io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
@@ -104,7 +116,13 @@ function socket(io) {
             } else {
                 const username = await Mongo.removePlayerBySocketId(roomname, socketId);
                 // Send disconnect message in chat
-                io.to(roomname).emit('disconnected-user', {username: username});
+                const messageObject = {
+                    username: username, 
+                    message: "", 
+                    event: "disconnected"
+                };
+                await Mongo.addMessage(roomname, messageObject);
+                io.to(roomname).emit('chat', messageObject);
                 
                 // Send online users array.
                 io.to(roomname).emit('online-users', (await Mongo.getUsernamesInRoom(roomname)))
