@@ -6,11 +6,9 @@ const spyMaster = document.getElementById('spy');
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
     role = data.roles[username]
-    console.log(data.roles)
     // Clear current board buttons, if any.
     board.innerHTML = "";
-    parsedData = JSON.parse(data.words)
-    parsedData.forEach(word => {
+    data.words.forEach(word => {
         board.appendChild(createButton(word, role));
     })
 })
@@ -20,14 +18,14 @@ function createButton(word, role){
     var btn = document.createElement("button");
     btn.style.width = "18%";
     btn.style.height= "25%";
-    btn.id = word[0];
+    btn.id = word.text;
     btn.className = "m-1 p-auto btn";
     if (role){
-        btn.classList.add(word[1]);
+        btn.classList.add(word.color);
     } else {
         btn.classList.add("btn-secondary")
     }
-    var t = document.createTextNode(word[0]);
+    var t = document.createTextNode(word.text);
     btn.appendChild(t);
     return btn;
 }

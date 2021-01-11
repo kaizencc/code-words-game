@@ -6,29 +6,14 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
-class WordButton {
-    constructor(word, color) {
-        this.text = word;
-        this.color = color; // buttonColor
-        this.show = false;
-    }
-}
-
-var words = {}
-
-// Function to get users online in a room
-function getWords(arr){
-    roomWords = [];
-    arr.forEach((w) => {
-        roomWords.push((Object.values(w)))
-    })
-    return JSON.stringify(roomWords);
-}
-
 function newGame(){
     newWords = [];
     for(var i=0; i<25; i++){
-        const button = new WordButton(i, buttonColor.YELLOW);
+        const button = {
+            text: i,
+            color: buttonColor.YELLOW,
+            show: false,
+        }
         newWords.push(button);
     }
     newWords = shuffle(newWords);
@@ -80,4 +65,4 @@ function shuffle(array) {
 
 
 
-module.exports = {words, getWords, newGame};
+module.exports = {newGame};

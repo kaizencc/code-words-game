@@ -112,8 +112,20 @@ async function getRolesInRoom(room){
             roles[player.username] = player.show;
         })
     }
+    console.log("Roles:")
     console.log(roles);
     return roles;
+}
+
+// Returns word list
+async function getWords(room){
+    const document = await users.findOne({ _id: room});
+    console.log("getwords")
+    console.log(document.words);
+    if(document){
+        return document.words;
+    }
+    return [];
 }
 
 // Helper method for all updates.
@@ -135,7 +147,13 @@ async function switchRoles(username, room, bool){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.show": bool}};
     return updateMongoDocument(query, updateDocument);
+}
 
+// Update words with new word list.
+async function updateWords(room, newWords){
+    const query = { _id: room};
+    const updateDocument = { $set: { words: newWords}};
+    return updateMongoDocument(query, updateDocument);
 }
 
 module.exports = {
@@ -148,7 +166,9 @@ module.exports = {
     roomExists,
     getUsernamesInRoom,
     getRolesInRoom,
+    getWords,
     resetRoles,
     switchRoles,
+    updateWords,
 };
  

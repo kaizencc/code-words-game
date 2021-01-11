@@ -1,4 +1,4 @@
-const {words, getWords, newGame} = require('./wordButton');
+const {newGame} = require('./newgame');
 const Mongo = require('../database/mongoDB');
 
 // Socket connection.
@@ -20,17 +20,18 @@ function socket(io) {
                 // First user to enter a room.
                 Mongo.createRoom({
                     _id: data.roomname,
-                    players: [user]
+                    players: [user],
+                    words: newGame()
                 })
                 // Initialize the board for the room.
-                words[data.roomname] = newGame();
+                // words[data.roomname] = newGame();
             }
 
             // Joining the Socket Room.
             socket.join(data.roomname);
     
             // Creating new board in the room.
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: getWords(words[data.roomname])})
+            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
             
             // Emitting New Username to Clients.
             io.to(data.roomname).emit('joined-user', {username: data.username});
@@ -41,21 +42,22 @@ function socket(io) {
 
         // Creating a new game.
         socket.on('new-game', async (data) => {
-            words[data.roomname] = newGame();
+            // words[data.roomname] = newGame();
+            await Mongo.updateWords(data.roomname, newGame());
             await Mongo.resetRoles(data.roomname); // untested
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: getWords(words[data.roomname])})
+            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
         })
 
         // Changing role to spymaster
         socket.on('role-change-spy', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, true);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: getWords(words[data.roomname])})
+            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
         })
 
         // Changing role to field operator
         socket.on('role-change-field', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, false);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: getWords(words[data.roomname])})
+            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
         })
     
         // Emitting messages to Clients.
