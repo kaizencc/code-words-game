@@ -60,8 +60,14 @@ function socket(io) {
         })
     
         // Emitting messages to Clients.
-        socket.on('chat', (data) =>{
-            io.to(data.roomname).emit('chat', {username: data.username, message: data.message, event: data.event});
+        socket.on('chat', async (data) =>{
+            const messageObject = {
+                username: data.username, 
+                message: data.message, 
+                event: data.event
+            };
+            await Mongo.addMessage(data.roomname, messageObject);
+            io.to(data.roomname).emit('chat', messageObject);
         })
     
         // Broadcasting the user who is typing.

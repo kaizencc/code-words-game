@@ -149,6 +149,14 @@ async function updateWords(room, newWords){
     return updateMongoDocument(query, updateDocument);
 }
 
+// Store messages.
+async function addMessage(room, messageObject){
+    const query = { _id: room};
+    const updateDocument = { $push: { "messages": messageObject}};
+    console.log('add message')
+    return updateMongoDocument(query, updateDocument);
+}
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -163,5 +171,6 @@ module.exports = {
     resetRoles,
     switchRoles,
     updateWords,
+    addMessage,
 };
  
