@@ -61,7 +61,7 @@ function socket(io) {
     
         // Emitting messages to Clients.
         socket.on('chat', (data) =>{
-            io.to(data.roomname).emit('chat', {username: data.username, message: data.message});
+            io.to(data.roomname).emit('chat', {username: data.username, message: data.message, button: data.button});
         })
     
         // Broadcasting the user who is typing.
@@ -80,7 +80,6 @@ function socket(io) {
                 Mongo.deleteRoom(roomname);
             } else {
                 Mongo.removePlayerBySocketId(roomname, socketId);
-
                 //Send online users array
                 io.to(roomname).emit('online-users', (await Mongo.getUsernamesInRoom(roomname)))
             }

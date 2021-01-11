@@ -97,9 +97,6 @@ async function getUsernamesInRoom(room){
             players.push(player.username);
         }); 
     }
-    console.log("getusernames")
-    console.log(players.length);
-    console.log(players);
     return players;
 }
 
@@ -112,16 +109,12 @@ async function getRolesInRoom(room){
             roles[player.username] = player.show;
         })
     }
-    console.log("Roles:")
-    console.log(roles);
     return roles;
 }
 
 // Returns word list
 async function getWords(room){
     const document = await users.findOne({ _id: room});
-    console.log("getwords")
-    console.log(document.words);
     if(document){
         return document.words;
     }

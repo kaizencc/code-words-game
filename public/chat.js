@@ -29,7 +29,8 @@ send.addEventListener('click', () =>{
     socket.emit('chat', {
         username: username,
         message: message.value,
-        roomname: roomname
+        roomname: roomname,
+        button: false,
     })
     message.value = '';
 })
@@ -50,13 +51,20 @@ socket.on('joined-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
 })
 
-// Displaying the message sent from user/
+// Displaying if a user disconnects from the room.
+socket.on('disconnected-user', (data)=>{
+    output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
+})
+
+// Displaying the message sent from user.
 socket.on('chat', (data) => {
-    if (data.message != ""){
+    if (data.button == true){
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';
+    } else if (data.message != ""){
         output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
         feedback.innerHTML = '';
-        document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight
     }
+    document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
 // Displaying if a user is typing.

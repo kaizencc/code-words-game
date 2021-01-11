@@ -34,8 +34,12 @@ function createButton(word, role){
 board.addEventListener('click', function(e){
     const text = e.target.id;
     console.log(text);
-    output.innerHTML += '<p>--> <strong><em>' + username + ' </strong>clicked ' + text + '</em></p>';
-    document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight
+    socket.emit('chat', {
+        username: username,
+        roomname: roomname,
+        message: text,
+        button: true,
+    });
 })
 
 // Listening for new game request.
