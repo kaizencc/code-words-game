@@ -35,6 +35,22 @@ async function clearAll(){
     console.log(`Removed ${result.deletedCount} document(s).`)
 }
 
+// Helper method for all updates.
+async function updateMongoDocument(query, update){
+    const result = await users.updateOne(query, update); 
+    console.log(`modified ${result.modifiedCount} document(s).`)
+    return result;
+}
+
+// Helper function to get players from a room.
+async function getPlayersInRoom(room){
+    const document = await users.findOne({ _id: room});
+    if(document){
+        return document.players;
+    }
+    return null;
+}
+
 // Called when app exits.
 async function closeMongoConnection(){
     await client.close();
@@ -54,10 +70,9 @@ async function deleteRoom(room){
 
 // Add to a room that already exists.
 async function addPlayer(room, player){
-    const result = await users.updateOne(
-        { _id: room },
-        { $push: { "players": player}}
-    );
+    const query = { _id: room};
+    const updateDocument = { $push: { "players": player}};
+    const result = await updateMongoDocument(query, updateDocument);
     console.log(`${player.username} added to ${result.modifiedCount} room`);
 }
 
@@ -72,20 +87,10 @@ async function roomExists(room) {
 
 // Remove player from a room that already exists.
 async function removePlayerBySocketId(room, socketId){
-    const result = await users.updateOne(
-        { _id: room },
-        { $pull: { "players": { "socket": socketId} }}
-    );
+    const query = { _id: room};
+    const updateDocument = { $pull: { "players": { "socket": socketId} }};
+    const result = await updateMongoDocument(query, updateDocument);
     console.log(`${result.modifiedCount} player removed from ${room}`);
-}
-
-// Helper function to get players from a room.
-async function getPlayersInRoom(room){
-    const document = await users.findOne({ _id: room});
-    if(document){
-        return document.players;
-    }
-    return null;
 }
 
 // Returns an array of all the usernames in a room.
@@ -119,13 +124,6 @@ async function getWords(room){
         return document.words;
     }
     return [];
-}
-
-// Helper method for all updates.
-async function updateMongoDocument(query, update){
-    const result = await users.updateOne(query, update); 
-    console.log(`modified ${result.modifiedCount} document(s).`)
-    return result;
 }
 
 // Reset all roles in a room to "field" for a new game.
