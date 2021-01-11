@@ -1,10 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
-const {getRooms, users, getUsers} = require('./utils/getUsers'); // TO DELETE
 const Mongo = require('./database/mongoDB');
 const {alertMessage} = require('./utils/messages');
-
 const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
 
 const app = express();
@@ -41,7 +39,7 @@ app.use('/room', async function (req, res, next) {
         alert = alertMessage.JOIN_DOES_NOT_EXIST;
         res.redirect('/');
         return;
-    } else if (action == "join" && (await Mongo.getPlayersInRoom(roomname)).includes(username)){
+    } else if (action == "join" && (await Mongo.getUsernamesInRoom(roomname)).includes(username)){
         alert = alertMessage.JOIN_USERNAME_EXISTS;
         res.redirect('/');
         return;

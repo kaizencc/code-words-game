@@ -1,6 +1,3 @@
-// Store connected Users
-var users = {}
-
 class Player {
     constructor(socket, username){
         this.socket = socket
@@ -34,7 +31,7 @@ function switchRoles(user, room){
             answer = onlineUser.show;
         }
     })
-    return answer
+    return answer;
 
 }
 
@@ -66,4 +63,4 @@ function getRooms(users){
     return occupiedRooms
 }
 
-module.exports = {getUsers, getRooms, switchRoles, getRoles, resetRoles, users, Player};
+module.exports = {getUsers, getRooms, switchRoles, getRoles, resetRoles, Player};

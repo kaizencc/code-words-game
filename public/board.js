@@ -48,12 +48,12 @@ newGameBtn.addEventListener('click', () =>{
 spyMaster.addEventListener('click', ()=>{
     spyMaster.className = "btn btn-outline-primary active";
     fieldOperator.className = "btn btn-outline-primary";
-    socket.emit('role-change', {username: username, roomname: roomname});
+    socket.emit('role-change-spy', {username: username, roomname: roomname});
 })
 
 fieldOperator.addEventListener('click', () =>{
     spyMaster.className = "btn btn-outline-primary";
     fieldOperator.className = "btn btn-outline-primary active";
-    socket.emit('role-change', {username: username, roomname: roomname});
+    socket.emit('role-change-field', {username: username, roomname: roomname});
 })
 

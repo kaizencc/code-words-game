@@ -16,7 +16,7 @@ class WordButton {
 
 var words = {}
 
-// Funtion to get users online in a room
+// Function to get users online in a room
 function getWords(arr){
     roomWords = [];
     arr.forEach((w) => {
