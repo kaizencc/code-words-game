@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
-const {alertMessage} = require('./utils/messages');
+const alertMessage = require('./utils/messages');
 const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
 
 const app = express();

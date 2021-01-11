@@ -6,4 +6,4 @@ const alertMessage = {
     CREATE_ALREADY_EXISTS: 'create-already-exists'
 }
 
-module.exports = {alertMessage};
+module.exports = alertMessage;
