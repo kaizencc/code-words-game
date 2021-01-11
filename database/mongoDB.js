@@ -149,6 +149,6 @@ module.exports = {
     getUsernamesInRoom,
     getRolesInRoom,
     resetRoles,
-    switchRoles
+    switchRoles,
 };
  

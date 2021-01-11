@@ -1,4 +1,3 @@
-const {getUsers, users, Player, switchRoles, resetRoles} = require('./getUsers'); // TO DELETE
 const {words, getWords, newGame} = require('./wordButton');
 const Mongo = require('../database/mongoDB');
 
@@ -14,17 +13,11 @@ function socket(io) {
                 show: false,
                 team: "red",
             }
-                //new Player(socket.id, data.username);
-            console.log("hereeee")
-            console.log(user)
-            const exists = await Mongo.roomExists(data.roomname);
-            if(exists){
-                // users[data.roomname].push(user); // TO DELETE
+            if(await Mongo.roomExists(data.roomname)){
                 Mongo.addPlayer(data.roomname, user)
             }
             else{
                 // First user to enter a room.
-                // users[data.roomname] = [user]; // TO DELETE
                 Mongo.createRoom({
                     _id: data.roomname,
                     players: [user]
@@ -49,7 +42,7 @@ function socket(io) {
         // Creating a new game.
         socket.on('new-game', async (data) => {
             words[data.roomname] = newGame();
-            resetRoles(data.roomname);
+            await Mongo.resetRoles(data.roomname); // untested
             io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: getWords(words[data.roomname])})
         })
 
@@ -83,16 +76,9 @@ function socket(io) {
             var roomname = rooms[1];
             if ((await Mongo.getUsernamesInRoom(roomname)).length === 1){
                 console.log("deletingn")
-                //delete users[roomname]; // TO DELETE
                 Mongo.deleteRoom(roomname);
             } else {
                 Mongo.removePlayerBySocketId(roomname, socketId);
-                // users[roomname].forEach((user, index) => {
-                //     if(user.socket === socketId){
-                //         //users[roomname].splice(index, 1) // TO DELETE
-                //         Mongo.removePlayer(roomname, user)
-                //     }
-                // });
 
                 //Send online users array
                 io.to(roomname).emit('online-users', (await Mongo.getUsernamesInRoom(roomname)))
