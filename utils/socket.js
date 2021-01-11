@@ -13,8 +13,10 @@ function socket(io) {
                 show: false,
                 team: "red",
             }
+            updateMessages = false;
             if(await Mongo.roomExists(data.roomname)){
                 Mongo.addPlayer(data.roomname, user);
+                updateMessages = true;
             }
             else{
                 // First user to enter a room.
@@ -33,6 +35,21 @@ function socket(io) {
             // Creating new board in the room.
             io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
             
+            // Update messages if necessary.
+            if(updateMessages){
+                // Clear all messages.
+                io.to(data.roomname).emit('clear-messages');
+
+                // Get messages from database.
+                const messageArray = await Mongo.getAllMessages(data.roomname);
+                console.log(messageArray);
+
+                // Write each message.
+                messageArray.forEach(function (messageObject) {
+                    io.to(data.roomname).emit('chat', messageObject);
+                });
+            }
+
             // Emitting New Username to Clients.
             io.to(data.roomname).emit('joined-user', {username: data.username});
     

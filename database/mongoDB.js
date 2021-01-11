@@ -166,6 +166,12 @@ async function addMessage(room, messageObject){
     return updateMongoDocument(query, updateDocument);
 }
 
+// Get all messages from a room.
+async function getAllMessages(room){
+    const doc = await users.findOne({ _id: room});
+    return doc.messages;
+}
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -181,5 +187,6 @@ module.exports = {
     switchRoles,
     updateWords,
     addMessage,
+    getAllMessages,
 };
  

@@ -16,7 +16,7 @@ const roomname = urlParams.get('roomname');
 console.log(username, roomname);
 
 // Display the roomname the user is connected to.
-roomMessage.innerHTML = `${roomname} Chat`
+roomMessage.innerHTML = `${roomname} Chat`;
 
 // Emitting username and roomname of newly joined user to server.
 socket.emit('joined-user', {
@@ -35,6 +35,7 @@ send.addEventListener('click', () =>{
     message.value = '';
 })
 
+// Allow the enter key to send a message.
 window.addEventListener('keypress', function(e){
     if(e.key === "Enter"){
         document.getElementById('send').click();
@@ -49,11 +50,18 @@ message.addEventListener('keypress', () => {
 // Displaying if new user has joined the room.
 socket.on('joined-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
+    document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
 // Displaying if a user disconnects from the room.
 socket.on('disconnected-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
+    document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
+})
+
+// Clear all messages.
+socket.on('clear-messages', () => {
+    output.innerHTML = "";
 })
 
 // Display button clicks, switched users, and messages.
