@@ -72,7 +72,7 @@ function socket(io) {
             };
             io.to(data.roomname).emit('chat', messageObject);
             await Mongo.updateWords(data.roomname, newGame());
-            await Mongo.resetRoles(data.roomname); // untested
+            await Mongo.resetRoles(data.roomname);
             io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
         })
 

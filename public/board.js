@@ -5,9 +5,18 @@ const spyMaster = document.getElementById('spy');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
+    // Update role buttons.
     role = data.roles[username]
+    if (role){
+        changeToSpyMaster();
+    } else {
+        changeToFieldOperator();
+    }
+
     // Clear current board buttons, if any.
     board.innerHTML = "";
+
+    // Create buttons.
     data.words.forEach(word => {
         board.appendChild(createButton(word, role));
     })
@@ -47,10 +56,20 @@ newGameBtn.addEventListener('click', () =>{
     socket.emit('new-game',{username: username, roomname: roomname});
 })
 
-// Change role to spymaster.
-spyMaster.addEventListener('click', ()=>{
+// Helper functions to change HTML buttons.
+function changeToSpyMaster(){
     spyMaster.className = "btn btn-outline-primary active";
     fieldOperator.className = "btn btn-outline-primary";
+}
+
+function changeToFieldOperator(){
+    spyMaster.className = "btn btn-outline-primary";
+    fieldOperator.className = "btn btn-outline-primary active";
+}
+
+// Change role to spymaster.
+spyMaster.addEventListener('click', ()=>{
+    changeToSpyMaster();
     socket.emit('role-change-spy', {username: username, roomname: roomname});
     socket.emit('chat', {
         username: username,
@@ -62,8 +81,7 @@ spyMaster.addEventListener('click', ()=>{
 
 // Change role to field operator.
 fieldOperator.addEventListener('click', () =>{
-    spyMaster.className = "btn btn-outline-primary";
-    fieldOperator.className = "btn btn-outline-primary active";
+    changeToFieldOperator();
     socket.emit('role-change-field', {username: username, roomname: roomname});
     socket.emit('chat', {
         username: username,
