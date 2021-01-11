@@ -61,7 +61,7 @@ function socket(io) {
     
         // Emitting messages to Clients.
         socket.on('chat', (data) =>{
-            io.to(data.roomname).emit('chat', {username: data.username, message: data.message, button: data.button});
+            io.to(data.roomname).emit('chat', {username: data.username, message: data.message, event: data.event});
         })
     
         // Broadcasting the user who is typing.

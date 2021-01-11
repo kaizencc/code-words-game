@@ -38,7 +38,7 @@ board.addEventListener('click', function(e){
         username: username,
         roomname: roomname,
         message: text,
-        button: true,
+        event: "button",
     });
 })
 
@@ -47,15 +47,29 @@ newGameBtn.addEventListener('click', () =>{
     socket.emit('new-game',{username: username, roomname: roomname});
 })
 
+// Change role to spymaster.
 spyMaster.addEventListener('click', ()=>{
     spyMaster.className = "btn btn-outline-primary active";
     fieldOperator.className = "btn btn-outline-primary";
     socket.emit('role-change-spy', {username: username, roomname: roomname});
+    socket.emit('chat', {
+        username: username,
+        roomname: roomname,
+        message: 'spymaster',
+        event: 'switch'
+    });
 })
 
+// Change role to field operator.
 fieldOperator.addEventListener('click', () =>{
     spyMaster.className = "btn btn-outline-primary";
     fieldOperator.className = "btn btn-outline-primary active";
     socket.emit('role-change-field', {username: username, roomname: roomname});
+    socket.emit('chat', {
+        username: username,
+        roomname: roomname,
+        message: 'field operator',
+        event: 'switch'
+    });
 })
 

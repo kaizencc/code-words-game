@@ -30,7 +30,7 @@ send.addEventListener('click', () =>{
         username: username,
         message: message.value,
         roomname: roomname,
-        button: false,
+        event: "chat",
     })
     message.value = '';
 })
@@ -56,11 +56,13 @@ socket.on('disconnected-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
 })
 
-// Displaying the message sent from user.
+// Display button clicks, switched users, and messages.
 socket.on('chat', (data) => {
-    if (data.button == true){
+    if (data.event === "button"){
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';
-    } else if (data.message != ""){
+    } else if (data.event === "switch") {
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
+    } else if (data.event === "chat" && data.message != ""){
         output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
         feedback.innerHTML = '';
     }
