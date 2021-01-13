@@ -1,6 +1,7 @@
 const {MongoClient} = require('mongodb');
 const csv = require('csv-parser');
 const fs = require('fs');
+const { SSL_OP_EPHEMERAL_RSA } = require('constants');
  
 /**
  * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
@@ -11,30 +12,31 @@ const dbName = "Cluster0";
 const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 var mongoDocuments;
 
-async function addWords(name) {
+async function addWords(name, filename) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
         // Connect to the MongoDB cluster
         await client.connect();
         const db = client.db('words');
-        const collection = await getOrCreateCollection(db, name);
-        console.log(mongoDocuments);
-        const documents = readFile('./files/test.csv');
-        console.log("after");
-
-        console.log(mongoDocuments);
-        await collection.insertMany([{_id: 1, word: "test"}, {_id: 2, word: "test-test"}]);
-
+        const collection = await createCollection(db, name);
+        const done = await processFile(filename, collection);
+        console.log(done);
     } catch (e) {
         console.error(e);
-    } finally {
-        await client.close();
     }
+    await sleep(5000);
+    await client.close();
+}
+
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
 }
 
 function createMongoDocuments(data){
-    mongoDocuments = []
+    var mongoDocuments = []
     data.forEach((word, index) =>{
         wordDoc = {
             _id: index,
@@ -42,18 +44,20 @@ function createMongoDocuments(data){
         }
         mongoDocuments.push(wordDoc);
     })
+    return mongoDocuments;
 }
 
-function readFile(filename){
-    fs.readFile(filename, 'utf8', (err,data)=>{
+async function processFile(filename, collection){
+    fs.readFile(filename, 'utf8', async (err,data)=>{
         if(err){
             console.error(err);
             return;
         }
         const newData = processData(data);
-        console.log(newData);
-        createMongoDocuments(newData);
+        const documents = createMongoDocuments(newData);
+        await collection.insertMany(documents);
     })
+    return true;
 }
 
 //Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
@@ -71,18 +75,19 @@ function processData(data){
     return data;
 }
 
-async function getOrCreateCollection(db, name){
+async function createCollection(db, name){
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
-    if (!collectionNames.includes(name)){
-        console.log(name);
+    if (collectionNames.includes(name)){
+        console.error('collection already exists');
+        return;
+    } else {
         await db.createCollection(name, function(err, _) {
             if (err) throw err;
             console.log(`Collection ${name} created!`);
           });
     }
-    return db.collection(name);
+    return await db.collection(name);
 }
 
-addWords('codenames').catch(console.error);
-// readFile('./files/test.csv');
+addWords('codenames','./files/test.csv').catch(console.error);
