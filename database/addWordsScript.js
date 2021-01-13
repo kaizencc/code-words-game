@@ -10,7 +10,6 @@ const { SSL_OP_EPHEMERAL_RSA } = require('constants');
 const dbPassword = "bJr6m5UqPuYoZMaR";
 const dbName = "Cluster0";
 const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-var mongoDocuments;
 
 async function addWords(name, filename) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -20,21 +19,24 @@ async function addWords(name, filename) {
         await client.connect();
         const db = client.db('words');
         const collection = await createCollection(db, name);
-        const done = await processFile(filename, collection);
-        console.log(done);
+        if (collection) {
+            await processFile(filename, collection);
+            await sleep(3000);
+        }
     } catch (e) {
         console.error(e);
     }
-    await sleep(5000);
     await client.close();
 }
 
+// Helper function to wait for other processes to finish.
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
 }
 
+// Transform array of words into array of word documents.
 function createMongoDocuments(data){
     var mongoDocuments = []
     data.forEach((word, index) =>{
@@ -47,6 +49,7 @@ function createMongoDocuments(data){
     return mongoDocuments;
 }
 
+// Process the given file name data into mongo documents.
 async function processFile(filename, collection){
     fs.readFile(filename, 'utf8', async (err,data)=>{
         if(err){
@@ -68,6 +71,7 @@ function replaceAll(str, match, replacement){
     return str.replace(new RegExp(escapeRegExp(match), 'g'), replacement);
 }
 
+// Process data for consumption by mongo.
 function processData(data){
     data = replaceAll(data,",,,",",");
     data = replaceAll(data,",,",",");
@@ -75,12 +79,13 @@ function processData(data){
     return data;
 }
 
+// create the collection (must not exist)
 async function createCollection(db, name){
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
     if (collectionNames.includes(name)){
         console.error('collection already exists');
-        return;
+        return null;
     } else {
         await db.createCollection(name, function(err, _) {
             if (err) throw err;
@@ -90,4 +95,10 @@ async function createCollection(db, name){
     return await db.collection(name);
 }
 
-addWords('codenames','./files/test.csv').catch(console.error);
+function initializeMongoWordlists(){
+    addWords('codenames','./files/test.csv').catch(console.error);
+    addWords('codenames2','./files/codes2.csv').catch(console.error);
+    addWords('codenames-duet','./files/code-duet.csv').catch(console.error);
+}
+
+module.exports = {initializeMongoWordlists};

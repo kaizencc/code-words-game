@@ -1,4 +1,5 @@
 const {MongoClient} = require('mongodb');
+const {initializeMongoWordlists} = require ('./addWordsScript');
  
 /**
  * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
@@ -23,6 +24,9 @@ async function openMongoConnection(){
         users = db.collection("users");
         // Remove all documents in collection at start of application.
         clearAll();
+
+        // Add in word lists if necessary
+        initializeMongoWordlists();
     } catch (e) {
         console.error(e);
     }
