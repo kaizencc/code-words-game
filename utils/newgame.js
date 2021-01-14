@@ -13,7 +13,7 @@ async function newGame(){
     const array = await Mongo.getWordArray();
     for(var i=0; i<25; i++){
         const button = {
-            text: array[i],
+            text: array[i].word,
             color: buttonColor.YELLOW,
             show: false,
         }

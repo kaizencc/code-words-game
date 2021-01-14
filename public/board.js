@@ -29,10 +29,12 @@ function createButton(word, role){
     btn.style.height= "25%";
     btn.id = word.text;
     btn.className = "m-1 p-auto btn";
-    if (role){
+    if (role || word.show){
         btn.classList.add(word.color);
+        btn.disabled = true;
     } else {
         btn.classList.add("btn-secondary")
+        btn.disabled = false;
     }
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
@@ -42,13 +44,30 @@ function createButton(word, role){
 // Sending a message in the chat when a user clicks a button.
 board.addEventListener('click', function(e){
     const text = e.target.id;
-    console.log(text);
+    // Find word in database.
+    // Result is sent to socket.on('found-word')
+    socket.emit('find-word', {
+        roomname: roomname,
+        word: text,
+    })
+
+    // Update database to show item.
+    socket.emit('show-word', {
+        roomname: roomname,
+        word: text,
+    })
+
+    // Message chat with current move.
     socket.emit('chat', {
         username: username,
         roomname: roomname,
         message: text,
         event: "button",
     });
+})
+
+socket.on('found-word', (data) => {
+    // Change score if necessary.
 })
 
 // Listening for new game request.

@@ -145,7 +145,7 @@ async function getRolesInRoom(room){
 }
 
 // Returns word list
-async function getWords(room){
+async function getAllWordsInRoom(room){
     const document = await users.findOne({ _id: room});
     if(document){
         return document.words;
@@ -168,9 +168,24 @@ async function switchRoles(username, room, bool){
 }
 
 // Update words with new word list.
-async function updateWords(room, newWords){
+async function updateAllWordsInRoom(room, newWords){
     const query = { _id: room};
     const updateDocument = { $set: { words: newWords}};
+    return updateMongoDocument(query, updateDocument);
+}
+
+// Get a single word from the room.
+async function getWordInRoom(room, word){
+    const words = await getAllWordsInRoom(room);
+    const result = words.filter(w => w.text = word);
+    console.log(result);
+    return result[0];
+}
+
+// Update a single word from the room.
+async function updateWordInRoom(room, word){
+    const query = { _id: room, "words.text": word};
+    const updateDocument = { $set: { "words.$.show": true}};
     return updateMongoDocument(query, updateDocument);
 }
 
@@ -192,14 +207,11 @@ function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-// Get word array from array of ids 
+// Get word array from array of ids using the wordset collection.
 async function getWordArray(){
     const size = await currentWordSet.countDocuments();
-    console.log(size, typeof size);
     var arr = []
     var usedSet = new Set();
-    var num = randomIntFromInterval(0,size-1);
-    var num2 = randomIntFromInterval(0,size-1);
     for(var i=0; i<25; i++){
         var num = randomIntFromInterval(0,size-1);
         // No duplicates.
@@ -210,13 +222,9 @@ async function getWordArray(){
         usedSet.add(num);
         arr.push(num);
     }
-    console.log(arr);
     const cursor = await currentWordSet.find({_id: {"$in": arr} });
     const allValues = await cursor.toArray();
-    console.log("hehehehe");
-    console.log(allValues);
-    const words = allValues.map(doc => doc.word);
-    return words;
+    return allValues;
 }
 
 module.exports = {
@@ -229,10 +237,12 @@ module.exports = {
     roomExists,
     getUsernamesInRoom,
     getRolesInRoom,
-    getWords,
+    getAllWordsInRoom,
     resetRoles,
     switchRoles,
-    updateWords,
+    updateAllWordsInRoom,
+    getWordInRoom,
+    updateWordInRoom,
     addMessage,
     getAllMessages,
     getWordArray,
