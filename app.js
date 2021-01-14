@@ -29,8 +29,8 @@ app.use('/room', async function (req, res, next) {
     const username = req.body.username;
     const roomname = req.body.roomname;
     const exists = await Mongo.roomExists(roomname);
-    console.log(exists);
-    console.log(action);
+    console.log("exists", exists);
+    console.log("act", action);
     if (action == "create" && exists) {
         alert = alertMessage.CREATE_ALREADY_EXISTS;
         res.redirect('/');

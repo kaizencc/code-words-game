@@ -68,9 +68,13 @@ function replaceAll(str, match, replacement){
 
 // Process data for consumption by mongo.
 function processData(data){
+    data = replaceAll(data,"\r",",");
+    data = replaceAll(data,"\n",",");
     data = replaceAll(data,",,,",",");
     data = replaceAll(data,",,",",");
     data = data.split(",");
+    data = data.filter(word => word.length > 2);
+    console.log(data);
     return data;
 }
 

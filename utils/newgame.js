@@ -1,3 +1,5 @@
+const Mongo = require('../database/mongoDB');
+
 const buttonColor = {
     BLUE: 'btn-primary',
     GRAY: 'btn-secondary',
@@ -6,11 +8,12 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
-function newGame(){
+async function newGame(){
     newWords = [];
+    const array = await Mongo.getWordArray();
     for(var i=0; i<25; i++){
         const button = {
-            text: i,
+            text: array[i],
             color: buttonColor.YELLOW,
             show: false,
         }

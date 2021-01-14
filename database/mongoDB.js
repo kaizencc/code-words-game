@@ -14,6 +14,7 @@ var client;
 var db;
 var users;
 var wordDb;
+var currentWordSet;
 
 // Called when app opens to populate `client` and `db`.
 async function openMongoConnection(){
@@ -22,8 +23,10 @@ async function openMongoConnection(){
         // Connect to the MongoDB cluster
         await client.connect();
         db = client.db('rooms');
-        wordDb = client.db('words');
         users = db.collection("users");
+
+        wordDb = client.db('words');
+        currentWordSet = wordDb.collection("codenames")
 
         // Remove all documents in collection at start of application.
         clearAll();
@@ -49,6 +52,17 @@ async function updateMongoDocument(query, update){
     return result;
 }
 
+// Called when app exits.
+async function closeMongoConnection(){
+    await client.close();
+}
+
+// Helper function to get document by _id
+// async function getDocumentById(collection, id){
+//     const document = await collection.findOne({ _id: id});
+//     return document;
+// }
+
 // Helper function to get players from a room.
 async function getPlayersInRoom(room){
     const document = await users.findOne({ _id: room});
@@ -56,11 +70,6 @@ async function getPlayersInRoom(room){
         return document.players;
     }
     return null;
-}
-
-// Called when app exits.
-async function closeMongoConnection(){
-    await client.close();
 }
 
 // Create room in users collection.
@@ -179,6 +188,37 @@ async function getAllMessages(room){
     return doc.messages;
 }
 
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+// Get word array from array of ids 
+async function getWordArray(){
+    const size = await currentWordSet.countDocuments();
+    console.log(size, typeof size);
+    var arr = []
+    var usedSet = new Set();
+    var num = randomIntFromInterval(0,size-1);
+    var num2 = randomIntFromInterval(0,size-1);
+    for(var i=0; i<25; i++){
+        var num = randomIntFromInterval(0,size-1);
+        // No duplicates.
+        while (usedSet.has(num)) {
+            console.log(num);
+            num = randomIntFromInterval(0,size-1);
+        }
+        usedSet.add(num);
+        arr.push(num);
+    }
+    console.log(arr);
+    const cursor = await currentWordSet.find({_id: {"$in": arr} });
+    const allValues = await cursor.toArray();
+    console.log("hehehehe");
+    console.log(allValues);
+    const words = allValues.map(doc => doc.word);
+    return words;
+}
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -195,5 +235,6 @@ module.exports = {
     updateWords,
     addMessage,
     getAllMessages,
+    getWordArray,
 };
  

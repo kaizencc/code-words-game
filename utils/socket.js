@@ -23,7 +23,7 @@ function socket(io) {
                 Mongo.createRoom({
                     _id: data.roomname,
                     players: [user], // Array of players connected to the room.
-                    words: newGame(), // Initialize the board for the room.
+                    words: await newGame(), // Initialize the board for the room.
                     messages: [], // Storage of chat messages for the room.
                 })
 
@@ -71,7 +71,7 @@ function socket(io) {
                 event: "new"
             };
             io.to(data.roomname).emit('chat', messageObject);
-            await Mongo.updateWords(data.roomname, newGame());
+            await Mongo.updateWords(data.roomname, await newGame());
             await Mongo.resetRoles(data.roomname);
             io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getWords(data.roomname))})
         })
