@@ -67,4 +67,4 @@ function shuffle(array) {
     return array;
 }
 
-module.exports = newGame;
+module.exports = {newGame, buttonColor};

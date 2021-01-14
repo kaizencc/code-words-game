@@ -177,8 +177,7 @@ async function updateAllWordsInRoom(room, newWords){
 // Get a single word from the room.
 async function getWordInRoom(room, word){
     const words = await getAllWordsInRoom(room);
-    const result = words.filter(w => w.text = word);
-    console.log(result);
+    const result = words.filter(w => w.text === word);
     return result[0];
 }
 

@@ -1,4 +1,4 @@
-const newGame = require('./newgame');
+const {newGame} = require('./newgame');
 const Mongo = require('../database/mongoDB');
 
 // Socket connection.
@@ -79,7 +79,7 @@ function socket(io) {
         // Finding a word in the room.
         socket.on('find-word', async (data) => {
             const result = await Mongo.getWordInRoom(data.roomname,data.word);
-            io.to(data.roomname).emit('found-word',{word: result});
+            io.to(data.roomname).emit('found-word',{data: result});
         })
 
         // Update a word in the room to show.

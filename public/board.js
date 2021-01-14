@@ -2,6 +2,8 @@ const board = document.getElementById('board');
 const newGameBtn = document.getElementById('newgame');
 const fieldOperator = document.getElementById('field');
 const spyMaster = document.getElementById('spy');
+const redTeam = document.getElementById('red-team');
+const blueTeam = document.getElementById('blue-team');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
@@ -66,8 +68,33 @@ board.addEventListener('click', function(e){
     });
 })
 
+const buttonColor = {
+    BLUE: 'btn-primary',
+    GRAY: 'btn-secondary',
+    RED: 'btn-danger',
+    BLACK: 'btn-dark',
+    YELLOW: 'btn-warning'
+}
+
 socket.on('found-word', (data) => {
     // Change score if necessary.
+    console.log("hereeeee");
+    const color = data.data.color;
+    console.log(color);
+    if (color === buttonColor.BLACK){
+        // Game is over
+        console.log("black");
+    } else if (color === buttonColor.RED){
+        // Red team subtracts a point
+        console.log("red");
+        redScore = Number(redTeam.innerHTML);
+        redTeam.innerHTML = String(redScore-1);
+    } else if (color === buttonColor.BLUE){
+        // Blue team subtracts a point
+        console.log("blue");
+        blueScore = Number(blueTeam.innerHTML);
+        blueTeam.innerHTML = String(blueScore-1);
+    }
 })
 
 // Listening for new game request.
