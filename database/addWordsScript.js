@@ -1,8 +1,7 @@
 const {MongoClient} = require('mongodb');
-const csv = require('csv-parser');
 const fs = require('fs');
-const { SSL_OP_EPHEMERAL_RSA } = require('constants');
- 
+const path = require('path'); 
+
 /**
  * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
  * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
@@ -11,22 +10,18 @@ const dbPassword = "bJr6m5UqPuYoZMaR";
 const dbName = "Cluster0";
 const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
-async function addWords(name, filename) {
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+async function addWords(db, name, filename) {
+    const newClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
-        // Connect to the MongoDB cluster
-        await client.connect();
-        const db = client.db('words');
         const collection = await createCollection(db, name);
         if (collection) {
             await processFile(filename, collection);
-            await sleep(3000);
+            await sleep(1000);
         }
     } catch (e) {
         console.error(e);
     }
-    await client.close();
 }
 
 // Helper function to wait for other processes to finish.
@@ -95,10 +90,10 @@ async function createCollection(db, name){
     return await db.collection(name);
 }
 
-function initializeMongoWordlists(){
-    addWords('codenames','./files/test.csv').catch(console.error);
-    addWords('codenames2','./files/codes2.csv').catch(console.error);
-    addWords('codenames-duet','./files/code-duet.csv').catch(console.error);
+function initializeMongoWordlists(db){
+    addWords(db, 'codenames',path.join(__dirname, "files/codes.csv")).catch(console.error);
+    addWords(db, 'codenames2',path.join(__dirname, "files/codes2.csv")).catch(console.error);
+    addWords(db, 'codenames-duet',path.join(__dirname, "files/code-duet.csv")).catch(console.error);
 }
 
 module.exports = {initializeMongoWordlists};

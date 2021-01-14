@@ -55,17 +55,21 @@ app.post('/room', (req, res) => {
     res.redirect(`/room?username=${username}&roomname=${roomname}`)
 })
 
-//Rooms
-app.get('/room', (req, res)=>{
-    res.render('room')
+// Leaderboard
+app.get('/leaderboard', (req, res)=>{
+    res.render('leaderboard');
 })
 
-// Open Mongo Connection to populate the `client` and `db` variables in mongoDB.js.
-openMongoConnection();
+// Rooms
+app.get('/room', (req, res)=>{
+    res.render('room');
+})
 
 // Start Server
-const server = app.listen(port, () => {
+const server = app.listen(port, async () => {
     console.log(`Server Running on ${port}`)
+    // Open Mongo Connection to populate the `client` and `db` variables in mongoDB.js.
+    await openMongoConnection();
 })
 
 const io = socket(server);

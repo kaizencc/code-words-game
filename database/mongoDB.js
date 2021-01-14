@@ -13,6 +13,7 @@ const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbN
 var client;
 var db;
 var users;
+var wordDb;
 
 // Called when app opens to populate `client` and `db`.
 async function openMongoConnection(){
@@ -21,12 +22,14 @@ async function openMongoConnection(){
         // Connect to the MongoDB cluster
         await client.connect();
         db = client.db('rooms');
+        wordDb = client.db('words');
         users = db.collection("users");
+
         // Remove all documents in collection at start of application.
         clearAll();
 
         // Add in word lists if necessary
-        initializeMongoWordlists();
+        initializeMongoWordlists(wordDb);
     } catch (e) {
         console.error(e);
     }
