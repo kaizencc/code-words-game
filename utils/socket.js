@@ -13,10 +13,10 @@ function socket(io) {
                 show: false,
                 team: "red",
             }
-            updateMessages = false;
+            firstPlayer = true;
             if(await Mongo.roomExists(data.roomname)){
                 Mongo.addPlayer(data.roomname, user);
-                updateMessages = true;
+                firstPlayer = false;
             }
             else{
                 // First user to enter a room.
@@ -33,10 +33,14 @@ function socket(io) {
             socket.join(data.roomname);
     
             // Creating new board in the room.
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getAllWordsInRoom(data.roomname))});
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: firstPlayer,
+            });
             
             // Update messages if necessary.
-            if(updateMessages){
+            if(!firstPlayer){
                 // Clear all messages.
                 io.to(data.roomname).emit('clear-messages');
 
@@ -73,7 +77,11 @@ function socket(io) {
             io.to(data.roomname).emit('chat', messageObject);
             await Mongo.updateAllWordsInRoom(data.roomname, await newGame());
             await Mongo.resetRoles(data.roomname);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getAllWordsInRoom(data.roomname))});
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: true,
+            });
         })
 
         // Finding a word in the room.
@@ -85,19 +93,35 @@ function socket(io) {
         // Update a word in the room to show.
         socket.on('show-word', async (data) => {
             await Mongo.updateWordInRoom(data.roomname, data.word);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getAllWordsInRoom(data.roomname))});
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: false,
+            });
         })
 
         // Changing role to spymaster
         socket.on('role-change-spy', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, true);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getAllWordsInRoom(data.roomname))});
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: false,
+            });
         })
 
         // Changing role to field operator
         socket.on('role-change-field', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, false);
-            io.to(data.roomname).emit('board-game', {roles: (await Mongo.getRolesInRoom(data.roomname)), words: (await Mongo.getAllWordsInRoom(data.roomname))});
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: false,
+            });
+        })
+
+        socket.on('game-over', (data) => {
+            io.to(data.roomname).emit('game-over');
         })
     
         // Emitting messages to Clients.

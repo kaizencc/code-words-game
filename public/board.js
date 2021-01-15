@@ -15,6 +15,12 @@ socket.on('board-game', (data) => {
         changeToFieldOperator();
     }
 
+    // Reset score, if necessary.
+    if (data.scoreReset){
+        redTeam.innerHTML = String(9);
+        blueTeam.innerHTML = String(8);
+    }
+
     // Clear current board buttons, if any.
     board.innerHTML = "";
 
@@ -78,32 +84,30 @@ const buttonColor = {
 
 socket.on('found-word', (data) => {
     // Change score if necessary.
-    console.log("hereeeee");
     const color = data.data.color;
     console.log(color);
     if (color === buttonColor.BLACK){
         // Game is over
-        console.log("black");
-        endGame();
+        socket.emit('game-over', {roomname: roomname});
     } else if (color === buttonColor.RED){
         // Red team subtracts a point
-        console.log("red");
         redScore = Number(redTeam.innerHTML);
         redTeam.innerHTML = String(redScore-1);
     } else if (color === buttonColor.BLUE){
         // Blue team subtracts a point
-        console.log("blue");
         blueScore = Number(blueTeam.innerHTML);
         blueTeam.innerHTML = String(blueScore-1);
     }
 })
 
-function endGame(){
+socket.on('game-over', () => {
     console.log("game over");
+    // Show modal.
     $("#myModal").modal("show").on('shown.bs.modal', function () {
         $(".modal").css('display', 'block');
-    })
-}   
+    });
+    // Reset scores.
+})
 
 // Listening for new game request.
 newGameBtn.addEventListener('click', () =>{
