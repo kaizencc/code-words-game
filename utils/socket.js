@@ -1,6 +1,14 @@
 const {newGame} = require('./newgame');
 const Mongo = require('../database/mongoDB');
 
+function randomTeam(){
+    if (Math.floor(Math.random() * 2) === 0){
+        return "red";
+    } else {
+        return "blue"
+    }
+}
+
 // Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
@@ -11,7 +19,7 @@ function socket(io) {
                 socket: socket.id,
                 username: data.username,
                 show: false,
-                team: "red",
+                team: randomTeam(),
             }
             firstPlayer = true;
             if(await Mongo.roomExists(data.roomname)){
@@ -64,7 +72,7 @@ function socket(io) {
             io.to(data.roomname).emit('chat', messageObject);
     
             // Send online users array.
-            io.to(data.roomname).emit('online-users', (await Mongo.getUsernamesInRoom(data.roomname)))
+            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)))
         })
 
         // Creating a new game.
@@ -154,7 +162,7 @@ function socket(io) {
             var rooms = Object.keys(socket.rooms);
             var socketId = rooms[0];
             var roomname = rooms[1];
-            if ((await Mongo.getUsernamesInRoom(roomname)).length === 1){
+            if ((await Mongo.getUsersInRoom(roomname)).length === 1){
                 console.log("deleting room");
                 Mongo.deleteRoom(roomname);
             } else {
@@ -169,7 +177,7 @@ function socket(io) {
                 io.to(roomname).emit('chat', messageObject);
                 
                 // Send online users array.
-                io.to(roomname).emit('online-users', (await Mongo.getUsernamesInRoom(roomname)))
+                io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)))
             }
         })
     })

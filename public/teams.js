@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    var example2Left = document.getElementById('users-red');
-    var example2Right = document.getElementById('users-blue');
-    new Sortable(example2Left, {
+    var redTeam = document.getElementById('users-red');
+    var blueTeam = document.getElementById('users-blue');
+    new Sortable(redTeam, {
         group: {
             name: 'shared',
             pull: true,
@@ -10,7 +10,7 @@ $(document).ready(function() {
         cursor: 'move',
         animation: 150
     });
-    new Sortable(example2Right, {
+    new Sortable(blueTeam, {
         group: {
             name: 'shared',
             pull: true,

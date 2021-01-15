@@ -121,12 +121,15 @@ async function removePlayerBySocketId(room, socketId){
 }
 
 // Returns an array of all the usernames in a room.
-async function getUsernamesInRoom(room){
+async function getUsersInRoom(room){
     const result = await getPlayersInRoom(room);
     var players = []
     if (result){
         result.forEach((player) => {
-            players.push(player.username);
+            players.push({
+                username: player.username,
+                team: player.team,
+            });
         }); 
     }
     return players;
@@ -234,7 +237,7 @@ module.exports = {
     addPlayer,
     removePlayerBySocketId,
     roomExists,
-    getUsernamesInRoom,
+    getUsersInRoom,
     getRolesInRoom,
     getAllWordsInRoom,
     resetRoles,

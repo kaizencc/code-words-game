@@ -3,7 +3,8 @@ const message = document.getElementById('message');
 const send = document.getElementById('send');
 const feedback = document.getElementById('feedback');
 const roomMessage = document.getElementById('room-message');
-const users = document.getElementById('users-red');
+const redUsers = document.getElementById('users-red');
+const blueUsers = document.getElementById('users-blue');
 
 //Socket server URL
 const socket = io.connect('http://localhost:3000');
@@ -90,14 +91,25 @@ socket.on('typing', (user) => {
 
 // Displaying online users.
 socket.on('online-users', (data) =>{
-    users.innerHTML = ""
+    // Clear anything previous.
+    redUsers.innerHTML = "";
+    blueUsers.innerHTML = "";
+
     data.forEach(user => {
         // Create card
         let card = document.createElement('h5'); 
-        card.className = "w-100 border border-dark rounded text-center mx-auto";
-        card.innerHTML = `${user}`;
+        card.className = "w-100 border rounded text-center mx-auto";
+        card.innerHTML = `${user.username}`;
         card.draggable = true;
         card.style = "cursor: pointer;"
-        users.appendChild(card);
+        if (user.team === "red"){
+            card.classList.add("border-danger");
+            card.classList.add("text-danger");
+            redUsers.appendChild(card);
+        } else {
+            card.classList.add("border-primary");
+            card.classList.add("text-primary");
+            blueUsers.appendChild(card);
+        }
     });
 })
