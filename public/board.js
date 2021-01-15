@@ -46,7 +46,7 @@ function createButton(word, role, gameover){
         btn.classList.add(word.color);
         btn.disabled = true;
     } else {
-        btn.classList.add("btn-secondary")
+        btn.classList.add(buttonColor.GRAY)
         // Disable buttons if the game is over.
         if (gameover){
             btn.disabled = true;
@@ -87,7 +87,7 @@ board.addEventListener('click', function(e){
 
 const buttonColor = {
     BLUE: 'btn-primary',
-    GRAY: 'btn-secondary',
+    GRAY: 'btn-outline-secondary',
     RED: 'btn-danger',
     BLACK: 'btn-dark',
     YELLOW: 'btn-warning'

@@ -8,7 +8,14 @@ $(document).ready(function() {
             put: true,
         },
         cursor: 'move',
-        animation: 150
+        animation: 150,
+        onEnd: function(event){
+            var item = event.item;
+            item.classList.remove("border-danger");
+            item.classList.remove("text-danger");
+            item.classList.add("border-primary");
+            item.classList.add("text-primary");
+        }
     });
     new Sortable(blueTeam, {
         group: {
@@ -17,6 +24,13 @@ $(document).ready(function() {
             put: true,
         },
         cursor: 'move',
-        animation: 150
+        animation: 150,
+        onEnd: function(event){
+            var item = event.item;
+            item.classList.remove("border-primary");
+            item.classList.remove("text-primary");
+            item.classList.add("border-danger");
+            item.classList.add("text-danger");
+        }
     });
 });
