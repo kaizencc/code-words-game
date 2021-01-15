@@ -84,6 +84,7 @@ socket.on('found-word', (data) => {
     if (color === buttonColor.BLACK){
         // Game is over
         console.log("black");
+        endGame();
     } else if (color === buttonColor.RED){
         // Red team subtracts a point
         console.log("red");
@@ -96,6 +97,13 @@ socket.on('found-word', (data) => {
         blueTeam.innerHTML = String(blueScore-1);
     }
 })
+
+function endGame(){
+    console.log("game over");
+    $("#myModal").modal("show").on('shown.bs.modal', function () {
+        $(".modal").css('display', 'block');
+    })
+}   
 
 // Listening for new game request.
 newGameBtn.addEventListener('click', () =>{
