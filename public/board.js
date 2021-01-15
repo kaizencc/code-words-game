@@ -123,13 +123,24 @@ socket.on('found-word', (data) => {
     }
 })
 
-socket.on('game-over', () => {
+socket.on('game-over', async () => {
     console.log("game over");
-    // Show modal.
+    // Modify Modal
+    document.getElementById('modal-title').innerHTML = "Red Team Wins by 4"
+    document.getElementById('modal-body').innerHTML = "Quick Stats";
+    // Wait a second and Show modal.
+    await sleep(2000);
     $("#myModal").modal("show").on('shown.bs.modal', function () {
         $(".modal").css('display', 'block');
     });
 })
+
+// Helper function to wait for other processes to finish.
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
 
 // Listening for new game request.
 newGameBtn.addEventListener('click', () =>{
