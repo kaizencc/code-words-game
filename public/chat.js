@@ -94,10 +94,10 @@ socket.on('online-users', (data) =>{
     data.forEach(user => {
         // Create card
         let card = document.createElement('h5'); 
-        card.className = "w-50 border border-dark rounded";
+        card.className = "w-100 border border-dark rounded text-center mx-auto";
         card.innerHTML = `${user}`;
         card.draggable = true;
-        // card.style = "cursor:pointer;"
+        card.style = "cursor: pointer;"
         users.appendChild(card);
     });
 })
