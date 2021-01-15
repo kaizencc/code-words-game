@@ -164,9 +164,16 @@ async function resetRoles(room){
 }
 
 // Switch between roles.
-async function switchRoles(username, room, bool){
+async function switchRoles(username, room, show){
     const query = { _id: room, "players.username": username};
-    const updateDocument = { $set: { "players.$.show": bool}};
+    const updateDocument = { $set: { "players.$.show": show}};
+    return updateMongoDocument(query, updateDocument);
+}
+
+// Change a players team.
+async function changeTeams(username, room, newTeam){
+    const query = { _id: room, "players.username": username};
+    const updateDocument = { $set: { "players.$.team": newTeam}};
     return updateMongoDocument(query, updateDocument);
 }
 
@@ -242,6 +249,7 @@ module.exports = {
     getAllWordsInRoom,
     resetRoles,
     switchRoles,
+    changeTeams,
     updateAllWordsInRoom,
     getWordInRoom,
     updateWordInRoom,

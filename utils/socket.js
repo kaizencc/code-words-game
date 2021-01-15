@@ -108,7 +108,12 @@ function socket(io) {
             });
         })
 
-        // Changing role to spymaster
+        // Change a users team.
+        socket.on('change-team', async (data) => {
+            await Mongo.changeTeams(data.username, data.roomname, data.team);
+        })
+
+        // Changing role to spymaster.
         socket.on('role-change-spy', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, true);
             io.to(data.roomname).emit('board-game', {
@@ -118,7 +123,7 @@ function socket(io) {
             });
         })
 
-        // Changing role to field operator
+        // Changing role to field operator.
         socket.on('role-change-field', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, false);
             io.to(data.roomname).emit('board-game', {
@@ -128,6 +133,7 @@ function socket(io) {
             });
         })
 
+        // Ending the game.
         socket.on('game-over', async (data) => {
             // Call board game first to update html.
             io.to(data.roomname).emit('board-game', {

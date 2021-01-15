@@ -75,6 +75,8 @@ socket.on('chat', (data) => {
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
     } else if (data.event === "new"){
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>created a ' + data.message + '</em></p>';
+    } else if (data.event === "switch-team"){
+        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to the ' + data.message + '</em></p>';
     } else if (data.event === "switch") {
         output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
     } else if (data.event === "chat" && data.message != ""){
