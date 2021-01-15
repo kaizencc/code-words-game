@@ -3,7 +3,7 @@ const message = document.getElementById('message');
 const send = document.getElementById('send');
 const feedback = document.getElementById('feedback');
 const roomMessage = document.getElementById('room-message');
-const users = document.querySelector('.users');
+const users = document.getElementById('users-red');
 
 //Socket server URL
 const socket = io.connect('http://localhost:3000');
@@ -90,8 +90,14 @@ socket.on('typing', (user) => {
 
 // Displaying online users.
 socket.on('online-users', (data) =>{
-    users.innerHTML = ''
+    users.innerHTML = ""
     data.forEach(user => {
-        users.innerHTML += `<p>${user}</p>`
+        // Create card
+        let card = document.createElement('h5'); 
+        card.className = "w-50 border border-dark rounded";
+        card.innerHTML = `${user}`;
+        card.draggable = true;
+        // card.style = "cursor:pointer;"
+        users.appendChild(card);
     });
 })

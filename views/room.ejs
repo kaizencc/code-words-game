@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1556638668/Sortable.js"></script>
 </head>
 <body>
     <!-- Modal -->
@@ -61,14 +62,20 @@
                             <h4 id="blue-team">8</h4>
                         </div>
                     </div>
-                    <div class="row mt-2">
+                    <div class="row h-50 my-2">
                         <div id="board" class="col-12 text-center">
                         </div>
                     </div>
-                    <div class="row bottom-aligned">
+                    <div class="row border border-dark rounded">
                         <div class="col-6">
-                            <p class="users-online">Users Online</p>
-                            <div class="users"></div>
+                                <div class="list-group card border border-dark rounded" id="sortable" data-sortable-id="0" aria-dropeffect="move">
+                                    <div class="row">
+                                        <div class="col-md-6" id="users-red">
+                                        </div>
+                                        <div class="col-md-6" id="users-blue">
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                         <div class="col-6 text-center">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group" aria-label="Basic radio toggle button group">
@@ -103,5 +110,6 @@
     <script src="/chat.js"></script>
     <script src="/board.js"></script>
     <script src="/timer.js"></script>
+    <script src="/teams.js"></script>
 </body>
 </html>

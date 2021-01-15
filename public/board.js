@@ -39,7 +39,7 @@ socket.on('board-game', (data) => {
 function createButton(word, role, gameover){
     var btn = document.createElement("button");
     btn.style.width = "18%";
-    btn.style.height= "25%";
+    btn.style.height= "18%";
     btn.id = word.text;
     btn.className = "m-1 p-auto btn";
     if (role || word.show){
