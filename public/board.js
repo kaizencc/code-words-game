@@ -21,17 +21,22 @@ socket.on('board-game', (data) => {
         blueTeam.innerHTML = String(8);
     }
 
+    var gameover = false;
+    if (data.gameover){
+        gameover = true;
+    }
+
     // Clear current board buttons, if any.
     board.innerHTML = "";
 
     // Create buttons.
     data.words.forEach(word => {
-        board.appendChild(createButton(word, role));
+        board.appendChild(createButton(word, role, gameover));
     })
 })
 
 // Helper function to create buttons.
-function createButton(word, role){
+function createButton(word, role, gameover){
     var btn = document.createElement("button");
     btn.style.width = "18%";
     btn.style.height= "25%";
@@ -42,7 +47,12 @@ function createButton(word, role){
         btn.disabled = true;
     } else {
         btn.classList.add("btn-secondary")
-        btn.disabled = false;
+        // Disable buttons if the game is over.
+        if (gameover){
+            btn.disabled = true;
+        } else {
+            btn.disabled = false;
+        }
     }
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
@@ -52,15 +62,16 @@ function createButton(word, role){
 // Sending a message in the chat when a user clicks a button.
 board.addEventListener('click', function(e){
     const text = e.target.id;
-    // Find word in database.
-    // Result is sent to socket.on('found-word')
-    socket.emit('find-word', {
+
+    // Update database to show item.
+    socket.emit('show-word', {
         roomname: roomname,
         word: text,
     })
 
-    // Update database to show item.
-    socket.emit('show-word', {
+    // Find word in database.
+    // Result is sent to socket.on('found-word')
+    socket.emit('find-word', {
         roomname: roomname,
         word: text,
     })
@@ -90,12 +101,24 @@ socket.on('found-word', (data) => {
         // Game is over
         socket.emit('game-over', {roomname: roomname});
     } else if (color === buttonColor.RED){
-        // Red team subtracts a point
         redScore = Number(redTeam.innerHTML);
+
+        // Game is over
+        if (redScore == 1){
+            socket.emit('game-over', {roomname: roomname});
+        }
+
+        // Red team subtracts a point
         redTeam.innerHTML = String(redScore-1);
     } else if (color === buttonColor.BLUE){
-        // Blue team subtracts a point
         blueScore = Number(blueTeam.innerHTML);
+
+        // Game is over
+        if (blueScore == 1){
+            socket.emit('game-over', {roomname: roomname});
+        }
+
+        // Blue team subtracts a point
         blueTeam.innerHTML = String(blueScore-1);
     }
 })
@@ -106,7 +129,6 @@ socket.on('game-over', () => {
     $("#myModal").modal("show").on('shown.bs.modal', function () {
         $(".modal").css('display', 'block');
     });
-    // Reset scores.
 })
 
 // Listening for new game request.

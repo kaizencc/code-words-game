@@ -120,7 +120,15 @@ function socket(io) {
             });
         })
 
-        socket.on('game-over', (data) => {
+        socket.on('game-over', async (data) => {
+            // Call board game first to update html.
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                scoreReset: false,
+                gameover: true,
+            });
+            // Upon closing the game over screen, reverts back to previous html.
             io.to(data.roomname).emit('game-over');
         })
     
