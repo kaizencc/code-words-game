@@ -62,6 +62,17 @@ function socket(io) {
                 });
             }
 
+            // If not a refresh, will send join message.
+            io.to(data.roomname).emit('check-refresh', {
+                username: data.username, 
+                roomname: data.roomname
+            });
+    
+            // Send online users array.
+            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)))
+        })
+
+        socket.on('join-message', async (data) => {
             // Emitting New Username to Clients.
             const messageObject = {
                 username: data.username, 
@@ -70,9 +81,6 @@ function socket(io) {
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
-    
-            // Send online users array.
-            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)))
         })
 
         // Creating a new game.
@@ -179,8 +187,9 @@ function socket(io) {
             // Check to make sure user has left the room and not refreshed.            
             if (username){
                 setTimeout(async function () {
-                    if ((await Mongo.getUsersInRoom(roomname)).map(x => x.username).includes(username) === false) {
-                        if ((await Mongo.getUsersInRoom(roomname)).length === 0){
+                    const currentUsers = await Mongo.getUsersInRoom(roomname);
+                    if (currentUsers.map(x => x.username).includes(username) === false) {
+                        if (currentUsers.length === 0){
                             console.log("deleting room");
                             Mongo.deleteRoom(roomname);
                         } else {

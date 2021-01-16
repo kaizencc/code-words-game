@@ -128,14 +128,18 @@ socket.on('online-users', (data) =>{
     });
 })
 
-// socket.on('check-refresh', (data) =>{
-//     if(data.username === username){
-//         if(document.cookie.indexOf('mycookie')==-1) {
-//             // cookie doesn't exist, create it now
-//             document.cookie = 'mycookie=1';
-//         } else {
-//             // not first visit, so refreshed
-//             socket.emit('refreshed', {})
-//         }
-//     }
-// })
+socket.on('check-refresh', (data) =>{
+    if(data.username === username){
+        if(sessionStorage.getItem('refresh')) {
+            // not first visit, so refreshed
+            console.log('refreshed');
+        } else {
+            sessionStorage.setItem('refresh', '1');
+            console.log('first time');
+            socket.emit('join-message', {
+                username: data.username, 
+                roomname: data.roomname
+            })
+        }
+    }
+})
