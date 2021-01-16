@@ -183,7 +183,12 @@ function socket(io) {
             var rooms = Object.keys(socket.rooms);
             var socketId = rooms[0];
             var roomname = rooms[1];
+            //const username = await Mongo.getPlayerBySocketId(roomname, socketId);
+
+            // Remove player from room.
             const username = await Mongo.removePlayerBySocketId(roomname, socketId);
+
+
             // Check to make sure user has left the room and not refreshed.            
             if (username){
                 setTimeout(async function () {
@@ -206,7 +211,7 @@ function socket(io) {
                             io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)))
                         }
                     }
-                  }, 3000);
+                }, 3000);
             }
             
         })

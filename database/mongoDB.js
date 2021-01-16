@@ -101,18 +101,23 @@ async function roomExists(room) {
     } else return false;
 }
 
-// Remove player from a room that already exists.
-async function removePlayerBySocketId(room, socketId){
-    // First, find username of player.
+// Get player by socketId.
+async function getPlayerBySocketId(room, socketId){
     const doc = await users.findOne({ _id: room});
     if(doc){
-        console.log(doc.players);
         const socketUser = doc.players.filter(function (player) {
             return player.socket === socketId;
         });
         const username = socketUser[0].username;
-        
+        return username;
+    }
+}
 
+// Remove player from a room that already exists.
+async function removePlayerBySocketId(room, socketId){
+    // First, find username of player.
+    const username = await getPlayerBySocketId(room, socketId);
+    if (username){
         // Remove user.
         const query = { _id: room};
         const updateDocument = { $pull: { "players": { "socket": socketId} }};
@@ -246,6 +251,7 @@ module.exports = {
     createRoom, 
     deleteRoom, 
     addPlayer,
+    getPlayerBySocketId,
     removePlayerBySocketId,
     roomExists,
     getUsersInRoom,
