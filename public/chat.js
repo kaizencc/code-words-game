@@ -38,7 +38,7 @@ send.addEventListener('click', () =>{
 
 // Allow the enter key to send a message.
 window.addEventListener('keypress', function(e){
-    if(e.key === "Enter"){
+    if(e.key === "Enter" && message.value !== ""){
         document.getElementById('send').click();
     }
 })
@@ -108,7 +108,7 @@ socket.on('online-users', (data) =>{
     data.forEach(user => {
         // Create card
         let card = document.createElement('h5'); 
-        card.className = "w-100 border rounded text-center mx-auto";
+        card.className = "w-100 border rounded text-center mx-auto grabbable";
         card.innerHTML = `${user.username}`;
         // Only can drag card that corresponds to the current user.
         if (user.username !== username){
@@ -127,3 +127,15 @@ socket.on('online-users', (data) =>{
         }
     });
 })
+
+// socket.on('check-refresh', (data) =>{
+//     if(data.username === username){
+//         if(document.cookie.indexOf('mycookie')==-1) {
+//             // cookie doesn't exist, create it now
+//             document.cookie = 'mycookie=1';
+//         } else {
+//             // not first visit, so refreshed
+//             socket.emit('refreshed', {})
+//         }
+//     }
+// })
