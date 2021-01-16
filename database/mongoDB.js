@@ -105,7 +105,7 @@ async function roomExists(room) {
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
     const doc = await users.findOne({ _id: room});
-    if(doc.players){
+    if(doc){
         console.log(doc.players);
         const socketUser = doc.players.filter(function (player) {
             return player.socket === socketId;
