@@ -103,6 +103,7 @@ socket.on('online-users', (data) =>{
         card.className = "w-100 border rounded text-center mx-auto";
         card.innerHTML = `${user.username}`;
         card.draggable = true;
+        card.id = user.username;
         card.style = "cursor: pointer;"
         if (user.team === "red"){
             card.classList.add("border-danger");

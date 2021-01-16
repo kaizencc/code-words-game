@@ -39,7 +39,7 @@ app.use('/room', async function (req, res, next) {
         alert = alertMessage.JOIN_DOES_NOT_EXIST;
         res.redirect('/');
         return;
-    } else if (action == "join" && (await Mongo.getUsernamesInRoom(roomname)).includes(username)){
+    } else if (action == "join" && (await Mongo.getUsersInRoom(roomname)).map(x => x.username).includes(username)){
         alert = alertMessage.JOIN_USERNAME_EXISTS;
         res.redirect('/');
         return;

@@ -109,8 +109,16 @@ function socket(io) {
         })
 
         // Change a users team.
-        socket.on('change-team', async (data) => {
+        socket.on('change-teams', async (data) => {
             await Mongo.changeTeams(data.username, data.roomname, data.team);
+        })
+
+        socket.on('move-user', (data) => {
+            io.to(data.roomname).emit('move-user', {
+                elementId: data.elementId,
+                username: data.username,
+                team: data.team,
+            })
         })
 
         // Changing role to spymaster.

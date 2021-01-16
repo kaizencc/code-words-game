@@ -1,3 +1,6 @@
+//var redTeam = document.getElementById('users-red');
+//var blueTeam = document.getElementById('users-blue');
+
 function sendTeamMessage(team){
     socket.emit('chat', {
         username: username,
@@ -15,10 +18,36 @@ function updateTeamInDatabase(team){
     });
 }
 
+// Displaying if a user is typing.
+socket.on('move-user', (data) => {
+    console.log('haaaa');
+    console.log(data.username, username, data.team);
+    if (data.username === username){
+        console.log('already done, username')
+    } else {
+        item = document.getElementById(data.elementId);
+        if (data.team === "red"){
+            item.classList.remove("border-primary");
+            item.classList.remove("text-primary");
+            item.classList.add("border-danger");
+            item.classList.add("text-danger");
+            blueUsers.removeChild(item);
+            redUsers.appendChild(item);
+
+        } else {
+            item.classList.remove("border-danger");
+            item.classList.remove("text-danger");
+            item.classList.add("border-primary");
+            item.classList.add("text-primary");
+            redUsers.removeChild(item);
+            blueUsers.appendChild(item);
+        }
+    }
+
+})
+
 $(document).ready(function() {
-    var redTeam = document.getElementById('users-red');
-    var blueTeam = document.getElementById('users-blue');
-    new Sortable(redTeam, {
+    new Sortable(redUsers, {
         group: {
             name: 'shared',
             pull: true,
@@ -33,15 +62,22 @@ $(document).ready(function() {
             item.classList.remove("text-primary");
             item.classList.add("border-danger");
             item.classList.add("text-danger");
+            console.log(item.id);
+            socket.emit('move-user',{
+                username: username,
+                roomname: roomname,
+                elementId: item.id,
+                team: "red"
+            })
 
             // Broadcast to chat
-            sendTeamMessage("red")
+            sendTeamMessage("red");
 
             // Update database
-            updateTeamInDatabase("red")
+            updateTeamInDatabase("red");
         }
     });
-    new Sortable(blueTeam, {
+    new Sortable(blueUsers, {
         group: {
             name: 'shared',
             pull: true,
@@ -56,12 +92,19 @@ $(document).ready(function() {
             item.classList.remove("text-danger");
             item.classList.add("border-primary");
             item.classList.add("text-primary");
+            console.log(item.id);
+            socket.emit('move-user',{
+                username: username,
+                roomname: roomname,
+                elementId: item.id,
+                team: "blue"
+            })
 
             // Broadcast to chat
-            sendTeamMessage("blue")
+            sendTeamMessage("blue");
 
             // Update database
-            updateTeamInDatabase("blue")
+            updateTeamInDatabase("blue");
 
         }
     });
