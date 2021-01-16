@@ -105,19 +105,22 @@ async function roomExists(room) {
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
     const doc = await users.findOne({ _id: room});
-    console.log(doc.players);
-    const socketUser = doc.players.filter(function (player) {
-        return player.socket === socketId;
-    });
-    const username = socketUser[0].username;
+    if(doc.players){
+        console.log(doc.players);
+        const socketUser = doc.players.filter(function (player) {
+            return player.socket === socketId;
+        });
+        const username = socketUser[0].username;
+        
 
-    // Remove user.
-    const query = { _id: room};
-    const updateDocument = { $pull: { "players": { "socket": socketId} }};
-    await updateMongoDocument(query, updateDocument);
-    
-    console.log(`${username} removed from ${room}`);
-    return username;
+        // Remove user.
+        const query = { _id: room};
+        const updateDocument = { $pull: { "players": { "socket": socketId} }};
+        await updateMongoDocument(query, updateDocument);
+        
+        console.log(`${username} removed from ${room}`);
+        return username;
+    }
 }
 
 // Returns an array of all the usernames in a room.
@@ -174,6 +177,7 @@ async function switchRoles(username, room, show){
 async function changeTeams(username, room, newTeam){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.team": newTeam}};
+    console.log("change teams", room, username, newTeam);
     return updateMongoDocument(query, updateDocument);
 }
 

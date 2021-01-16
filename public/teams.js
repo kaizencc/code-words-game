@@ -1,6 +1,3 @@
-//var redTeam = document.getElementById('users-red');
-//var blueTeam = document.getElementById('users-blue');
-
 function sendTeamMessage(team){
     socket.emit('chat', {
         username: username,
@@ -55,6 +52,8 @@ $(document).ready(function() {
         },
         cursor: 'move',
         animation: 150,
+        filter: '.filtered',
+        sort: false,
         onAdd: function(event){
             var item = event.item;
             // Change button color
@@ -85,6 +84,8 @@ $(document).ready(function() {
         },
         cursor: 'move',
         animation: 150,
+        sort: false,
+        filter: '.filtered',
         onAdd: function(event){
             var item = event.item;
             // Change button color

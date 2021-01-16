@@ -67,21 +67,29 @@ socket.on('clear-messages', () => {
 
 // Display button clicks, switched users, and messages.
 socket.on('chat', (data) => {
-    if (data.event === "button"){
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';
-    } else if (data.event === "disconnected"){
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
-    } else if (data.event === "joined"){
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
-    } else if (data.event === "new"){
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>created a ' + data.message + '</em></p>';
-    } else if (data.event === "switch-team"){
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to the ' + data.message + '</em></p>';
-    } else if (data.event === "switch") {
-        output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
-    } else if (data.event === "chat" && data.message != ""){
-        output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
-        feedback.innerHTML = '';
+    switch(data.event){
+        case "button":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';
+            break;
+        case "disconnected":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
+            break;
+        case "joined":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
+            break;
+        case "new":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>created a ' + data.message + '</em></p>';
+            break;
+        case "switch-team":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to the ' + data.message + '</em></p>';
+            break;
+        case "switch":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
+            break;
+        case "chat":
+            output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
+            feedback.innerHTML = '';
+            break;
     }
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
@@ -102,7 +110,10 @@ socket.on('online-users', (data) =>{
         let card = document.createElement('h5'); 
         card.className = "w-100 border rounded text-center mx-auto";
         card.innerHTML = `${user.username}`;
-        card.draggable = true;
+        // Only can drag card that corresponds to the current user.
+        if (user.username !== username){
+            card.classList.add("filtered");
+        }
         card.id = user.username;
         card.style = "cursor: pointer;"
         if (user.team === "red"){
