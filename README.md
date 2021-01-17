@@ -8,7 +8,7 @@ I started my project by following a [tutorial](https://medium.com/better-program
 
 ## Technology Stack
 
-To design the frontend, I used **Bootstrap** – I was semi-familiar with **Bootstrap** and **React/ElasticUI** but since I knew I needed a multiple page website I went with **Bootstrap**. I also used the **EJS** template to build the HTML.
+To design the frontend, I used **Bootstrap** – I was semi-familiar with **Bootstrap** and **React/ElasticUI** but since I knew I needed a multiple page website I went with **Bootstrap**. I also used the **EJS** template to build the HTML and **Sortable.js** to allow users to drag-and-drop their icons to different teams.
 
 On the server side, I used **Node.js** with the **Express.js** web framework. **Express.js** helped me manage HTTP requests in the **Node.js** server. In addition, the node modules **body-parser** was used fo rhte middleware and **Socket.io** to communicate between the server and the (potentially) many browser rooms.
 
@@ -19,6 +19,7 @@ Finally, the database was handled by **MongoDB**. After lots of research, I turn
   - Migrating from my initial psuedo-database of Javascript object storages to **MongoDB** was not trivial and took two days. I had to learn what `async` and `await` were and how to use it to my advantage.
   - If I were to start from scratch, I certainly would have used **Typescript** over **Javascript**. Often I wanted to keep my code more legible by declaring the types of my parameters but could not do so. By the time I realized this, I was in too deep.
   - I also could have spent more time researching a well-documented stack. I started with a vanilla tutorial and only considered a database from there. I should have started with full knowledge of the stack I was going to try, like the **MERN** stack. Funnily enough, I ended up quite close to that stack anyway.
+  - I researched **Colyseus.io** after having completed a signficant portion of my project, so I didn't go in that direction. But the next time I use Node.js to build a game I would certainly start with that open-source library, which is like **socket.io** on steroids and made for online multiplayer games.
 
 ## Using this Repository
 
