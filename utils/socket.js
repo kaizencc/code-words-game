@@ -147,6 +147,7 @@ function socket(io) {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 scoreReset: false,
+                myturn: data.myturn,
             });
         })
 

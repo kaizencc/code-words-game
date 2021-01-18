@@ -21,22 +21,22 @@ socket.on('board-game', (data) => {
         blueTeam.innerHTML = String(8);
     }
 
-    var gameover = false;
-    if (data.gameover){
-        gameover = true;
-    }
-
     // Clear current board buttons, if any.
     board.innerHTML = "";
 
+    var myturn = false;
+    if (data.myturn && data.myturn === username){
+        myturn = true;
+    }
+
     // Create buttons.
     data.words.forEach(word => {
-        board.appendChild(createButton(word, role, gameover));
+        board.appendChild(createButton(word, role, myturn));
     })
 })
 
 // Helper function to create buttons.
-function createButton(word, role, gameover){
+function createButton(word, role, myturn){
     var btn = document.createElement("button");
     btn.style.width = "18%";
     btn.style.height= "18%";
@@ -45,14 +45,12 @@ function createButton(word, role, gameover){
     if (role || word.show){
         btn.classList.add(word.color);
         btn.disabled = true;
+    } else if (myturn){
+        btn.classList.add(buttonColor.GRAY)
+        btn.disabled = false;
     } else {
         btn.classList.add(buttonColor.GRAY)
-        // Disable buttons if the game is over.
-        if (gameover){
-            btn.disabled = true;
-        } else {
-            btn.disabled = false;
-        }
+        btn.disabled = true;
     }
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
@@ -62,27 +60,29 @@ function createButton(word, role, gameover){
 // Sending a message in the chat when a user clicks a button.
 board.addEventListener('click', function(e){
     const text = e.target.id;
+    if (text !== "board"){
+        // Update database to show item.
+        socket.emit('show-word', {
+            roomname: roomname,
+            word: text,
+            myturn: username,
+        })
 
-    // Update database to show item.
-    socket.emit('show-word', {
-        roomname: roomname,
-        word: text,
-    })
+        // Find word in database.
+        // Result is sent to socket.on('found-word')
+        socket.emit('find-word', {
+            roomname: roomname,
+            word: text,
+        })
 
-    // Find word in database.
-    // Result is sent to socket.on('found-word')
-    socket.emit('find-word', {
-        roomname: roomname,
-        word: text,
-    })
-
-    // Message chat with current move.
-    socket.emit('chat', {
-        username: username,
-        roomname: roomname,
-        message: text,
-        event: "button",
-    });
+        // Message chat with current move.
+        socket.emit('chat', {
+            username: username,
+            roomname: roomname,
+            message: text,
+            event: "button",
+        });
+    }
 })
 
 const buttonColor = {

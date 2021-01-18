@@ -20,25 +20,27 @@ const number = document.getElementById('number');
 
 sendClue.addEventListener('click', ()=>{
     // Make sure number is valid.
-    checkInp();
-    socket.emit('play-game-operator', {
-        roomname: roomname,
-        clue: clue.value,
-        number: number.value,
-    });
-
-    // Empty values.
-    number.value = "";
-    clue.value = "";
+    if (checkInp()){
+        socket.emit('play-game-operator', {
+            roomname: roomname,
+            clue: clue.value,
+            number: number.value,
+        });
+    
+        // Empty values.
+        number.value = "";
+        clue.value = "";
+    }
 })
 
 function checkInp() {
     var x= number.value;
     var regex=/^[0-9]+$/;
     if (!x.match(regex)){
-        alert("Must input numbers");
+        alert("Must input number in second box");
         return false;
     }
+    return true;
 }
 
 // Clue Display Elements.
@@ -46,6 +48,7 @@ const receivedClue = document.getElementById('received-clue');
 const endTurn = document.getElementById('end-turn');
 
 endTurn.addEventListener('click', ()=>{
+    turnOffButtons();
     socket.emit('play-game-spy', {roomname: roomname});
 })
 
@@ -80,6 +83,24 @@ function showIdleDisplay(){
     displayIdle.style.display = null;
 }
 
+function turnOffButtons(){
+    buttons = board.children;
+    console.log(buttons.length);
+    for (var i=0; i< buttons.length; i++){
+        buttons[i].disabled = true;
+    }
+}
+
+function turnOnButtons(){
+    buttons = board.children;
+    console.log(buttons.length);
+    for (var i=0; i< buttons.length; i++){
+        if(buttons[i].classList.contains(buttonColor.GRAY)){
+            buttons[i].disabled = false;
+        }
+    }
+}
+
 socket.on('reset-display', ()=>{
     receivedClue.innerHTML = "";
     idleClue.innerHTML = "";
@@ -100,6 +121,7 @@ socket.on('show-current-operator', (data)=>{
     receivedClue.innerHTML = data.clue + ", " + data.number;
     idleClue.innerHTML = data.clue + ", " + data.number;
     if (data.username === username){
+        turnOnButtons();
         showClueDisplay();
     } else {
         showIdleDisplay();
