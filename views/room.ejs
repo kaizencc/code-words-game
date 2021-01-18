@@ -71,24 +71,24 @@
                     </div>
                     <div class= "row mb-2 justify-content-center">
                         <!-- Initial: Start Game -->
-                        <div class="form-row justify-content-center" id="display-start">
+                        <div class="form-row justify-content-center" id="display-start" style="display:block;">
                             <button id="start-game" type="submit" class="btn btn-outline-primary">Start Game</button>
-                        </div>                                                                    
-                        <!-- Send Clue Form -->                                            
-                        <div class="form-row justify-content-center" id="display-form">
+                        </div>
+                        <!-- Send Clue Form -->
+                        <div class="form-row justify-content-center" id="display-form" style="display:none;">
                             <div class="col-md-6">
                                 <input id="clue" type="text" class="form-control" placeholder="Clue">
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 text-center border">
                                 <input id="number" type="text" class="form-control" placeholder="#">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 text-center border">
                                 <button id="sendin" type="submit" class="btn btn-outline-primary">Send Clue</button>
                             </div>
                         </div>
-                        <!-- Current Clue -->                    
-                        <div class="form-row justify-content-center" id="display-clue">
-                            <div class="col-md-6">
+                        <!-- Current Clue -->  
+                        <div class="form-row w-100 justify-content-center" id="display-clue" style="display:none;">
+                            <div class="col-md-6 text-center">
                                 <h4 id="received-clue"></h4>
                             </div>
                             <div class="col-md-4">
@@ -96,8 +96,8 @@
                             </div>
                         </div>
                         <!-- Idle -->
-                        <div class="form-row justify-content-center" id="display-idle">
-                            <div class="col-md-6">
+                        <div class="form-row justify-content-center" id="display-idle" style="display:none;">
+                            <div class="col">
                                 <h4 id="idle-clue"></h4>
                             </div>
                         </div>

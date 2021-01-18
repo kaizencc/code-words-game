@@ -195,8 +195,18 @@ async function getUsernameOfBlueOperator(room){
     return null;
 }
 
-async function changeTurn(room, username){
-    
+async function changeTurn(room){
+    const turn = await getIsRedTurn(room);
+    const query = { _id: room };
+    const updateDocument = { $set: { "isRedTurn": turn===false }};
+    return updateMongoDocument(query, updateDocument);
+}
+
+async function getIsRedTurn(room){
+    const document = await users.findOne({ _id: room});
+    if(document){
+        return document.isRedTurn;
+    }
 }
 
 // Returns word list
@@ -304,6 +314,8 @@ module.exports = {
     getUsernameOfRedOperator,
     getUsernameOfBlueSpymaster,
     getUsernameOfBlueOperator,
+    changeTurn,
+    getIsRedTurn,
     getAllWordsInRoom,
     resetRoles,
     switchRoles,

@@ -33,7 +33,7 @@ function socket(io) {
                     players: [user], // Array of players connected to the room.
                     words: await newGame(), // Initialize the board for the room.
                     messages: [], // Storage of chat messages for the room.
-                    currentTurn: "red-spy",
+                    isRedTurn: false,
                 })
 
             }
@@ -100,6 +100,33 @@ function socket(io) {
                 scoreReset: true,
             });
             io.to(data.roomname).emit('reset-display', {});
+        })
+
+        socket.on("play-game-spy", async (data) => {
+            await Mongo.changeTurn(data.roomname);
+            const redTurn = await Mongo.getIsRedTurn(data.roomname);
+            var spy;
+            if (redTurn){
+                spy = await Mongo.getUsernameOfRedSpymaster(data.roomname);
+            } else {
+                spy = await Mongo.getUsernameOfBlueSpymaster(data.roomname);
+            }
+            io.to(data.roomname).emit('show-current-spy', {username: spy});
+        })
+
+        socket.on("play-game-operator", async (data) => {
+            const redTurn = await Mongo.getIsRedTurn(data.roomname);
+            var op;
+            if (redTurn){
+                op = await Mongo.getUsernameOfRedOperator(data.roomname);
+            } else {
+                op = await Mongo.getUsernameOfBlueOperator(data.roomname);
+            }
+            io.to(data.roomname).emit('show-current-operator', {
+                username: op,
+                clue: data.clue,
+                number: data.number,
+            });
         })
 
         socket.on('help', async (data) => {
