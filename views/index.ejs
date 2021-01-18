@@ -11,6 +11,7 @@
 </head>
 <body class="text-center">
     <div class="container">
+        <!-- Hidden error message alert -->                    
         <div class="row justify-content-md-center">
             <div id="alert" name="<%= alert %>" class="alert alert-primary" role="alert">
                 <%= alert %>
@@ -18,9 +19,11 @@
         </div>  
         <div class="row justify-content-md-center">
             <div class="col-sm"></div>
+            <!-- Title -->                    
             <div class="col-8">
                 <h1>Welcome to Code Words Game</h1>
             </div>
+            <!-- Leaderboard link -->                    
             <div class="col-sm">
                 <form action="/leaderboard" method="GET">
                     <button name="leader" class="w-100 btn btn-lg btn-outline-dark" type="submit">Leaderboard</button>
@@ -30,6 +33,7 @@
         <div class="row">
             <div class="col-sm">
                 <div class="form-signin">
+                    <!-- Join Game form-->                    
                     <form action="/room?action=join" method="POST">
                         <span class="text-danger" style="font-size: 3em;">
                             <i class="fas fa-trophy"></i>
@@ -46,6 +50,7 @@
             </div>
             <div class="col-sm">
                 <div class="form-signin">
+                    <!-- Create Game form-->                    
                     <form action="/room?action=create" method="POST">
                         <span class="text-primary" style="font-size: 3em;">
                             <i class="fas fa-trophy"></i>

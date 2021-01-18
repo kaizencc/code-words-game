@@ -188,7 +188,6 @@ function socket(io) {
             // Remove player from room.
             const username = await Mongo.removePlayerBySocketId(roomname, socketId);
 
-
             // Check to make sure user has left the room and not refreshed.            
             if (username){
                 setTimeout(async function () {
