@@ -33,6 +33,7 @@ function socket(io) {
                     players: [user], // Array of players connected to the room.
                     words: await newGame(), // Initialize the board for the room.
                     messages: [], // Storage of chat messages for the room.
+                    currentTurn: "red-spy",
                 })
 
             }
@@ -98,6 +99,12 @@ function socket(io) {
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 scoreReset: true,
             });
+            io.to(data.roomname).emit('reset-display', {});
+        })
+
+        socket.on('help', async (data) => {
+            const username = await Mongo.getUsernameOfRedSpymaster(data.roomname);
+            console.log(username);
         })
 
         // Finding a word in the room.

@@ -69,19 +69,38 @@
                         <div id="board" class="col-12 text-center">
                         </div>
                     </div>
-                    <!-- Send Clue Form -->                    
                     <div class= "row mb-2 justify-content-center">
-                        <div class="form-row justify-content-center">
+                        <!-- Initial: Start Game -->
+                        <div class="form-row justify-content-center" id="display-start">
+                            <button id="start-game" type="submit" class="btn btn-outline-primary">Start Game</button>
+                        </div>                                                                    
+                        <!-- Send Clue Form -->                                            
+                        <div class="form-row justify-content-center" id="display-form">
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Clue">
+                                <input id="clue" type="text" class="form-control" placeholder="Clue">
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control" placeholder="#">
+                                <input id="number" type="text" class="form-control" placeholder="#">
                             </div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-outline-primary">Send Clue</button>
+                                <button id="sendin" type="submit" class="btn btn-outline-primary">Send Clue</button>
                             </div>
+                        </div>
+                        <!-- Current Clue -->                    
+                        <div class="form-row justify-content-center" id="display-clue">
+                            <div class="col-md-6">
+                                <h4 id="received-clue"></h4>
                             </div>
+                            <div class="col-md-4">
+                                <button id="end-turn" type="submit" class="btn btn-outline-primary">End Turn</button>
+                            </div>
+                        </div>
+                        <!-- Idle -->
+                        <div class="form-row justify-content-center" id="display-idle">
+                            <div class="col-md-6">
+                                <h4 id="idle-clue"></h4>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -142,5 +161,6 @@
     <script src="/board.js"></script>
     <script src="/timer.js"></script>
     <script src="/teams.js"></script>
+    <script src="/move.js"></script>
 </body>
 </html>

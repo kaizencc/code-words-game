@@ -155,6 +155,50 @@ async function getRolesInRoom(room){
     return roles;
 }
 
+async function getUsernameOfRedSpymaster(room){
+    const players = await getPlayersInRoom(room);
+    const p = players.filter(player => player.show === true && player.team === "red");
+    if(p.length > 0){
+        return p[0].username;
+    } 
+    console.log('DNE');
+    return null;
+}
+
+async function getUsernameOfRedOperator(room){
+    const players = await getPlayersInRoom(room);
+    const p = players.filter(player => player.show === false && player.team === "red");
+    if(p.length > 0){
+        return p[0].username;
+    } 
+    console.log('DNE');
+    return null;
+}
+
+async function getUsernameOfBlueSpymaster(room){
+    const players = await getPlayersInRoom(room);
+    const p = players.filter(player => player.show === true && player.team === "blue");
+    if(p.length > 0){
+        return p[0].username;
+    } 
+    console.log('DNE');
+    return null;
+}
+
+async function getUsernameOfBlueOperator(room){
+    const players = await getPlayersInRoom(room);
+    const p = players.filter(player => player.show === false && player.team === "blue");
+    if(p.length > 0){
+        return p[0].username;
+    } 
+    console.log('DNE');
+    return null;
+}
+
+async function changeTurn(room, username){
+    
+}
+
 // Returns word list
 async function getAllWordsInRoom(room){
     const document = await users.findOne({ _id: room});
@@ -256,6 +300,10 @@ module.exports = {
     roomExists,
     getUsersInRoom,
     getRolesInRoom,
+    getUsernameOfRedSpymaster,
+    getUsernameOfRedOperator,
+    getUsernameOfBlueSpymaster,
+    getUsernameOfBlueOperator,
     getAllWordsInRoom,
     resetRoles,
     switchRoles,

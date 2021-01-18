@@ -1,5 +1,6 @@
 displayAlert();
 
+// Determine whether to display alert with error message.
 function displayAlert() {
     var alert = document.getElementById("alert");
     const name = alert.getAttribute("name")
