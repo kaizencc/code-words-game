@@ -26,6 +26,10 @@ sendClue.addEventListener('click', ()=>{
         clue: clue.value,
         number: number.value,
     });
+
+    // Empty values.
+    number.value = "";
+    clue.value = "";
 })
 
 function checkInp() {
