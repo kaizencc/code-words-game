@@ -129,9 +129,37 @@ function socket(io) {
             });
         })
 
-        socket.on('help', async (data) => {
-            const username = await Mongo.getUsernameOfRedSpymaster(data.roomname);
-            console.log(username);
+        socket.on('ensure-four-players', async (data) => {
+            const users = await Mongo.getUsersInRoom(data.roomname);
+            console.log(users.length);
+            if (users.length === 4){
+                io.to(data.roomname).emit('ensure-four-players', {
+                    good: true,
+                    username: data.username,
+                });
+            } else {
+                io.to(data.roomname).emit('ensure-four-players', {
+                    good: false,
+                    username: data.username,
+                });
+            }
+        })
+
+        socket.on('ensure-all-roles', async (data) => {
+            if ((await Mongo.getUsernameOfRedSpymaster(data.roomname)) &&
+                (await Mongo.getUsernameOfBlueSpymaster(data.roomname)) &&
+                (await Mongo.getUsernameOfRedOperator(data.roomname)) &&
+                (await Mongo.getUsernameOfBlueOperator(data.roomname))){
+                    io.to(data.roomname).emit('ensure-all-roles', {
+                        good: true,
+                        username: data.username,
+                    })
+            } else {
+                io.to(data.roomname).emit('ensure-all-roles', {
+                    good: false,
+                    username: data.username,
+                })
+            }
         })
 
         // Finding a word in the room.

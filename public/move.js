@@ -9,8 +9,44 @@ const startgame = document.getElementById('start-game');
 
 startgame.addEventListener('click', ()=>{
     console.log('game started');
-    // Any authentication checks needed here
-    socket.emit('play-game-spy', {roomname: roomname});
+    // Authenticate current game conditions.
+    checkConditions();
+})
+
+function checkConditions(){
+    console.log('checking conditions');
+    socket.emit('ensure-four-players', {
+        roomname: roomname, 
+        username: username,
+    });
+}
+
+socket.on('ensure-four-players', (data)=>{
+    if (data.username === username){
+        console.log('ensure 4 players');
+        console.log(data.good);
+        if (data.good){
+            socket.emit('ensure-all-roles', {
+                roomname: roomname,
+                username: username,
+            });
+        } else {
+            alert("You do not have 4 players in the room yet.");
+        }
+    }
+})
+
+socket.on('ensure-all-roles', (data) => {
+    if (data.username === username){
+        console.log('ensure all roles');
+        console.log(data.good);
+        if (data.good){
+            // TODO: Lock roles and teams.
+            socket.emit('play-game-spy', {roomname: roomname});
+        } else {
+            alert("All 4 roles are not occupied yet.");
+        }
+    }
 })
 
 // Form Display Elements.
@@ -20,7 +56,7 @@ const number = document.getElementById('number');
 
 sendClue.addEventListener('click', ()=>{
     // Make sure number is valid.
-    if (checkInp()){
+    if (checkNumber()){
         socket.emit('play-game-operator', {
             roomname: roomname,
             clue: clue.value,
@@ -33,7 +69,7 @@ sendClue.addEventListener('click', ()=>{
     }
 })
 
-function checkInp() {
+function checkNumber() {
     var x= number.value;
     var regex=/^[0-9]+$/;
     if (!x.match(regex)){
