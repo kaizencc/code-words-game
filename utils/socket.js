@@ -102,6 +102,11 @@ function socket(io) {
             io.to(data.roomname).emit('reset-display', {});
         })
 
+        // Lock all roles and teams.
+        socket.on('lock-variables', (data) => {
+            io.to(data.roomname).emit('lock-variables', {});
+        })
+
         socket.on("play-game-spy", async (data) => {
             await Mongo.changeTurn(data.roomname);
             const redTurn = await Mongo.getIsRedTurn(data.roomname);

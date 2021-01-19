@@ -11,9 +11,12 @@ const blueTeam = document.getElementById('blue-team');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
-    // Clear turn broadcast.
+    // Build board triggered by new game button.
     if (data.new){
         turnBroadcast.style.display = "none";
+        unlockTeams();
+        redTeam.innerHTML = String(9);
+        blueTeam.innerHTML = String(8);
     }
 
     // Update role buttons.
@@ -22,12 +25,6 @@ socket.on('board-game', (data) => {
         changeToSpyMaster();
     } else {
         changeToFieldOperator();
-    }
-
-    // Reset score, if necessary.
-    if (data.new){
-        redTeam.innerHTML = String(9);
-        blueTeam.innerHTML = String(8);
     }
 
     // Clear current board buttons, if any.
@@ -43,6 +40,13 @@ socket.on('board-game', (data) => {
         board.appendChild(createButton(word, role, myturn));
     })
 })
+
+function unlockTeams(){
+    const userCard = document.getElementById(username);
+    if(userCard){
+        userCard.classList.remove("filtered")
+    };
+}
 
 // Helper function to create buttons.
 function createButton(word, role, myturn){

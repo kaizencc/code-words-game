@@ -50,13 +50,29 @@ socket.on('ensure-all-roles', (data) => {
         console.log('ensure all roles');
         console.log(data.good);
         if (data.good){
-            // TODO: Lock roles and teams.
+            // Lock role changes and team changes.
+            socket.emit('lock-variables', {roomname: roomname});
+            // Begin game.
             socket.emit('play-game-spy', {roomname: roomname});
         } else {
             alert("All 4 roles are not occupied yet.");
         }
     }
 })
+
+socket.on('lock-variables', (data) => {
+    lockRoles();
+    lockTeams();
+})
+
+function lockTeams(){
+    const userCard = document.getElementById(username);
+    userCard.classList.add("filtered");
+}
+
+function lockRoles(){
+    
+}
 
 /************************************************************************************
  *                              Clue Form Display Elements
