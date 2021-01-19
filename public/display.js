@@ -10,10 +10,10 @@ const displayIdle = document.getElementById('display-idle');
  *                              Start Display Elements
  ***********************************************************************************/
 
- const startgame = document.getElementById('start-game');
+const startGameBtn = document.getElementById('start-game');
 
 // On click, start 3-step cascade to validate conditions before beginning game.
-startgame.addEventListener('click', ()=>{
+startGameBtn.addEventListener('click', ()=>{
     console.log('game started');
     // Authenticate current game conditions.
     checkConditions();
@@ -62,11 +62,11 @@ socket.on('ensure-all-roles', (data) => {
  *                              Clue Form Display Elements
  ***********************************************************************************/
 
-const sendClue = document.getElementById('sendin');
+const sendClueBtn = document.getElementById('sendin');
 const clue = document.getElementById('clue');
 const number = document.getElementById('number');
 
-sendClue.addEventListener('click', ()=>{
+sendClueBtn.addEventListener('click', () => {
     // Make sure number is valid.
     if (checkNumber()){
         socket.emit('play-game-operator', {
@@ -96,12 +96,24 @@ function checkNumber() {
  ***********************************************************************************/
 
 const receivedClue = document.getElementById('received-clue');
-const endTurn = document.getElementById('end-turn');
+const endTurnBtn = document.getElementById('end-turn');
 
-endTurn.addEventListener('click', ()=>{
+// If user clicks end turn.
+endTurnBtn.addEventListener('click', () => {
+    turnFinished();
+})
+
+// Called if user clicks a wrong color button.
+socket.on('turn-over', (data) => {
+    if (data.username === username){
+        turnFinished();
+    }
+})
+
+function turnFinished(){
     turnOffButtons();
     socket.emit('play-game-spy', {roomname: roomname});
-})
+}
 
 /************************************************************************************
  *                              Idle Display Elements

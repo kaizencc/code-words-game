@@ -8,8 +8,10 @@ const blueTeam = document.getElementById('blue-team');
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
     // Clear turn broadcast.
-    turnBroadcast.style.display = "none";
-
+    if (data.new){
+        turnBroadcast.style.display = "none";
+    }
+    
     // Update role buttons.
     role = data.roles[username]
     if (role){
@@ -19,7 +21,7 @@ socket.on('board-game', (data) => {
     }
 
     // Reset score, if necessary.
-    if (data.scoreReset){
+    if (data.new){
         redTeam.innerHTML = String(9);
         blueTeam.innerHTML = String(8);
     }
@@ -75,6 +77,7 @@ board.addEventListener('click', function(e){
         // Result is sent to socket.on('found-word')
         socket.emit('find-word', {
             roomname: roomname,
+            username: username,
             word: text,
         })
 
@@ -97,14 +100,23 @@ const buttonColor = {
 }
 
 socket.on('found-word', (data) => {
+    const teamColor = data.color;
     // Change score if necessary.
-    const color = data.data.color;
+    const color = data.wordButton.color;
     console.log(color);
     if (color === buttonColor.BLACK){
         // Game is over
         socket.emit('game-over', {roomname: roomname});
     } else if (color === buttonColor.RED){
         redScore = Number(redTeam.innerHTML);
+        
+        // If color does not match team color, turn is over
+        if (teamColor !== "red"){
+            socket.emit('turn-over', {
+                roomname: roomname,
+                username, username,
+            });
+        }
 
         // Game is over
         if (redScore == 1){
@@ -116,6 +128,14 @@ socket.on('found-word', (data) => {
     } else if (color === buttonColor.BLUE){
         blueScore = Number(blueTeam.innerHTML);
 
+        // If color does not match team color, turn is over
+        if (teamColor !== "blue"){
+            socket.emit('turn-over', {
+                roomname: roomname,
+                username, username,
+            });
+        }
+
         // Game is over
         if (blueScore == 1){
             socket.emit('game-over', {roomname: roomname});
@@ -123,6 +143,12 @@ socket.on('found-word', (data) => {
 
         // Blue team subtracts a point
         blueTeam.innerHTML = String(blueScore-1);
+    } else {
+        // Yellow button indicates turn is over.
+        socket.emit('turn-over', {
+            roomname: roomname,
+            username, username,
+        });
     }
 })
 
@@ -147,7 +173,10 @@ function sleep(ms) {
 
 // Listening for new game request.
 newGameBtn.addEventListener('click', () =>{
-    socket.emit('new-game',{username: username, roomname: roomname});
+    socket.emit('new-game',{
+        username: username, 
+        roomname: roomname,
+    });
 })
 
 // Helper functions to change HTML buttons.

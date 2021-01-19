@@ -199,7 +199,8 @@ async function changeTurn(room){
     const turn = await getIsRedTurn(room);
     const query = { _id: room };
     const updateDocument = { $set: { "isRedTurn": turn===false }};
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
 async function getIsRedTurn(room){
@@ -222,29 +223,44 @@ async function getAllWordsInRoom(room){
 async function resetRoles(room){
     const query = { _id: room };
     const updateDocument = { $set: { "players.$[].show": false }};
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
 // Switch between roles.
 async function switchRoles(username, room, show){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.show": show}};
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
-// Change a players team.
+// Change a player's team.
 async function changeTeams(username, room, newTeam){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.team": newTeam}};
     console.log("change teams", room, username, newTeam);
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
+}
+
+// Get a player's team.
+async function getTeam(username, room){
+    const players = await getPlayersInRoom(room);
+    const p = players.filter(player => player.username === username);
+    if(p.length > 0){
+        return p[0].team;
+    } 
+    console.log('DNE');
+    return null;
 }
 
 // Update words with new word list.
 async function updateAllWordsInRoom(room, newWords){
     const query = { _id: room};
     const updateDocument = { $set: { words: newWords}};
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
 // Get a single word from the room.
@@ -258,7 +274,8 @@ async function getWordInRoom(room, word){
 async function updateWordInRoom(room, word){
     const query = { _id: room, "words.text": word};
     const updateDocument = { $set: { "words.$.show": true}};
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
 // Store messages.
@@ -266,7 +283,8 @@ async function addMessage(room, messageObject){
     const query = { _id: room};
     const updateDocument = { $push: { "messages": messageObject}};
     console.log('add message')
-    return updateMongoDocument(query, updateDocument);
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
 }
 
 // Get all messages from a room.
@@ -320,6 +338,7 @@ module.exports = {
     resetRoles,
     switchRoles,
     changeTeams,
+    getTeam,
     updateAllWordsInRoom,
     getWordInRoom,
     updateWordInRoom,

@@ -45,7 +45,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: firstPlayer,
+                new: firstPlayer,
             });
             
             // Update messages if necessary.
@@ -97,7 +97,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: true,
+                new: true,
             });
             io.to(data.roomname).emit('reset-display', {});
         })
@@ -169,7 +169,18 @@ function socket(io) {
         // Finding a word in the room.
         socket.on('find-word', async (data) => {
             const result = await Mongo.getWordInRoom(data.roomname,data.word);
-            io.to(data.roomname).emit('found-word',{data: result});
+            const color = await Mongo.getTeam(data.username, data.roomname);
+            io.to(data.roomname).emit('found-word',{
+                wordButton: result,
+                color: color,
+            });
+        })
+
+        socket.on('turn-over', (data) => {
+            io.to(data.roomname).emit('turn-over', {
+                username: data.username,
+                roomname: data.roomname,
+            })
         })
 
         // Update a word in the room to show.
@@ -178,7 +189,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: false,
+                new: false,
                 myturn: data.myturn,
             });
         })
@@ -202,7 +213,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: false,
+                new: false,
             });
         })
 
@@ -212,7 +223,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: false,
+                new: false,
             });
         })
 
@@ -222,8 +233,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
-                scoreReset: false,
-                gameover: true,
+                new: false,
             });
             // Upon closing the game over screen, reverts back to previous html.
             io.to(data.roomname).emit('game-over');
