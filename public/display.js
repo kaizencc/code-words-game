@@ -71,7 +71,14 @@ function lockTeams(){
 }
 
 function lockRoles(){
-    
+    // Remove event listeners.
+    spyMaster.removeEventListener('click', spyEventHandler);
+    fieldOperator.removeEventListener('click', fieldEventHandler);
+
+    // Disable buttons
+    spyMaster.classList.add('disabled');
+    fieldOperator.classList.add('disabled');
+
 }
 
 /************************************************************************************

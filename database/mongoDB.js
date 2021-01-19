@@ -203,6 +203,13 @@ async function changeTurn(room){
     return answer;
 }
 
+async function resetTurn(room){
+    const query = { _id: room };
+    const updateDocument = { $set: { "isRedTurn": false }};
+    const answer = await updateMongoDocument(query, updateDocument);
+    return answer;
+}
+
 async function getIsRedTurn(room){
     const document = await users.findOne({ _id: room});
     if(document){
@@ -333,6 +340,7 @@ module.exports = {
     getUsernameOfBlueSpymaster,
     getUsernameOfBlueOperator,
     changeTurn,
+    resetTurn,
     getIsRedTurn,
     getAllWordsInRoom,
     resetRoles,

@@ -107,7 +107,12 @@ function socket(io) {
             io.to(data.roomname).emit('lock-variables', {});
         })
 
-        socket.on("play-game-spy", async (data) => {
+        // Reset turn when game restarts.
+        socket.on('reset-turns', async (data) => {
+            await Mongo.resetTurn(data.roomname);
+        })
+
+        socket.on('play-game-spy', async (data) => {
             await Mongo.changeTurn(data.roomname);
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
             var spy;

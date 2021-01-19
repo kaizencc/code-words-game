@@ -15,6 +15,8 @@ socket.on('board-game', (data) => {
     if (data.new){
         turnBroadcast.style.display = "none";
         unlockTeams();
+        unlockRoles();
+        resetTurns();
         redTeam.innerHTML = String(9);
         blueTeam.innerHTML = String(8);
     }
@@ -40,13 +42,6 @@ socket.on('board-game', (data) => {
         board.appendChild(createButton(word, role, myturn));
     })
 })
-
-function unlockTeams(){
-    const userCard = document.getElementById(username);
-    if(userCard){
-        userCard.classList.remove("filtered")
-    };
-}
 
 // Helper function to create buttons.
 function createButton(word, role, myturn){
@@ -207,8 +202,7 @@ function changeToFieldOperator(){
     fieldOperator.className = "btn btn-outline-primary active";
 }
 
-// Change role to spymaster.
-spyMaster.addEventListener('click', ()=>{
+function spyEventHandler() {
     changeToSpyMaster();
     socket.emit('role-change-spy', {
         username: username, 
@@ -220,10 +214,10 @@ spyMaster.addEventListener('click', ()=>{
         message: 'spymaster',
         event: 'switch'
     });
-})
+}
 
-// Change role to field operator.
-fieldOperator.addEventListener('click', () =>{
+function fieldEventHandler(){
+    console.log('heloooo');
     changeToFieldOperator();
     socket.emit('role-change-field', {
         username: username, 
@@ -235,5 +229,28 @@ fieldOperator.addEventListener('click', () =>{
         message: 'field operator',
         event: 'switch'
     });
-})
+}
 
+function unlockRoles(){
+    // Change role to spymaster.
+    spyMaster.addEventListener('click', spyEventHandler);
+
+    // Change role to field operator.
+    fieldOperator.addEventListener('click', fieldEventHandler);
+
+    spyMaster.classList.remove('disabled');
+    fieldOperator.classList.remove('disabled');
+}
+
+function unlockTeams(){
+    const userCard = document.getElementById(username);
+    if(userCard){
+        userCard.classList.remove("filtered")
+    };
+}
+
+function resetTurns(){
+    socket.emit('reset-turns', {
+        roomname: roomname,
+    });
+}
