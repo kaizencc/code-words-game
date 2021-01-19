@@ -1,3 +1,5 @@
+const turnBroadcast = document.getElementById('broadcast-turn');
+
 // All 4 possible displays.
 const displayStart = document.getElementById('display-start');
 const displayForm = document.getElementById('display-form');
@@ -164,8 +166,14 @@ socket.on('show-current-spy', (data)=>{
     idleClue.innerHTML = "@";
     if (data.username === username){
         showFormDisplay();
+        broadcastYourTurn(data.turn);
     } else {
         showIdleDisplay();
+        if (data.turn){
+            broadcastTurn("Red Spymaster's turn", data.turn);
+        } else {
+            broadcastTurn("Blue Spymaster's turn", data.turn)
+        }
     }
 })
 
@@ -175,7 +183,43 @@ socket.on('show-current-operator', (data)=>{
     if (data.username === username){
         turnOnButtons();
         showClueDisplay();
+        broadcastYourTurn(data.turn);
     } else {
         showIdleDisplay();
+        if (data.turn){
+            broadcastTurn("Red Operator's turn", data.turn);
+        } else {
+            broadcastTurn("Blue Operator's turn", data.turn)
+        }
     }
 })
+
+function broadcastTurn(text, turn){
+    turnBroadcast.innerHTML = text;
+    turnBroadcast.style.display = null;
+    if (turn){
+        makeBroadcastRed();
+    } else {
+        makeBroadcastBlue();
+    }
+}
+
+function broadcastYourTurn(turn){
+    turnBroadcast.innerHTML = "Your Turn";
+    turnBroadcast.style.display = null;
+    if (turn){
+        makeBroadcastRed();
+    } else {
+        makeBroadcastBlue();
+    }
+}
+
+function makeBroadcastRed(){
+    turnBroadcast.classList.remove("alert-primary");
+    turnBroadcast.classList.add("alert-danger");
+}
+
+function makeBroadcastBlue(){
+    turnBroadcast.classList.remove("alert-danger");
+    turnBroadcast.classList.add("alert-primary");
+}

@@ -111,7 +111,10 @@ function socket(io) {
             } else {
                 spy = await Mongo.getUsernameOfBlueSpymaster(data.roomname);
             }
-            io.to(data.roomname).emit('show-current-spy', {username: spy});
+            io.to(data.roomname).emit('show-current-spy', {
+                username: spy,
+                turn: redTurn,
+            });
         })
 
         socket.on("play-game-operator", async (data) => {
@@ -126,6 +129,7 @@ function socket(io) {
                 username: op,
                 clue: data.clue,
                 number: data.number,
+                turn: redTurn,
             });
         })
 

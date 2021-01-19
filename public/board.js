@@ -7,6 +7,9 @@ const blueTeam = document.getElementById('blue-team');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
+    // Clear turn broadcast.
+    turnBroadcast.style.display = "none";
+
     // Update role buttons.
     role = data.roles[username]
     if (role){

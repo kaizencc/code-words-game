@@ -75,3 +75,7 @@ input {
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
 }
+
+.hidden {
+    display:none;
+}
