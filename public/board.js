@@ -5,13 +5,17 @@ const spyMaster = document.getElementById('spy');
 const redTeam = document.getElementById('red-team');
 const blueTeam = document.getElementById('blue-team');
 
+/************************************************************************************
+ *                              Build Board Buttons
+ ***********************************************************************************/
+
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
     // Clear turn broadcast.
     if (data.new){
         turnBroadcast.style.display = "none";
     }
-    
+
     // Update role buttons.
     role = data.roles[username]
     if (role){
@@ -61,6 +65,11 @@ function createButton(word, role, myturn){
     btn.appendChild(t);
     return btn;
 }
+
+/************************************************************************************
+ *                              Clicking Board Buttons
+ ***********************************************************************************/
+
 
 // Sending a message in the chat when a user clicks a button.
 board.addEventListener('click', function(e){
@@ -179,6 +188,10 @@ newGameBtn.addEventListener('click', () =>{
     });
 })
 
+/************************************************************************************
+ *                              Switch Role Radio Buttons
+ ***********************************************************************************/
+
 // Helper functions to change HTML buttons.
 function changeToSpyMaster(){
     spyMaster.className = "btn btn-outline-primary active";
@@ -193,7 +206,10 @@ function changeToFieldOperator(){
 // Change role to spymaster.
 spyMaster.addEventListener('click', ()=>{
     changeToSpyMaster();
-    socket.emit('role-change-spy', {username: username, roomname: roomname});
+    socket.emit('role-change-spy', {
+        username: username, 
+        roomname: roomname
+    });
     socket.emit('chat', {
         username: username,
         roomname: roomname,
@@ -205,7 +221,10 @@ spyMaster.addEventListener('click', ()=>{
 // Change role to field operator.
 fieldOperator.addEventListener('click', () =>{
     changeToFieldOperator();
-    socket.emit('role-change-field', {username: username, roomname: roomname});
+    socket.emit('role-change-field', {
+        username: username, 
+        roomname: roomname
+    });
     socket.emit('chat', {
         username: username,
         roomname: roomname,

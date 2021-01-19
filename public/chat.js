@@ -45,7 +45,10 @@ window.addEventListener('keypress', function(e){
 
 // Sending username if the user is typing.
 message.addEventListener('keypress', () => {
-    socket.emit('typing', {username: username, roomname: roomname})
+    socket.emit('typing', {
+        username: username, 
+        roomname: roomname
+    })
 })
 
 // Displaying if new user has joined the room.
@@ -138,7 +141,7 @@ socket.on('check-refresh', (data) =>{
             console.log('first time');
             socket.emit('join-message', {
                 username: data.username, 
-                roomname: data.roomname
+                roomname: data.roomname,
             })
         }
     }
