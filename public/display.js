@@ -4,15 +4,20 @@ const displayForm = document.getElementById('display-form');
 const displayClue = document.getElementById('display-clue');
 const displayIdle = document.getElementById('display-idle');
 
-// Start Display Elements.
-const startgame = document.getElementById('start-game');
+/************************************************************************************
+ *                              Start Display Elements
+ ***********************************************************************************/
 
+ const startgame = document.getElementById('start-game');
+
+// On click, start 3-step cascade to validate conditions before beginning game.
 startgame.addEventListener('click', ()=>{
     console.log('game started');
     // Authenticate current game conditions.
     checkConditions();
 })
 
+// Step 1: Communicate with socket to ensure that there are 4 players.
 function checkConditions(){
     console.log('checking conditions');
     socket.emit('ensure-four-players', {
@@ -21,6 +26,7 @@ function checkConditions(){
     });
 }
 
+// Step 2: Receive answer and if valid, ensure that all roles are set.
 socket.on('ensure-four-players', (data)=>{
     if (data.username === username){
         console.log('ensure 4 players');
@@ -36,6 +42,7 @@ socket.on('ensure-four-players', (data)=>{
     }
 })
 
+// Step 3: Receive answer and start game if valid.
 socket.on('ensure-all-roles', (data) => {
     if (data.username === username){
         console.log('ensure all roles');
@@ -49,7 +56,10 @@ socket.on('ensure-all-roles', (data) => {
     }
 })
 
-// Form Display Elements.
+/************************************************************************************
+ *                              Clue Form Display Elements
+ ***********************************************************************************/
+
 const sendClue = document.getElementById('sendin');
 const clue = document.getElementById('clue');
 const number = document.getElementById('number');
@@ -79,7 +89,10 @@ function checkNumber() {
     return true;
 }
 
-// Clue Display Elements.
+/************************************************************************************
+ *                           Received Clue Display Elements
+ ***********************************************************************************/
+
 const receivedClue = document.getElementById('received-clue');
 const endTurn = document.getElementById('end-turn');
 
@@ -88,7 +101,10 @@ endTurn.addEventListener('click', ()=>{
     socket.emit('play-game-spy', {roomname: roomname});
 })
 
-// Idle Display Elements.
+/************************************************************************************
+ *                              Idle Display Elements
+ ***********************************************************************************/
+
 const idleClue = document.getElementById('idle-clue');
 
 function showStartDisplay(){
