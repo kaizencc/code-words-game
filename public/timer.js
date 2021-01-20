@@ -6,10 +6,14 @@ function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
         if(count == 0) {
-            socket.emit('time-up', {
-                roomname: roomname,
-                username, forPlayer,
-            });
+            if (forPlayer === username){
+                socket.emit('time-up', {
+                    roomname: roomname,
+                    username, forPlayer,
+                });
+            } else {
+                clearInterval(timer);
+            }
         };
         count -=1;
     }, 1000);
