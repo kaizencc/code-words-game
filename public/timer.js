@@ -2,11 +2,14 @@ const counter = document.getElementById('timer');
 
 var timer;
 
-function startTimer(count){
+function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
         if(count == 0) {
-            clearInterval(timer);
+            socket.emit('time-up', {
+                roomname: roomname,
+                username, forPlayer,
+            });
         };
         count -=1;
     }, 1000);
@@ -22,7 +25,7 @@ function endTimer(){
 }
 
 // Start the clock.
-function clock(){
+function clock(forPlayer){
     clearTimer();
-    startTimer(60);
+    startTimer(60, forPlayer);
 }

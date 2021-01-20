@@ -82,7 +82,7 @@ function lockRoles(){
 }
 
 /************************************************************************************
- *                              Clue Form Display Elements
+ *                              Spymaster Display Elements
  ***********************************************************************************/
 
 const sendClueBtn = document.getElementById('sendin');
@@ -92,15 +92,25 @@ const number = document.getElementById('number');
 sendClueBtn.addEventListener('click', () => {
     // Make sure number is valid.
     if (checkNumber()){
-        socket.emit('play-game-operator', {
-            roomname: roomname,
-            clue: clue.value,
-            number: number.value,
-        });
-    
-        // Empty values.
-        number.value = "";
-        clue.value = "";
+        spyTurnFinished();
+    }
+})
+
+function spyTurnFinished(){
+    socket.emit('play-game-operator', {
+        roomname: roomname,
+        clue: clue.value,
+        number: number.value,
+    });
+
+    // Empty values.
+    number.value = "";
+    clue.value = "";
+}
+
+socket.on('spy-turn-over', (data) => {
+    if (data.username === username){
+        spyTurnFinished();
     }
 })
 
@@ -115,7 +125,7 @@ function checkNumber() {
 }
 
 /************************************************************************************
- *                           Received Clue Display Elements
+ *                           Field Operator Display Elements
  ***********************************************************************************/
 
 const receivedClue = document.getElementById('received-clue');
@@ -197,10 +207,10 @@ socket.on('reset-display', ()=>{
 })
 
 socket.on('show-current-spy', (data)=>{
-    clock();
+    clock(data.username);
 
-    receivedClue.innerHTML = "";
-    idleClue.innerHTML = "";
+    receivedClue.innerHTML = " ";
+    idleClue.innerHTML = " ";
     if (data.username === username){
         showFormDisplay();
         broadcastYourTurn(data.turn);
@@ -215,7 +225,7 @@ socket.on('show-current-spy', (data)=>{
 })
 
 socket.on('show-current-operator', (data)=>{
-    clock();
+    clock(data.username);
 
     receivedClue.innerHTML = data.clue + ", " + data.number;
     idleClue.innerHTML = data.clue + ", " + data.number;

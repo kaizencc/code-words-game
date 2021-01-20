@@ -189,8 +189,24 @@ function socket(io) {
         socket.on('turn-over', (data) => {
             io.to(data.roomname).emit('turn-over', {
                 username: data.username,
-                roomname: data.roomname,
             })
+        })
+
+        socket.on('time-up', async (data) => {
+            const roles = await Mongo.getRolesInRoom(data.roomname);
+            console.log(data.username, roles);
+            if (roles[data.username]){
+                // Player is a spymaster
+                io.to(data.roomname).emit('spy-turn-over', {
+                    username: data.username,
+                })
+
+            } else {
+                // Player is a operator
+                io.to(data.roomname).emit('turn-over', {
+                    username: data.username,
+                })
+            }
         })
 
         // Update a word in the room to show.
