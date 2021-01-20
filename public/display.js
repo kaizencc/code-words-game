@@ -60,7 +60,7 @@ socket.on('ensure-all-roles', (data) => {
     }
 })
 
-socket.on('lock-variables', (data) => {
+socket.on('lock-variables', () => {
     lockRoles();
     lockTeams();
 })
@@ -197,8 +197,10 @@ socket.on('reset-display', ()=>{
 })
 
 socket.on('show-current-spy', (data)=>{
-    receivedClue.innerHTML = "@";
-    idleClue.innerHTML = "@";
+    clock();
+
+    receivedClue.innerHTML = "";
+    idleClue.innerHTML = "";
     if (data.username === username){
         showFormDisplay();
         broadcastYourTurn(data.turn);
@@ -213,6 +215,8 @@ socket.on('show-current-spy', (data)=>{
 })
 
 socket.on('show-current-operator', (data)=>{
+    clock();
+
     receivedClue.innerHTML = data.clue + ", " + data.number;
     idleClue.innerHTML = data.clue + ", " + data.number;
     if (data.username === username){

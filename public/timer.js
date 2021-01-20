@@ -1,8 +1,10 @@
 const counter = document.getElementById('timer');
 
+var timer;
+
 function startTimer(count){
     timer = setInterval(function() {
-        counter.innerHTML = (count);
+        counter.innerHTML = count;
         if(count == 0) {
             clearInterval(timer);
         };
@@ -10,4 +12,17 @@ function startTimer(count){
     }, 1000);
 }
 
-startTimer(100);
+function clearTimer(){
+    clearInterval(timer);
+}
+
+function endTimer(){
+    clearInterval(timer);
+    counter.innerHTML = "----";
+}
+
+// Start the clock.
+function clock(){
+    clearTimer();
+    startTimer(60);
+}

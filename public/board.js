@@ -17,6 +17,7 @@ socket.on('board-game', (data) => {
         unlockTeams();
         unlockRoles();
         resetTurns();
+        endTimer();
         redTeam.innerHTML = String(9);
         blueTeam.innerHTML = String(8);
     }
@@ -193,13 +194,13 @@ newGameBtn.addEventListener('click', () =>{
 
 // Helper functions to change HTML buttons.
 function changeToSpyMaster(){
-    spyMaster.className = "btn btn-outline-primary active";
-    fieldOperator.className = "btn btn-outline-primary";
+    spyMaster.classList.add("active");
+    fieldOperator.classList.remove("active");
 }
 
 function changeToFieldOperator(){
-    spyMaster.className = "btn btn-outline-primary";
-    fieldOperator.className = "btn btn-outline-primary active";
+    spyMaster.classList.remove("active");
+    fieldOperator.classList.add("active");
 }
 
 function spyEventHandler() {
