@@ -26,18 +26,21 @@ function createModalTitle(winner){
 }
 
 function createModalTimeStatistic(times){
-    const list = document.createElement("ul");
+    const list = document.getElementById('time-stats')
     for (var i=0; i<times.length; i++){
-        // Create list item.
-        var item = document.createElement('li');
-        
-        // Set contents.
-        item.appendChild(document.createTextNode(`${times[i].username}: ${times[i].avg}`));
-
-        // Add to list.
-        list.appendChild(item);
+        // Create card
+        let card = document.createElement('h5'); 
+        card.className = "w-100 border rounded text-center mx-auto";
+        card.innerHTML = `${times[i].username}: ${times[i].avg} seconds`;
+        if (times[i].team === "red"){
+            card.classList.add("border-danger");
+            card.classList.add("text-danger");
+        } else {
+            card.classList.add("border-primary");
+            card.classList.add("text-primary");
+        }
+        list.appendChild(card);
     }
-    document.getElementById('time-stats').appendChild(list);
 }
 
 // stats is a [{username: username, stats: stats}]
@@ -53,6 +56,7 @@ function sortTimeByAvg(playerStats){
         avgTimes.push({
             username: playerStats[i].username,
             avg: totalTime/playerStats[i].stats.length,
+            team: playerStats[i].team,
         })
     }
     // avgTimes is [{username, avg}]

@@ -341,6 +341,7 @@ async function getAllStatisticsInRoom(room){
             statistics.push({
                 username: player.username,
                 stats: player.stats,
+                team: player.team,
             });
         }); 
     }
