@@ -114,22 +114,50 @@ socket.on('found-word', (data) => {
     const color = data.wordButton.color;
     console.log(color);
     if (color === buttonColor.BLACK){
-        // Game is over
-        socket.emit('game-over', {roomname: roomname});
+        // Game is over, other team wins.
+        var winningTeam = "";
+        var finalRedScore = "";
+        var finalBlueScore = "";
+        if (teamColor === "red"){
+            winningTeam = "blue";
+            finalBlueScore = "0";
+            blueTeam.innerHTML = "0";
+            finalRedScore = redTeam.innerHTML;
+        } else {
+            winningTeam = "red";
+            finalRedScore = "0";
+            redTeam.innerHTML = "0";
+            finalBlueScore = blueTeam.innerHTML;
+        }
+
+        if (data.username === username){
+            socket.emit('game-over', {
+                roomname: roomname,
+                winner: winningTeam,
+                redScore: finalRedScore,
+                blueScore: finalBlueScore,
+            });
+        }
+
     } else if (color === buttonColor.RED){
         redScore = Number(redTeam.innerHTML);
         
-        // If color does not match team color, turn is over
-        if (teamColor !== "red"){
+        // If color does not match team color, turn is over.
+        if (teamColor !== "red" && data.username === username){
             socket.emit('turn-over', {
                 roomname: roomname,
                 username, username,
             });
         }
 
-        // Game is over
-        if (redScore == 1){
-            socket.emit('game-over', {roomname: roomname});
+        // Game is over, red team wins.
+        if (redScore == 1 && data.username === username){
+            socket.emit('game-over', {
+                roomname: roomname,
+                winner: "red",
+                redScore: "0",
+                blueScore: blueTeam.innerHTML,
+            });
         }
 
         // Red team subtracts a point
@@ -138,7 +166,7 @@ socket.on('found-word', (data) => {
         blueScore = Number(blueTeam.innerHTML);
 
         // If color does not match team color, turn is over
-        if (teamColor !== "blue"){
+        if (teamColor !== "blue" && data.username === username){
             socket.emit('turn-over', {
                 roomname: roomname,
                 username, username,
@@ -146,46 +174,26 @@ socket.on('found-word', (data) => {
         }
 
         // Game is over
-        if (blueScore == 1){
-            socket.emit('game-over', {roomname: roomname});
+        if (blueScore == 1 && data.username === username){
+            socket.emit('game-over', {
+                roomname: roomname,
+                winner: "blue",
+                redScore: redTeam.innerHTML,
+                blueScore: "0",
+            });
         }
 
         // Blue team subtracts a point
         blueTeam.innerHTML = String(blueScore-1);
     } else {
-        // Yellow button indicates turn is over.
-        socket.emit('turn-over', {
-            roomname: roomname,
-            username, username,
-        });
+        if (data.username === username){
+            // Yellow button indicates turn is over.
+            socket.emit('turn-over', {
+                roomname: roomname,
+                username, username,
+            });
+        }
     }
-})
-
-socket.on('game-over', async () => {
-    console.log("game over");
-    // Modify Modal
-    document.getElementById('modal-title').innerHTML = "Red Team Wins by 4"
-    document.getElementById('modal-body').innerHTML = "Quick Stats";
-    // Wait a second and Show modal.
-    await sleep(2000);
-    $("#myModal").modal("show").on('shown.bs.modal', function () {
-        $(".modal").css('display', 'block');
-    });
-})
-
-// Helper function to wait for other processes to finish.
-function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-}
-
-// Listening for new game request.
-newGameBtn.addEventListener('click', () =>{
-    socket.emit('new-game',{
-        username: username, 
-        roomname: roomname,
-    });
 })
 
 /************************************************************************************

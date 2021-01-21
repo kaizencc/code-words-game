@@ -13,18 +13,53 @@
     <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1556638668/Sortable.js"></script>
 </head>
 <body>
-    <!-- Modal -->
+    <!-- End Game Modal -->
     <div class="modal bg-light" id="myModal" role="dialog">
         <div class="modal-dialog">
         
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="modal-title" class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="col-10 text-center">
+                    <h3 id="modal-title" class="modal-title">Modal title</h3>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
             </div>
             <div id="modal-body" class="modal-body">
-                <p>Modal body text goes here.</p>
+                <div class="row">
+                    <div id="red-modal" class="col text-center text-danger border border-danger rounded">
+                        <h3>Red Team</h3>
+                        <h4 id="red-final">9</h4>
+                    </div>
+                    <div id="blue-modal" class="col text-center text-primary border border-primary rounded">
+                        <h3>Blue Team</h3>
+                        <h4 id="blue-final">9</h4>
+                    </div>
+                </div>
+                <div class="row my-2 border border-success rounded">
+                    <div class="col-2">
+                        <% for(var i=0; i<8; i++){ %>
+                            <span class="text-success">
+                                <i class="far fa-money-bill-alt"></i>
+                            </span>
+                        <% } %>
+                    </div>
+                    <div class="col-8 text-center text-success">
+                        <p>
+                            Love the game? Want to see more features like more word sets and statistics? 
+                            Venmo @kaizenconroy to support my passion project!
+                        </p>
+                    </div>
+                    <div class="col-2">
+                        <% for(var i=0; i<8; i++){ %>
+                            <span class="text-success">
+                                <i class="far fa-money-bill-alt"></i>
+                            </span>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -166,5 +201,6 @@
     <script src="/board.js"></script>
     <script src="/teams.js"></script>
     <script src="/display.js"></script>
+    <script src="/endgame.js"></script>
 </body>
 </html>

@@ -1,21 +1,8 @@
-function sendTeamMessage(team){
-    socket.emit('chat', {
-        username: username,
-        message: `${team} team`,
-        roomname: roomname,
-        event: "switch-team",
-    });
-}
+/************************************************************************************
+ *                              Drag/Drop Teams
+ ***********************************************************************************/
 
-function updateTeamInDatabase(team){
-    socket.emit('change-teams', {
-        roomname: roomname, 
-        username: username, 
-        team: team,
-    });
-}
-
-// Displaying if a user is typing.
+// Move user from one list to the other, and changing its color.
 socket.on('move-user', (data) => {
     console.log('haaaa');
     console.log(data.username, username, data.team);
@@ -43,6 +30,7 @@ socket.on('move-user', (data) => {
 
 })
 
+// Code to determine Sortable characteristics.
 $(document).ready(function() {
     new Sortable(redUsers, {
         group: {
@@ -110,3 +98,20 @@ $(document).ready(function() {
         }
     });
 });
+
+function sendTeamMessage(team){
+    socket.emit('chat', {
+        username: username,
+        message: `${team} team`,
+        roomname: roomname,
+        event: "switch-team",
+    });
+}
+
+function updateTeamInDatabase(team){
+    socket.emit('change-teams', {
+        roomname: roomname, 
+        username: username, 
+        team: team,
+    });
+}

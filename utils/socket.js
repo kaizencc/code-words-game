@@ -183,6 +183,7 @@ function socket(io) {
             io.to(data.roomname).emit('found-word',{
                 wordButton: result,
                 color: color,
+                username: data.username,
             });
         })
 
@@ -261,8 +262,13 @@ function socket(io) {
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 new: false,
             });
+
             // Upon closing the game over screen, reverts back to previous html.
-            io.to(data.roomname).emit('game-over');
+            io.to(data.roomname).emit('game-over', {
+                winner: data.winner,
+                redScore: data.redScore,
+                blueScore: data.blueScore,
+            });
         })
     
         // Emitting messages to Clients.

@@ -1,7 +1,11 @@
-const counter = document.getElementById('timer');
+/************************************************************************************
+ *                              Countdown Timer
+ ***********************************************************************************/
 
+const counter = document.getElementById('timer');
 var timer;
 
+// Begins countdown, responding to socket if time is up.
 function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
@@ -19,10 +23,12 @@ function startTimer(count, forPlayer){
     }, 1000);
 }
 
+// Resets timer.
 function clearTimer(){
     clearInterval(timer);
 }
 
+// Stops timer altogether.
 function endTimer(){
     clearInterval(timer);
     counter.innerHTML = "----";
