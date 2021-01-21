@@ -8,7 +8,8 @@ socket.on('game-over', async (data) => {
     console.log("game over");
     createModalTitle(data.winner);
     createModalFinalScores(data.redScore, data.blueScore, data.winner);
-    createModalTimeStatistic(data.times);
+    const avgTimes = sortTimeByAvg(data.stats);
+    createModalTimeStatistic(avgTimes);
     // Wait a second and Show modal.
     await sleep(1000);
     $("#myModal").modal("show").on('shown.bs.modal', function () {
@@ -26,6 +27,40 @@ function createModalTitle(winner){
 
 function createModalTimeStatistic(times){
     const list = document.createElement("ul");
+    for (var i=0; i<times.length; i++){
+        // Create list item.
+        var item = document.createElement('li');
+        
+        // Set contents.
+        item.appendChild(document.createTextNode(`${times[i].username}: ${times[i].avg}`));
+
+        // Add to list.
+        list.appendChild(item);
+    }
+    document.getElementById('time-stats').appendChild(list);
+}
+
+// stats is a [{username: username, stats: stats}]
+function sortTimeByAvg(playerStats){
+    avgTimes = [];
+    // Calculate total time from each stat.
+    for (var i=0; i<playerStats.length; i++){
+        totalTime = 0;
+        for (var j=0; j<playerStats[i].stats.length; j++){
+            totalTime += playerStats[i].stats[j].time;
+        }
+
+        avgTimes.push({
+            username: playerStats[i].username,
+            avg: totalTime/playerStats[i].stats.length,
+        })
+    }
+    // avgTimes is [{username, avg}]
+    console.log(avgTimes);
+    avgTimes.sort(function (a,b) {
+        return a.avg - b.avg;
+    })
+    return avgTimes;
 }
 
 function createModalFinalScores(redScore, blueScore, winner){

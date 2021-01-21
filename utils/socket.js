@@ -273,6 +273,15 @@ function socket(io) {
 
         // Ending the game.
         socket.on('game-over', async (data) => {
+            // Update Statistic.
+            if(data.time){
+                // Update database with time spent and turn.
+                const stat = {
+                    time: data.time,
+                }
+                await Mongo.addTurnStatistics(data.roomname, data.username, stat);
+            }
+
             // Call board game first to update html.
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
@@ -285,7 +294,7 @@ function socket(io) {
                 winner: data.winner,
                 redScore: data.redScore,
                 blueScore: data.blueScore,
-                times: (await Mongo.getAllTurnTimesInRoom(data.roomname)),
+                stats: (await Mongo.getAllStatisticsInRoom(data.roomname)),
             });
         })
     

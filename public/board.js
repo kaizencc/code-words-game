@@ -109,6 +109,9 @@ const buttonColor = {
 }
 
 socket.on('found-word', (data) => {
+    // Find elapsed time, necessary if game is over.
+    const elapsedTime = 60-Number(counter.innerHTML);
+
     const teamColor = data.color;
     // Change score if necessary.
     const color = data.wordButton.color;
@@ -133,6 +136,8 @@ socket.on('found-word', (data) => {
         if (data.username === username){
             socket.emit('game-over', {
                 roomname: roomname,
+                username: username,
+                time: elapsedTime,
                 winner: winningTeam,
                 redScore: finalRedScore,
                 blueScore: finalBlueScore,
@@ -154,6 +159,8 @@ socket.on('found-word', (data) => {
         if (redScore == 1 && data.username === username){
             socket.emit('game-over', {
                 roomname: roomname,
+                username: username,
+                time: elapsedTime,
                 winner: "red",
                 redScore: "0",
                 blueScore: blueTeam.innerHTML,
@@ -177,6 +184,8 @@ socket.on('found-word', (data) => {
         if (blueScore == 1 && data.username === username){
             socket.emit('game-over', {
                 roomname: roomname,
+                username: username,
+                time: elapsedTime,
                 winner: "blue",
                 redScore: redTeam.innerHTML,
                 blueScore: "0",

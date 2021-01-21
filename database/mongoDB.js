@@ -324,6 +324,7 @@ async function getWordArray(){
     return allValues;
 }
 
+// Adds a statistic to the player.
 async function addTurnStatistics(room, username, stat){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $push: { "players.$.stats": stat}};
@@ -334,7 +335,7 @@ async function addTurnStatistics(room, username, stat){
 // Returns all the times in the room as an object {username: time}
 async function getAllStatisticsInRoom(room){
     const result = await getPlayersInRoom(room);
-    var statistics = {}
+    var statistics = [];
     if (result){
         result.forEach((player) => {
             statistics.push({
@@ -343,7 +344,7 @@ async function getAllStatisticsInRoom(room){
             });
         }); 
     }
-    return players;
+    return statistics;
 
 }
 
