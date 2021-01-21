@@ -7,7 +7,8 @@
 socket.on('game-over', async (data) => {
     console.log("game over");
     createModalTitle(data.winner);
-    createModalBody(data.redScore, data.blueScore, data.winner);
+    createModalFinalScores(data.redScore, data.blueScore, data.winner);
+    createModalTimeStatistic(data.times);
     // Wait a second and Show modal.
     await sleep(1000);
     $("#myModal").modal("show").on('shown.bs.modal', function () {
@@ -23,7 +24,11 @@ function createModalTitle(winner){
     modalTitle.appendChild(createIcon(winner));
 }
 
-function createModalBody(redScore, blueScore, winner){
+function createModalTimeStatistic(times){
+    const list = document.createElement("ul");
+}
+
+function createModalFinalScores(redScore, blueScore, winner){
     //const modalBody = document.getElementById('modal-body');
     document.getElementById('red-final').innerHTML = redScore;
     document.getElementById('blue-final').innerHTML = blueScore;

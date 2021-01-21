@@ -324,6 +324,29 @@ async function getWordArray(){
     return allValues;
 }
 
+async function addTurnStatistics(room, username, stat){
+    const query = { _id: room, "players.username": username};
+    const updateDocument = { $push: { "players.$.stats": stat}};
+    const answer = await updateMongoDocument(query, updateDocument);
+    console.log(`${username} added a statistic.`);
+}
+
+// Returns all the times in the room as an object {username: time}
+async function getAllStatisticsInRoom(room){
+    const result = await getPlayersInRoom(room);
+    var statistics = {}
+    if (result){
+        result.forEach((player) => {
+            statistics.push({
+                username: player.username,
+                stats: player.stats,
+            });
+        }); 
+    }
+    return players;
+
+}
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -353,5 +376,7 @@ module.exports = {
     addMessage,
     getAllMessages,
     getWordArray,
+    getAllStatisticsInRoom,
+    addTurnStatistics,
 };
  

@@ -1,4 +1,5 @@
 const {newGame} = require('./newgame');
+const {Statistics} = require('./statistics');
 const Mongo = require('../database/mongoDB');
 
 function randomTeam(){
@@ -20,6 +21,8 @@ function socket(io) {
                 username: data.username,
                 show: false,
                 team: randomTeam(),
+                stats: [],
+                
             }
             firstPlayer = true;
             if(await Mongo.roomExists(data.roomname)){
@@ -113,6 +116,13 @@ function socket(io) {
         })
 
         socket.on('play-game-spy', async (data) => {
+            if(data.time){
+                // Update database with time spent and turn.
+                const stat = {
+                    time: data.time,
+                }
+                await Mongo.addTurnStatistics(data.roomname, data.username, stat);
+            }
             await Mongo.changeTurn(data.roomname);
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
             var spy;
@@ -128,6 +138,13 @@ function socket(io) {
         })
 
         socket.on("play-game-operator", async (data) => {
+            if(data.time){
+                // Update database with time spent and turn.
+                const stat = {
+                    time: data.time,
+                }
+                await Mongo.addTurnStatistics(data.roomname, data.username, stat);
+            }
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
             var op;
             if (redTurn){
@@ -268,6 +285,7 @@ function socket(io) {
                 winner: data.winner,
                 redScore: data.redScore,
                 blueScore: data.blueScore,
+                times: (await Mongo.getAllTurnTimesInRoom(data.roomname)),
             });
         })
     

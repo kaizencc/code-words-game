@@ -51,9 +51,13 @@ socket.on('ensure-all-roles', (data) => {
         console.log(data.good);
         if (data.good){
             // Lock role changes and team changes.
-            socket.emit('lock-variables', {roomname: roomname});
+            socket.emit('lock-variables', {
+                roomname: roomname,
+            });
             // Begin game.
-            socket.emit('play-game-spy', {roomname: roomname});
+            socket.emit('play-game-spy', {
+                roomname: roomname,
+            });
         } else {
             alert("All 4 roles are not occupied yet.");
         }
@@ -97,8 +101,13 @@ sendClueBtn.addEventListener('click', () => {
 })
 
 function spyTurnFinished(){
+    // Find total time spent
+    const elapsedTime = 60-Number(counter.innerHTML);
+
     socket.emit('play-game-operator', {
         roomname: roomname,
+        username: username,
+        time: elapsedTime,
         clue: clue.value,
         number: number.value,
     });
@@ -144,8 +153,15 @@ socket.on('turn-over', (data) => {
 })
 
 function turnFinished(){
+    // Determine amount of time spent.
+    const elapsedTime = 60-Number(counter.innerHTML);
+
     turnOffButtons();
-    socket.emit('play-game-spy', {roomname: roomname});
+    socket.emit('play-game-spy', {
+        roomname: roomname,
+        username: username,
+        time: elapsedTime,
+    });
 }
 
 /************************************************************************************
