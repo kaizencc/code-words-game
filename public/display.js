@@ -274,8 +274,7 @@ socket.on('show-current-operator', (data)=>{
 })
 
 function broadcastTurn(text, turn){
-    turnBroadcast.innerHTML = text;
-    turnBroadcast.style.display = null;
+    changeBroadcast(text, null);
     if (turn){
         makeBroadcastRed();
     } else {
@@ -284,8 +283,7 @@ function broadcastTurn(text, turn){
 }
 
 function broadcastYourTurn(turn){
-    turnBroadcast.innerHTML = "Your Turn";
-    turnBroadcast.style.display = null;
+    changeBroadcast("Your Turn", null);
     if (turn){
         makeBroadcastRed();
     } else {
@@ -296,9 +294,18 @@ function broadcastYourTurn(turn){
 function makeBroadcastRed(){
     turnBroadcast.classList.remove("alert-primary");
     turnBroadcast.classList.add("alert-danger");
+    sessionStorage.setItem('broadcast-color','red');
 }
 
 function makeBroadcastBlue(){
     turnBroadcast.classList.remove("alert-danger");
     turnBroadcast.classList.add("alert-primary");
+    sessionStorage.setItem('broadcast-color','blue');
 }
+
+function changeBroadcast(message, display){
+    turnBroadcast.innerHTML = message;
+    turnBroadcast.style.display = display;
+    sessionStorage.setItem('broadcast-msg', message);
+}
+

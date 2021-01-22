@@ -40,13 +40,13 @@ function socket(io) {
                     // Take over old username that exists.
                     await Mongo.updateSocketId(data.roomname, data.username, socket.id);
                 } else {
-                    Mongo.addPlayer(data.roomname, user);
+                    await Mongo.addPlayer(data.roomname, user);
                 }
                 firstPlayer = false;
             }
             else{
                 // First user to enter a room.
-                Mongo.createRoom({
+                await Mongo.createRoom({
                     _id: data.roomname,
                     players: [user], // Array of players connected to the room.
                     words: await newGame(), // Initialize the board for the room.
@@ -64,7 +64,10 @@ function socket(io) {
                 username: data.username, 
                 roomname: data.roomname,
             });
-    
+
+            // Send online users array.
+            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)));
+
             // Creating new board in the room.
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
@@ -86,9 +89,6 @@ function socket(io) {
                     io.to(data.roomname).emit('chat', messageObject);
                 });
             }
-    
-            // Send online users array.
-            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)))
         })
 
         socket.on('join-message', async (data) => {

@@ -21,43 +21,12 @@ socket.on('board-game', (data) => {
         endTimer();
         updateRedScore("9");
         updateBlueScore("8");
+        sessionStorage.removeItem('broadcast-msg');
+        sessionStorage.removeItem('broadcast-color');
     }
 
-    sessionStorage.setItem('username',username);
-    console.log('when it matters: ', sessionStorage.getItem('restore'))
-    // If refreshed.
-    if(sessionStorage.getItem('restore') === '1'){
-        console.log('restoring');
-        sessionStorage.setItem('restore','0');
-        console.log('after update: ', sessionStorage.getItem('restore'))
-        // Saved score
-        redTeam.innerHTML = sessionStorage.getItem('redscore');
-        blueTeam.innerHTML = sessionStorage.getItem('bluescore');
-
-        // Saved display status
-        switch(sessionStorage.getItem('display')){
-            case "start":
-                console.log("I'm here");
-                showStartDisplay();
-                unlockRoles();
-                unlockTeams();
-                break;
-            case "form":
-                showFormDisplay();
-                lockRoles();
-                lockTeams();
-                break;
-            case "clue":
-                showClueDisplay();
-                lockRoles();
-                lockTeams();
-                break;
-            case "idle":
-                showIdleDisplay();
-                lockRoles();
-                lockTeams();
-                break;
-        }
+    if (!sessionStorage.getItem('display')){
+        sessionStorage.setItem('display', 'start'); 
     }
 
     // Update role buttons.
@@ -80,6 +49,59 @@ socket.on('board-game', (data) => {
     data.words.forEach(word => {
         board.appendChild(createButton(word, role, myturn));
     })
+
+    sessionStorage.setItem('username',username);
+    console.log('when it matters: ', sessionStorage.getItem('restore'))
+    // If refreshed.
+    if(sessionStorage.getItem('restore') === '1'){
+        console.log('restoring');
+        sessionStorage.setItem('restore','0');
+        console.log('after update: ', sessionStorage.getItem('restore'))
+        // Saved score
+        redTeam.innerHTML = sessionStorage.getItem('redscore');
+        blueTeam.innerHTML = sessionStorage.getItem('bluescore');
+
+        // Saved turn broadcast
+        if (sessionStorage.getItem('broadcast-msg')){
+            changeBroadcast(sessionStorage.getItem('broadcast-msg'), null);
+            if (sessionStorage.getItem('broadcast-color') === "red"){
+                makeBroadcastRed();
+            } else {
+                makeBroadcastBlue();
+            }
+        } 
+
+        // Saved time
+
+        // Saved display status
+        switch(sessionStorage.getItem('display')){
+            case "start":
+                console.log("I'm here");
+                showStartDisplay();
+                unlockRoles();
+                unlockTeams();
+                turnOffButtons();
+                break;
+            case "form":
+                showFormDisplay();
+                lockRoles();
+                lockTeams();
+                turnOffButtons();
+                break;
+            case "clue":
+                showClueDisplay();
+                lockRoles();
+                lockTeams();
+                turnOnButtons();
+                break;
+            case "idle":
+                showIdleDisplay();
+                lockRoles();
+                lockTeams();
+                turnOffButtons();
+                break;
+        }
+    }
 })
 
 // Helper function to create buttons.
