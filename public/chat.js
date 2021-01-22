@@ -63,13 +63,11 @@ socket.on('disconnected-user', (data)=>{
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
-// Clear all messages.
-socket.on('clear-messages', () => {
-    output.innerHTML = "";
-})
-
 // Display button clicks, switched users, and messages.
 socket.on('chat', (data) => {
+    if (data.forUser && data.forUser !== username){
+        return;
+    }
     switch(data.event){
         case "button":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>clicked ' + data.message + '</em></p>';

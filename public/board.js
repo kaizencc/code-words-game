@@ -11,20 +11,16 @@ const blueTeam = document.getElementById('blue-team');
 
 // Build board buttons when a new user joins the room.
 socket.on('board-game', (data) => {
-    // Build board triggered by new game button.
-    if (data.new){
-        console.log("new game new game");
-        turnBroadcast.style.display = "none";
-        unlockTeams();
-        unlockRoles();
-        resetTurns();
-        endTimer();
-        updateRedScore("9");
-        updateBlueScore("8");
-        sessionStorage.removeItem('broadcast-msg');
-        sessionStorage.removeItem('broadcast-color');
+    if (data.username && data.username !== username){
+        return;
     }
 
+    // Build board triggered by new game button.
+    if (data.new){
+        newGameSettings();
+    }
+
+    // Start session storage off at 'start'
     if (!sessionStorage.getItem('display')){
         sessionStorage.setItem('display', 'start'); 
     }
@@ -40,6 +36,7 @@ socket.on('board-game', (data) => {
     // Clear current board buttons, if any.
     board.innerHTML = "";
 
+    // Determine if it is currently the players turn.
     var myturn = false;
     if (data.myturn && data.myturn === username){
         myturn = true;
@@ -50,57 +47,10 @@ socket.on('board-game', (data) => {
         board.appendChild(createButton(word, role, myturn));
     })
 
-    sessionStorage.setItem('username',username);
+    // If refreshed, return to saved game state.
     console.log('when it matters: ', sessionStorage.getItem('restore'))
-    // If refreshed.
     if(sessionStorage.getItem('restore') === '1'){
-        console.log('restoring');
-        sessionStorage.setItem('restore','0');
-        console.log('after update: ', sessionStorage.getItem('restore'))
-        // Saved score
-        redTeam.innerHTML = sessionStorage.getItem('redscore');
-        blueTeam.innerHTML = sessionStorage.getItem('bluescore');
-
-        // Saved turn broadcast
-        if (sessionStorage.getItem('broadcast-msg')){
-            changeBroadcast(sessionStorage.getItem('broadcast-msg'), null);
-            if (sessionStorage.getItem('broadcast-color') === "red"){
-                makeBroadcastRed();
-            } else {
-                makeBroadcastBlue();
-            }
-        } 
-
-        // Saved time
-
-        // Saved display status
-        switch(sessionStorage.getItem('display')){
-            case "start":
-                console.log("I'm here");
-                showStartDisplay();
-                unlockRoles();
-                unlockTeams();
-                turnOffButtons();
-                break;
-            case "form":
-                showFormDisplay();
-                lockRoles();
-                lockTeams();
-                turnOffButtons();
-                break;
-            case "clue":
-                showClueDisplay();
-                lockRoles();
-                lockTeams();
-                turnOnButtons();
-                break;
-            case "idle":
-                showIdleDisplay();
-                lockRoles();
-                lockTeams();
-                turnOffButtons();
-                break;
-        }
+        returnToGameState();
     }
 })
 
@@ -124,6 +74,19 @@ function createButton(word, role, myturn){
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
     return btn;
+}
+
+function newGameSettings(){
+    console.log("new game new game");
+    turnBroadcast.style.display = "none";
+    unlockTeams();
+    unlockRoles();
+    resetTurns();
+    endTimer();
+    updateRedScore("9");
+    updateBlueScore("8");
+    sessionStorage.removeItem('broadcast-msg');
+    sessionStorage.removeItem('broadcast-color');
 }
 
 /************************************************************************************

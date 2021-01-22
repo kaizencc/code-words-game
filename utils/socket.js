@@ -73,19 +73,19 @@ function socket(io) {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 new: firstPlayer,
+                username: data.username,
             });
             
             // Update messages if necessary.
             if(!firstPlayer){
-                // Clear all messages.
-                io.to(data.roomname).emit('clear-messages');
-
                 // Get messages from database.
                 const messageArray = await Mongo.getAllMessages(data.roomname);
                 console.log(messageArray);
 
                 // Write each message.
                 messageArray.forEach(function (messageObject) {
+                    // Inject username so room only updates one client.
+                    messageObject.forUser = data.username;
                     io.to(data.roomname).emit('chat', messageObject);
                 });
             }
@@ -109,6 +109,7 @@ function socket(io) {
                 message: "new game", 
                 event: "new"
             };
+            await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
             await Mongo.updateAllWordsInRoom(data.roomname, await newGame());
             await Mongo.resetRoles(data.roomname);
