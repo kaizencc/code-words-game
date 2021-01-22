@@ -14,10 +14,7 @@ function randomTeam(){
 function socket(io) {
     io.on('connection', (socket) => {
 
-        socket.on('joined-user', async (data) =>{ 
-            // TODO: check if username is in database.
-            // if it is, just update the socket with the new id and remove the deleted mark.
-
+        socket.on('joined-user', async (data) => { 
             // Store connected user in database.
             var user = {
                 socket: socket.id,
@@ -26,11 +23,17 @@ function socket(io) {
                 team: randomTeam(),
                 stats: [],
                 toBeDeleted: false,
-                
             }
+
             firstPlayer = true;
             if(await Mongo.roomExists(data.roomname)){
-                Mongo.addPlayer(data.roomname, user);
+                // Check to see if username exists as a recently marked user.
+                if (await Mongo.deletedUsernameExistsInRoom(data.roomname, data.username)){
+                    // Take over old username that exists.
+                    await Mongo.updateSocketId(data.roomname, data.username, socket.id);
+                } else {
+                    Mongo.addPlayer(data.roomname, user);
+                }
                 firstPlayer = false;
             }
             else{
@@ -331,29 +334,24 @@ function socket(io) {
             const username = await Mongo.removePlayerBySocketId(roomname, socketId);
 
             // Check to make sure user has left the room and not refreshed.            
-            // if (username){
-            //     setTimeout(async function () {
-            //         const currentUsers = await Mongo.getUsersInRoom(roomname);
-            //         if (currentUsers.map(x => x.username).includes(username) === false) {
-            //             if (currentUsers.length === 0){
-            //                 console.log("deleting room");
-            //                 Mongo.deleteRoom(roomname);
-            //             } else {
-            //                 // Send disconnect message in chat
-            //                 const messageObject = {
-            //                     username: username, 
-            //                     message: "", 
-            //                     event: "disconnected"
-            //                 };
-            //                 await Mongo.addMessage(roomname, messageObject);
-            //                 io.to(roomname).emit('chat', messageObject);
-                            
-            //                 // Send online users array.
-            //                 io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)))
-            //             }
-            //         }
-            //     }, 3000);
-            // }
+            if (username){
+                setTimeout(async function () {
+                    const currentUsers = await Mongo.getUsersInRoom(roomname);
+                    if (currentUsers.map(x => x.username).includes(username) === false) {
+                        // Send disconnect message in chat
+                        const messageObject = {
+                            username: username, 
+                            message: "", 
+                            event: "disconnected"
+                        };
+                        await Mongo.addMessage(roomname, messageObject);
+                        io.to(roomname).emit('chat', messageObject);
+                        
+                        // Send online users array.
+                        io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)));
+                    }
+                }, 3000);
+            }
             
         })
     })

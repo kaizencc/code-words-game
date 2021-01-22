@@ -1,3 +1,4 @@
+const { verify } = require('crypto');
 const {MongoClient} = require('mongodb');
 const {initializeMongoWordlists} = require ('./addWordsScript');
  
@@ -65,7 +66,6 @@ async function closeMongoConnection(){
 
 // Helper function to get players from a room.
 async function getPlayersInRoom(room){
-    // TODO: filter out players marked as deleted.
     const document = await users.findOne({ _id: room});
     if(document){
         return document.players;
@@ -105,13 +105,23 @@ async function roomExists(room) {
 // Get player by socketId.
 async function getPlayerBySocketId(room, socketId){
     const result = await getPlayersInRoom(room);
-    if (result){
+    if (result) {
         const socketUser = result.filter(function (player) {
             return player.socket === socketId;
         });
         const username = socketUser[0].username;
         return username;
     }
+}
+
+// Updates a player's socket Id (and reset deleted mark)
+async function updateSocketId(room, username, socketId){
+    var query = { _id: room, "players.username": username};
+    var updateDocument = { $set: { "players.$.socket": socketId}};
+    await updateMongoDocument(query, updateDocument);
+    query = { _id: room, "players.username": username};
+    updateDocument = { $set: { "players.$.toBeDeleted": false}};
+    await updateMongoDocument(query, updateDocument);
 }
 
 // Remove player from a room that already exists.
@@ -127,6 +137,24 @@ async function removePlayerBySocketId(room, socketId){
         console.log(`${username} removed from ${room}`);
         return username;
     }
+}
+
+async function deletedUsernameExistsInRoom(room, username){
+    const players = await getPlayersInRoom(room);
+    if(players){
+        const p = players.filter(player => player.username === username);
+        if (p.length > 1){
+            console.log(`ERROR: length should be 1, but is ${p.length}`);
+        }
+        if (p.length === 1){
+            if (!p[0].toBeDeleted){
+                console.log("ERROR: toBeDeleted is not true");
+                return false;
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 // async function garbageCollector(room){
@@ -147,7 +175,7 @@ async function removePlayerBySocketId(room, socketId){
 // Returns an array of all the usernames in a room.
 async function getUsersInRoom(room){
     const result = await getPlayersInRoom(room);
-    var players = []
+    var players = [];
     if (result){
         result.forEach((player) => {
             if (!player.toBeDeleted){
@@ -378,9 +406,11 @@ module.exports = {
     deleteRoom, 
     addPlayer,
     getPlayerBySocketId,
+    updateSocketId,
     removePlayerBySocketId,
     roomExists,
     getUsersInRoom,
+    deletedUsernameExistsInRoom,
     getRolesInRoom,
     getUsernameOfRedSpymaster,
     getUsernameOfRedOperator,
