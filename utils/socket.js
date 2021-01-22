@@ -25,6 +25,7 @@ function socket(io) {
                 show: false,
                 team: randomTeam(),
                 stats: [],
+                toBeDeleted: false,
                 
             }
             firstPlayer = true;
@@ -330,29 +331,29 @@ function socket(io) {
             const username = await Mongo.removePlayerBySocketId(roomname, socketId);
 
             // Check to make sure user has left the room and not refreshed.            
-            if (username){
-                setTimeout(async function () {
-                    const currentUsers = await Mongo.getUsersInRoom(roomname);
-                    if (currentUsers.map(x => x.username).includes(username) === false) {
-                        if (currentUsers.length === 0){
-                            console.log("deleting room");
-                            Mongo.deleteRoom(roomname);
-                        } else {
-                            // Send disconnect message in chat
-                            const messageObject = {
-                                username: username, 
-                                message: "", 
-                                event: "disconnected"
-                            };
-                            await Mongo.addMessage(roomname, messageObject);
-                            io.to(roomname).emit('chat', messageObject);
+            // if (username){
+            //     setTimeout(async function () {
+            //         const currentUsers = await Mongo.getUsersInRoom(roomname);
+            //         if (currentUsers.map(x => x.username).includes(username) === false) {
+            //             if (currentUsers.length === 0){
+            //                 console.log("deleting room");
+            //                 Mongo.deleteRoom(roomname);
+            //             } else {
+            //                 // Send disconnect message in chat
+            //                 const messageObject = {
+            //                     username: username, 
+            //                     message: "", 
+            //                     event: "disconnected"
+            //                 };
+            //                 await Mongo.addMessage(roomname, messageObject);
+            //                 io.to(roomname).emit('chat', messageObject);
                             
-                            // Send online users array.
-                            io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)))
-                        }
-                    }
-                }, 3000);
-            }
+            //                 // Send online users array.
+            //                 io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)))
+            //             }
+            //         }
+            //     }, 3000);
+            // }
             
         })
     })

@@ -104,9 +104,9 @@ async function roomExists(room) {
 
 // Get player by socketId.
 async function getPlayerBySocketId(room, socketId){
-    const doc = await users.findOne({ _id: room});
-    if(doc){
-        const socketUser = doc.players.filter(function (player) {
+    const result = await getPlayersInRoom(room);
+    if (result){
+        const socketUser = result.filter(function (player) {
             return player.socket === socketId;
         });
         const username = socketUser[0].username;
@@ -118,17 +118,29 @@ async function getPlayerBySocketId(room, socketId){
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
     const username = await getPlayerBySocketId(room, socketId);
-    // TODO: instead of pulling, mark as deleted.
     if (username){
-        // Remove user.
-        const query = { _id: room};
-        const updateDocument = { $pull: { "players": { "socket": socketId} }};
+        // Mark as to be deleted
+        const query = { _id: room, "players.username": username};
+        const updateDocument = { $set: { "players.$.toBeDeleted": true}};
         await updateMongoDocument(query, updateDocument);
         
         console.log(`${username} removed from ${room}`);
         return username;
     }
 }
+
+// async function garbageCollector(room){
+//     const result = await getPlayersInRoom(room);
+//     if (result){
+//         result.forEach((player) => {
+//             if(player.toBeDeleted){
+//                 const query = { _id: room};
+//                 const updateDocument = { $pull: { "players": { "socket": socketId} }};
+//                 await updateMongoDocument(query, updateDocument);
+//             }
+//         })
+//     }
+// }
 
 // TODO: function that deletes marked players.
 
@@ -138,10 +150,12 @@ async function getUsersInRoom(room){
     var players = []
     if (result){
         result.forEach((player) => {
-            players.push({
-                username: player.username,
-                team: player.team,
-            });
+            if (!player.toBeDeleted){
+                players.push({
+                    username: player.username,
+                    team: player.team,
+                });
+            }
         }); 
     }
     return players;
@@ -153,7 +167,9 @@ async function getRolesInRoom(room){
     var roles = {}
     if(result){
         result.forEach((player) => {
-            roles[player.username] = player.show;
+            if (!player.toBeDeleted){
+                roles[player.username] = player.show;
+            }
         })
     }
     return roles;
@@ -161,7 +177,7 @@ async function getRolesInRoom(room){
 
 async function getUsernameOfRedSpymaster(room){
     const players = await getPlayersInRoom(room);
-    const p = players.filter(player => player.show === true && player.team === "red");
+    const p = players.filter(player => player.show === true && player.team === "red" && !player.toBeDeleted);
     if(p.length > 0){
         return p[0].username;
     } 
@@ -171,7 +187,7 @@ async function getUsernameOfRedSpymaster(room){
 
 async function getUsernameOfRedOperator(room){
     const players = await getPlayersInRoom(room);
-    const p = players.filter(player => player.show === false && player.team === "red");
+    const p = players.filter(player => player.show === false && player.team === "red" && !player.toBeDeleted);
     if(p.length > 0){
         return p[0].username;
     } 
@@ -181,7 +197,7 @@ async function getUsernameOfRedOperator(room){
 
 async function getUsernameOfBlueSpymaster(room){
     const players = await getPlayersInRoom(room);
-    const p = players.filter(player => player.show === true && player.team === "blue");
+    const p = players.filter(player => player.show === true && player.team === "blue" && !player.toBeDeleted);
     if(p.length > 0){
         return p[0].username;
     } 
@@ -191,7 +207,7 @@ async function getUsernameOfBlueSpymaster(room){
 
 async function getUsernameOfBlueOperator(room){
     const players = await getPlayersInRoom(room);
-    const p = players.filter(player => player.show === false && player.team === "blue");
+    const p = players.filter(player => player.show === false && player.team === "blue" && !player.toBeDeleted);
     if(p.length > 0){
         return p[0].username;
     } 
@@ -342,11 +358,13 @@ async function getAllStatisticsInRoom(room){
     var statistics = [];
     if (result){
         result.forEach((player) => {
-            statistics.push({
-                username: player.username,
-                stats: player.stats,
-                team: player.team,
-            });
+            if (!player.toBeDeleted){
+                statistics.push({
+                    username: player.username,
+                    stats: player.stats,
+                    team: player.team,
+                });
+            }
         }); 
     }
     return statistics;
