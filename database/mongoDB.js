@@ -65,6 +65,7 @@ async function closeMongoConnection(){
 
 // Helper function to get players from a room.
 async function getPlayersInRoom(room){
+    // TODO: filter out players marked as deleted.
     const document = await users.findOne({ _id: room});
     if(document){
         return document.players;
@@ -117,6 +118,7 @@ async function getPlayerBySocketId(room, socketId){
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
     const username = await getPlayerBySocketId(room, socketId);
+    // TODO: instead of pulling, mark as deleted.
     if (username){
         // Remove user.
         const query = { _id: room};
@@ -127,6 +129,8 @@ async function removePlayerBySocketId(room, socketId){
         return username;
     }
 }
+
+// TODO: function that deletes marked players.
 
 // Returns an array of all the usernames in a room.
 async function getUsersInRoom(room){

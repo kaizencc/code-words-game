@@ -15,6 +15,9 @@ function socket(io) {
     io.on('connection', (socket) => {
 
         socket.on('joined-user', async (data) =>{ 
+            // TODO: check if username is in database.
+            // if it is, just update the socket with the new id and remove the deleted mark.
+
             // Store connected user in database.
             var user = {
                 socket: socket.id,
@@ -320,6 +323,8 @@ function socket(io) {
             var socketId = rooms[0];
             var roomname = rooms[1];
             //const username = await Mongo.getPlayerBySocketId(roomname, socketId);
+
+            // TODO: Mark player as deleted but don't delete yet
 
             // Remove player from room.
             const username = await Mongo.removePlayerBySocketId(roomname, socketId);

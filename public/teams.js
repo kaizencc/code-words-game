@@ -86,7 +86,7 @@ $(document).ready(function() {
                 username: username,
                 roomname: roomname,
                 elementId: item.id,
-                team: "blue"
+                team: "blue",
             })
 
             // Broadcast to chat
@@ -109,6 +109,7 @@ function sendTeamMessage(team){
 }
 
 function updateTeamInDatabase(team){
+    sessionStorage.setItem('team',team);
     socket.emit('change-teams', {
         roomname: roomname, 
         username: username, 

@@ -13,17 +13,56 @@ const blueTeam = document.getElementById('blue-team');
 socket.on('board-game', (data) => {
     // Build board triggered by new game button.
     if (data.new){
+        console.log("new game new game");
         turnBroadcast.style.display = "none";
         unlockTeams();
         unlockRoles();
         resetTurns();
         endTimer();
-        redTeam.innerHTML = String(9);
-        blueTeam.innerHTML = String(8);
+        updateRedScore("9");
+        updateBlueScore("8");
     }
 
+    sessionStorage.setItem('username',username);
+    // If refreshed.
+    // if(sessionStorage.getItem('restore') === '1'){
+    //     console.log('restoring');
+    //     sessionStorage.setItem('restore','0');
+
+    //     // Saved score
+    //     redTeam.innerHTML = sessionStorage.getItem('redscore');
+    //     blueTeam.innerHTML = sessionStorage.getItem('bluescore');
+
+    //     // Saved team
+    //     if (sessionStorage.getItem('team') === 'red'){
+    //         if ()
+    //     }
+
+    //     // Saved display status
+    //     switch(sessionStorage.getItem('display')){
+    //         case "start":
+    //             showStartDisplay();
+    //             break;
+    //         case "form":
+    //             showFormDisplay();
+    //             lockRoles();
+    //             lockTeams();
+    //             break;
+    //         case "clue":
+    //             showClueDisplay();
+    //             lockRoles();
+    //             lockTeams();
+    //             break;
+    //         case "idle":
+    //             showIdleDisplay();
+    //             lockRoles();
+    //             lockTeams();
+    //             break;
+    //     }
+    // }
+
     // Update role buttons.
-    role = data.roles[username]
+    role = data.roles[username];
     if (role){
         changeToSpyMaster();
     } else {
@@ -124,12 +163,12 @@ socket.on('found-word', (data) => {
         if (teamColor === "red"){
             winningTeam = "blue";
             finalBlueScore = "0";
-            blueTeam.innerHTML = "0";
+            updateBlueScore("0");
             finalRedScore = redTeam.innerHTML;
         } else {
             winningTeam = "red";
             finalRedScore = "0";
-            redTeam.innerHTML = "0";
+            updateRedScore("0");
             finalBlueScore = blueTeam.innerHTML;
         }
 
@@ -168,7 +207,7 @@ socket.on('found-word', (data) => {
         }
 
         // Red team subtracts a point
-        redTeam.innerHTML = String(redScore-1);
+        updateRedScore(String(redScore-1));
     } else if (color === buttonColor.BLUE){
         blueScore = Number(blueTeam.innerHTML);
 
@@ -193,7 +232,7 @@ socket.on('found-word', (data) => {
         }
 
         // Blue team subtracts a point
-        blueTeam.innerHTML = String(blueScore-1);
+        updateBlueScore(String(blueScore-1));
     } else {
         if (data.username === username){
             // Yellow button indicates turn is over.
@@ -204,6 +243,16 @@ socket.on('found-word', (data) => {
         }
     }
 })
+
+function updateBlueScore(score){
+    blueTeam.innerHTML = score;
+    sessionStorage.setItem('bluescore', score);
+}
+
+function updateRedScore(score){
+    redTeam.innerHTML = score;
+    sessionStorage.setItem('redscore', score);
+}
 
 /************************************************************************************
  *                              Switch Role Radio Buttons

@@ -170,7 +170,13 @@ function turnFinished(){
 
 const idleClue = document.getElementById('idle-clue');
 
+/************************************************************************************
+ *                              Gameplay Helper Functions
+ ***********************************************************************************/
+
+
 function showStartDisplay(){
+    sessionStorage.setItem('display','start');
     displayStart.style.display = null;
     displayForm.style.display = "none";
     displayClue.style.display = "none";
@@ -178,6 +184,7 @@ function showStartDisplay(){
 }
 
 function showFormDisplay(){
+    sessionStorage.setItem('display','form');
     displayStart.style.display = "none";
     displayForm.style.display = null;
     displayClue.style.display = "none";
@@ -185,6 +192,7 @@ function showFormDisplay(){
 }
 
 function showClueDisplay(){
+    sessionStorage.setItem('display','clue');
     displayStart.style.display = "none";
     displayForm.style.display = "none";
     displayClue.style.display = null;
@@ -192,6 +200,7 @@ function showClueDisplay(){
 }
 
 function showIdleDisplay(){
+    sessionStorage.setItem('display','idle');
     displayStart.style.display = "none";
     displayForm.style.display = "none";
     displayClue.style.display = "none";
@@ -215,6 +224,11 @@ function turnOnButtons(){
         }
     }
 }
+
+/************************************************************************************
+ *                              Gameplay Socket Communications
+ ***********************************************************************************/
+
 
 socket.on('reset-display', ()=>{
     receivedClue.innerHTML = "";

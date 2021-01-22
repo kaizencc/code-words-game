@@ -22,8 +22,10 @@ app.get('/', (req, res) => {
     alert = alertMessage.NONE
 })
 
+
 // Middleware to validate room creation
 app.use('/room', async function (req, res, next) {
+    console.log("middleware");
     alert = alertMessage.NONE;
     const action = req.query.action;
     const username = req.body.username;
@@ -45,6 +47,10 @@ app.use('/room', async function (req, res, next) {
         return;
     }
     next();
+
+    // TODO: write function for getting users and checking if markedAsDelete is on.
+    // if it is, allow (will update with new socketid later)
+    // if it is not, same alert.
 })
 
 // Get username and roomname from form and pass it to room
