@@ -10,6 +10,12 @@ function randomTeam(){
     }
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
 // Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
@@ -27,6 +33,8 @@ function socket(io) {
 
             firstPlayer = true;
             if(await Mongo.roomExists(data.roomname)){
+                // Janky, but needs to wait a second to make sure disconnecting database calls are finished.
+                await sleep(100);
                 // Check to see if username exists as a recently marked user.
                 if (await Mongo.deletedUsernameExistsInRoom(data.roomname, data.username)){
                     // Take over old username that exists.
@@ -324,14 +332,13 @@ function socket(io) {
         // Remove user from memory when they disconnect.
         socket.on('disconnecting', async ()=>{
             var rooms = Object.keys(socket.rooms);
-            var socketId = rooms[0];
-            var roomname = rooms[1];
-            //const username = await Mongo.getPlayerBySocketId(roomname, socketId);
-
-            // TODO: Mark player as deleted but don't delete yet
+            rooms = rooms.filter(item => item!=socket.id);
+            var roomname = rooms[0];
 
             // Remove player from room.
-            const username = await Mongo.removePlayerBySocketId(roomname, socketId);
+            console.log(roomname, "ROOOM", rooms, socket.rooms, socket.id);
+            var username = await Mongo.removePlayerBySocketId(roomname, socket.id);
+            console.log("BIG", username);
 
             // Check to make sure user has left the room and not refreshed.            
             if (username){
@@ -350,7 +357,7 @@ function socket(io) {
                         // Send online users array.
                         io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)));
                     }
-                }, 3000);
+                }, 5000);
             }
             
         })

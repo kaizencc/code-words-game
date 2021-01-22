@@ -96,7 +96,6 @@ async function addPlayer(room, player){
 // Find a room by roomname (_id).
 async function roomExists(room) {
     const result = await users.countDocuments({_id: room}, { limit: 1 })
-    console.log(result);
     if (result === 1) {
         return true;
     } else return false;
@@ -139,6 +138,7 @@ async function removePlayerBySocketId(room, socketId){
     }
 }
 
+// Check to see if username is among the deleted players (used when checking for refresh).
 async function deletedUsernameExistsInRoom(room, username){
     const players = await getPlayersInRoom(room);
     if(players){
@@ -157,18 +157,24 @@ async function deletedUsernameExistsInRoom(room, username){
     return false;
 }
 
-// async function garbageCollector(room){
-//     const result = await getPlayersInRoom(room);
-//     if (result){
-//         result.forEach((player) => {
-//             if(player.toBeDeleted){
-//                 const query = { _id: room};
-//                 const updateDocument = { $pull: { "players": { "socket": socketId} }};
-//                 await updateMongoDocument(query, updateDocument);
-//             }
-//         })
-//     }
-// }
+// Deletes all marked players and then checks if the room can be deleted as well.
+async function garbageCollector(room){
+    const result = await getPlayersInRoom(room);
+    if (result){
+        result.forEach(async (player) => {
+            if(player.toBeDeleted){
+                const query = { _id: room};
+                const updateDocument = { $pull: { "players": { "socket": socketId} }};
+                await updateMongoDocument(query, updateDocument);
+            }
+        })
+    }
+    const users = await getUsersInRoom(room);
+    if (users.length === 0){
+        await deleteRoom(room);
+    }
+
+}
 
 // TODO: function that deletes marked players.
 
@@ -432,5 +438,6 @@ module.exports = {
     getWordArray,
     getAllStatisticsInRoom,
     addTurnStatistics,
+    garbageCollector,
 };
  
