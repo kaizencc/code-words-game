@@ -5,6 +5,10 @@
 
 // Injects information of the game to the end game modal.
 socket.on('game-over', async (data) => {
+    // Allow user to toggle between roles after clicking out of modal.
+    endTimer();
+    unlockRoles();
+
     console.log("game over");
     createModalTitle(data.winner);
     createModalFinalScores(data.redScore, data.blueScore, data.winner);
@@ -57,6 +61,8 @@ function sortTimeByAvg(playerStats){
         var avg=0;
         if (playerStats[i].stats.length > 0){
             avg = totalTime/playerStats[i].stats.length;
+            // Round to 2 decimal places if necessary.
+            avg = Math.round((avg + Number.EPSILON) * 100) / 100;
         }
 
         avgTimes.push({

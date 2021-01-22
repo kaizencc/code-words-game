@@ -9,6 +9,7 @@ var timer;
 function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
+        sessionStorage.setItem('time', count);
         if(count == 0) {
             if (forPlayer === username){
                 socket.emit('time-up', {
@@ -32,10 +33,14 @@ function clearTimer(){
 function endTimer(){
     clearInterval(timer);
     counter.innerHTML = "----";
+    sessionStorage.removeItem('time');
+    sessionStorage.removeItem('time-for');
 }
 
 // Start the clock.
 function clock(forPlayer){
+    sessionStorage.setItem('time', '60');
+    sessionStorage.setItem('time-for', forPlayer);
     clearTimer();
     startTimer(60, forPlayer);
 }

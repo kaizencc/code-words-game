@@ -87,6 +87,8 @@ function newGameSettings(){
     updateBlueScore("8");
     sessionStorage.removeItem('broadcast-msg');
     sessionStorage.removeItem('broadcast-color');
+    sessionStorage.removeItem('time');
+    sessionStorage.removeItem('time-for');
 }
 
 /************************************************************************************
@@ -174,7 +176,7 @@ socket.on('found-word', (data) => {
         if (teamColor !== "red" && data.username === username){
             socket.emit('turn-over', {
                 roomname: roomname,
-                username, username,
+                username: username,
             });
         }
 
@@ -199,7 +201,7 @@ socket.on('found-word', (data) => {
         if (teamColor !== "blue" && data.username === username){
             socket.emit('turn-over', {
                 roomname: roomname,
-                username, username,
+                username: username,
             });
         }
 
@@ -222,7 +224,7 @@ socket.on('found-word', (data) => {
             // Yellow button indicates turn is over.
             socket.emit('turn-over', {
                 roomname: roomname,
-                username, username,
+                username: username,
             });
         }
     }

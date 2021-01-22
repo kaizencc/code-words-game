@@ -37,7 +37,9 @@ function setSavedBroadcast(){
 }
 
 function setSavedTime(){
-
+    if (sessionStorage.getItem('time')){
+        startTimer(Number(sessionStorage.getItem('time'))-2, sessionStorage.getItem('time-for'));
+    }
 }
 
 function setSavedDisplay(){
@@ -57,12 +59,14 @@ function setSavedDisplay(){
             break;
         case "clue":
             showClueDisplay();
+            setReceivedClue(sessionStorage.getItem('received-clue'));
             lockRoles();
             lockTeams();
             turnOnButtons();
             break;
         case "idle":
             showIdleDisplay();
+            setIdleClue(sessionStorage.getItem('idle-clue'));
             lockRoles();
             lockTeams();
             turnOffButtons();

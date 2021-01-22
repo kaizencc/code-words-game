@@ -231,20 +231,21 @@ function turnOnButtons(){
 
 
 socket.on('reset-display', ()=>{
-    receivedClue.innerHTML = "";
-    idleClue.innerHTML = "";
+    setReceivedClue("");
+    setIdleClue("");
     showStartDisplay();
 })
 
 socket.on('show-current-spy', (data)=>{
     clock(data.username);
 
-    receivedClue.innerHTML = " ";
-    idleClue.innerHTML = " ";
+    setReceivedClue("");
+    setIdleClue("");
     if (data.username === username){
         showFormDisplay();
         broadcastYourTurn(data.turn);
     } else {
+        turnOffButtons();
         showIdleDisplay();
         if (data.turn){
             broadcastTurn("Red Spymaster's turn", data.turn);
@@ -257,13 +258,14 @@ socket.on('show-current-spy', (data)=>{
 socket.on('show-current-operator', (data)=>{
     clock(data.username);
 
-    receivedClue.innerHTML = data.clue + ", " + data.number;
-    idleClue.innerHTML = data.clue + ", " + data.number;
+    setReceivedClue(data.clue + ", " + data.number);
+    setIdleClue(data.clue + ", " + data.number);
     if (data.username === username){
         turnOnButtons();
         showClueDisplay();
         broadcastYourTurn(data.turn);
     } else {
+        turnOffButtons();
         showIdleDisplay();
         if (data.turn){
             broadcastTurn("Red Operator's turn", data.turn);
@@ -272,6 +274,16 @@ socket.on('show-current-operator', (data)=>{
         }
     }
 })
+
+function setReceivedClue(text){
+    receivedClue.innerHTML = text;
+    sessionStorage.setItem('received-clue', text);
+}
+
+function setIdleClue(text){
+    idleClue.innerHTML = text;
+    sessionStorage.setItem('idle-clue', text);
+}
 
 function broadcastTurn(text, turn){
     changeBroadcast(text, null);
