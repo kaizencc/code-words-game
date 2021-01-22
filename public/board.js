@@ -24,42 +24,41 @@ socket.on('board-game', (data) => {
     }
 
     sessionStorage.setItem('username',username);
+    console.log('when it matters: ', sessionStorage.getItem('restore'))
     // If refreshed.
-    // if(sessionStorage.getItem('restore') === '1'){
-    //     console.log('restoring');
-    //     sessionStorage.setItem('restore','0');
+    if(sessionStorage.getItem('restore') === '1'){
+        console.log('restoring');
+        sessionStorage.setItem('restore','0');
+        console.log('after update: ', sessionStorage.getItem('restore'))
+        // Saved score
+        redTeam.innerHTML = sessionStorage.getItem('redscore');
+        blueTeam.innerHTML = sessionStorage.getItem('bluescore');
 
-    //     // Saved score
-    //     redTeam.innerHTML = sessionStorage.getItem('redscore');
-    //     blueTeam.innerHTML = sessionStorage.getItem('bluescore');
-
-    //     // Saved team
-    //     if (sessionStorage.getItem('team') === 'red'){
-    //         if ()
-    //     }
-
-    //     // Saved display status
-    //     switch(sessionStorage.getItem('display')){
-    //         case "start":
-    //             showStartDisplay();
-    //             break;
-    //         case "form":
-    //             showFormDisplay();
-    //             lockRoles();
-    //             lockTeams();
-    //             break;
-    //         case "clue":
-    //             showClueDisplay();
-    //             lockRoles();
-    //             lockTeams();
-    //             break;
-    //         case "idle":
-    //             showIdleDisplay();
-    //             lockRoles();
-    //             lockTeams();
-    //             break;
-    //     }
-    // }
+        // Saved display status
+        switch(sessionStorage.getItem('display')){
+            case "start":
+                console.log("I'm here");
+                showStartDisplay();
+                unlockRoles();
+                unlockTeams();
+                break;
+            case "form":
+                showFormDisplay();
+                lockRoles();
+                lockTeams();
+                break;
+            case "clue":
+                showClueDisplay();
+                lockRoles();
+                lockTeams();
+                break;
+            case "idle":
+                showIdleDisplay();
+                lockRoles();
+                lockTeams();
+                break;
+        }
+    }
 
     // Update role buttons.
     role = data.roles[username];
@@ -270,6 +269,7 @@ function changeToFieldOperator(){
 }
 
 function spyEventHandler() {
+    console.log("hadsf");
     changeToSpyMaster();
     socket.emit('role-change-spy', {
         username: username, 

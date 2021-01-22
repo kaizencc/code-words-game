@@ -32,9 +32,9 @@ function socket(io) {
             }
 
             firstPlayer = true;
-            if(await Mongo.roomExists(data.roomname)){
+            if(await Mongo.roomExists(data.roomname, false)){
                 // Janky, but needs to wait a second to make sure disconnecting database calls are finished.
-                await sleep(100);
+                await sleep(500);
                 // Check to see if username exists as a recently marked user.
                 if (await Mongo.deletedUsernameExistsInRoom(data.roomname, data.username)){
                     // Take over old username that exists.
@@ -58,6 +58,12 @@ function socket(io) {
 
             // Joining the Socket Room.
             socket.join(data.roomname);
+
+            // If not a refresh, will send join message.
+            io.to(data.roomname).emit('check-refresh', {
+                username: data.username, 
+                roomname: data.roomname,
+            });
     
             // Creating new board in the room.
             io.to(data.roomname).emit('board-game', {
@@ -80,12 +86,6 @@ function socket(io) {
                     io.to(data.roomname).emit('chat', messageObject);
                 });
             }
-
-            // If not a refresh, will send join message.
-            io.to(data.roomname).emit('check-refresh', {
-                username: data.username, 
-                roomname: data.roomname
-            });
     
             // Send online users array.
             io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)))
@@ -336,7 +336,6 @@ function socket(io) {
             var roomname = rooms[0];
 
             // Remove player from room.
-            console.log(roomname, "ROOOM", rooms, socket.rooms, socket.id);
             var username = await Mongo.removePlayerBySocketId(roomname, socket.id);
             console.log("BIG", username);
 
@@ -357,7 +356,7 @@ function socket(io) {
                         // Send online users array.
                         io.to(roomname).emit('online-users', (await Mongo.getUsersInRoom(roomname)));
                     }
-                }, 5000);
+                }, 10000);
             }
             
         })

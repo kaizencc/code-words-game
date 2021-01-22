@@ -94,8 +94,12 @@ async function addPlayer(room, player){
 }
 
 // Find a room by roomname (_id).
-async function roomExists(room) {
-    const result = await users.countDocuments({_id: room}, { limit: 1 })
+async function roomExists(room, homepage) {
+    // See if room exists but can be deleted.
+    if (homepage){
+        await garbageCollector(room)
+    };
+    const result = await users.countDocuments({_id: room}, { limit: 1 });
     if (result === 1) {
         return true;
     } else return false;
@@ -164,7 +168,7 @@ async function garbageCollector(room){
         result.forEach(async (player) => {
             if(player.toBeDeleted){
                 const query = { _id: room};
-                const updateDocument = { $pull: { "players": { "socket": socketId} }};
+                const updateDocument = { $pull: { "players": { "socket": player.socketId} }};
                 await updateMongoDocument(query, updateDocument);
             }
         })

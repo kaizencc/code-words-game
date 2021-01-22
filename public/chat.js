@@ -137,6 +137,7 @@ socket.on('check-refresh', (data) =>{
             // not first visit, so refreshed
             console.log('refreshed');
             sessionStorage.setItem('restore','1');
+            console.log('onrefresh', sessionStorage.getItem('restore'));
         } else {
             sessionStorage.setItem('refresh', '1');
             console.log('first time');

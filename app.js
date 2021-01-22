@@ -29,7 +29,7 @@ app.use('/room', async function (req, res, next) {
     const action = req.query.action;
     const username = req.body.username;
     const roomname = req.body.roomname;
-    const exists = await Mongo.roomExists(roomname);
+    const exists = await Mongo.roomExists(roomname, true);
     console.log("exists", exists);
     console.log("act", action);
     if (action == "create" && exists) {
