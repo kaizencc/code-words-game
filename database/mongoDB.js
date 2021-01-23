@@ -27,8 +27,8 @@ async function openMongoConnection(){
         users = db.collection("users");
 
         wordDb = client.db('words');
-        currentWordSet = wordDb.collection("codenames")
-
+        currentWordSet = wordDb.collection("codenames2");
+        
         // Remove all documents in collection at start of application.
         clearAll();
 

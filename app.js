@@ -61,6 +61,11 @@ app.get('/leaderboard', (req, res)=>{
     res.render('leaderboard');
 })
 
+// Rules
+app.get('/rules', (req, res) => {
+    res.render('rules');
+})
+
 // Rooms
 app.get('/room', (req, res)=>{
     res.render('room');
