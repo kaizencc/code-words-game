@@ -64,6 +64,9 @@ function createButton(word, role, myturn){
     if (role || word.show){
         btn.classList.add(word.color);
         btn.disabled = true;
+        if(word.color === buttonColor.BLACK){
+            btn.innerHTML = gem();
+        }
     } else if (myturn){
         btn.classList.add(buttonColor.GRAY)
         btn.disabled = false;
@@ -74,6 +77,12 @@ function createButton(word, role, myturn){
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
     return btn;
+}
+
+function gem(){
+    return `<span class="text-white">
+        <i class="far fa-gem"></i>
+        </span>`
 }
 
 function newGameSettings(){
@@ -127,9 +136,9 @@ board.addEventListener('click', function(e){
 
 const buttonColor = {
     BLUE: 'btn-primary',
-    GRAY: 'btn-outline-secondary',
+    GRAY: 'btn-secondary',
     RED: 'btn-danger',
-    BLACK: 'btn-dark',
+    BLACK: 'btn-success',
     YELLOW: 'btn-warning'
 }
 

@@ -2,9 +2,9 @@ const Mongo = require('../database/mongoDB');
 
 const buttonColor = {
     BLUE: 'btn-primary',
-    GRAY: 'btn-outline-secondary',
+    GRAY: 'btn-secondary',
     RED: 'btn-danger',
-    BLACK: 'btn-dark',
+    BLACK: 'btn-success',
     YELLOW: 'btn-warning'
 }
 

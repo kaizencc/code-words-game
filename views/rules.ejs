@@ -8,26 +8,33 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
+<body style="padding-top: 10px;">
+    <nav class="navbar fixed-top navbar-light bg-light">
+        <div class="col-2">
+            <form action="/" method="GET">
+                <button name="home" class="w-100 btn btn-lg btn-outline-dark" type="submit">Back</button>
+            </form>            
+        </div>
+        <div class="col-10">
+            <div class="progress">
+                <div id="myBar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <div class="row mt-5">
-            <div class="col-12">
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
         </div>
         <div class="row justify-content-center mt-5">
             <div class="col-6">
                 <div class="row align-items-center">
                     <div class="col-12 text-center">
                         <h2>
-                            <span class="text-primary">
-                                <i class="fas fa-user-secret"></i>
+                            <span class="text-success">
+                                <i class="fas fa-gem"></i>
                             </span>
-                            Rules to Spycodes.io
-                            <span class="text-danger">
-                                <i class="fas fa-key"></i>
+                            Rules to CryptoNight
+                            <span class="text-success">
+                                <i class="fas fa-gem"></i>
                             </span>
                         </h2>
                     </div>
@@ -49,11 +56,46 @@
                 <div class="row">
                     <div class="col text-center">
                         <p>
-                            Spycodes is an online spin of popular board game <a href="https://en.wikipedia.org/wiki/Codenames_(board_game)" target="_blank">Codenames</a>.
-                            The game is for 4 players, 2 on each team. Each team has a "spymaster" and a "field operator". 
-                            The game works by having the "spymaster" give one-word clues that can point to multiple words on the board. 
-                            The other players on the team attempt to guess their team's words while avoiding the words of the other team.
+                            CryptoNight is an online spin of popular board game <a href="https://en.wikipedia.org/wiki/Codenames_(board_game)" target="_blank">Codenames</a>.
+                            In CryptoNight, the objective is simple: "diffuse" all your teams bombs before the other team, without accidentally selecting the kryptonite clue!
+                            The game is for 4 players, 2 on each team. Each team has a "Superhero" character and a "Sidekick" character. 
+                            In turns, the Sidekick gives one-word clues that can point to multiple words on the board, and the Superhero must blindly select the correct words. 
+                            Be careful though! Each of the Superhero's guesses holds risk – they could accidentally select a dud, the other team's bomb, or the kryptonite!
+                            Compete to see which team can claim to be the best superhero duo!
                         </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>
+                            <span class="text-danger">
+                                <i class="fas fa-user-secret"></i>
+                            </span>
+                            Getting started:
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <p>
+                            You will need exactly 4 players to play CryptoNight. 
+                            To get started, one player can create a room and the other three can join into the room that was created.
+                            In the room, each player can manually toggle which team they are on and which role to play.
+                            You can also communicate with each other using the chat section, which will be available throughout the game.
+                            When everyone has split into teams of 2 each with a superhero and sidekick, click 'start game'!
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <img src="images/sidekick.png" class="img-fluid" alt="Sidekick">
+                    </div>
+                    <div class="col-6">
+                        <img src="images/superhero.png" class="img-fluid" alt="Superhero">
                     </div>
                 </div>
             </div>
@@ -66,21 +108,53 @@
                             <span class="text-primary">
                                 <i class="fas fa-user-secret"></i>
                             </span>
-                            Getting started:
+                            Playing the Game:
                         </h2>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col text-center">
                         <p>
-                            You will need exactly 4 players to play Spycodes. 
-                            To get started, one player can create a game and the other three can join the game that was created.
-
+                            The game board consists of 25 word "bombs", 9 of which are Red, 8 Blue, 1 Green (the kryptonite), and the rest Yellow.
+                            Red and Blue bombs correlate to each team, and Red has one extra because they get to go first.
+                            Yellow bombs are duds while the Green bomb is the kryptonite that loses the game for the team that selects it.
+                            Sidekicks should avoid sending clues that might suggest the kyrptonite clue is their own!
+                        </p>
+                        <p>
+                            Once the game has started, each player takes turns, starting with the Red Sidekick. 
+                            When the Red Sidekick has locked in their clue (or when time is up), the clue is sent over to the Red Superhero.
+                            The Red Superhero can guess until they make a mistake, they click 'end turn', or their time is up.
+                            Then, the process repeats itself with the Blue Sidekick and Superhero, and so on.
+                            Each time a red or blue bomb is diffused, their respective scores decrease by one.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>
+                            <span class="text-danger">
+                                <i class="fas fa-user-secret"></i>
+                            </span>
+                            Winning:
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <p>
+                            A team can win the game if they diffuse all the bombs of their colors. 
+                            To be successful, each Sidekick's clue can correspond to multiple words related to their bombs.
+                            If a Superhero selects the kryptonite clue, however, that team immediately loses and the game is over.
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/rules.js"></script>
 </body>
 </html>
