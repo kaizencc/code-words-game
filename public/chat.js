@@ -7,7 +7,9 @@ const redUsers = document.getElementById('users-red');
 const blueUsers = document.getElementById('users-blue');
 
 //Socket server URL
-const socket = io.connect('http://3.87.185.72:3000');
+const localIp = "localhost";
+const awsIp = "3.87.185.72";
+const socket = io.connect(`http://${localIp}:3000`);
 
 //Fetch URL Params from URL
 const queryString = window.location.search;

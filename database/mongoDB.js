@@ -28,7 +28,7 @@ async function openMongoConnection(){
 
         wordDb = client.db('words');
         currentWordSet = wordDb.collection("codenames2");
-        
+
         // Remove all documents in collection at start of application.
         clearAll();
 
@@ -153,7 +153,7 @@ async function deletedUsernameExistsInRoom(room, username){
         if (p.length === 1){
             if (!p[0].toBeDeleted){
                 console.log("ERROR: toBeDeleted is not true");
-                return false;
+                return true;
             }
             return true;
         }
