@@ -39,6 +39,7 @@ input {
     margin-left: 10px;
 }
 
+p { margin:0 !important; }
 
 
 ::placeholder {

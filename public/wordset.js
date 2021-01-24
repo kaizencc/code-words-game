@@ -2,6 +2,11 @@ const basicSet = document.getElementById('Basic');
 const nsfwSet = document.getElementById('NSFW');
 const duetSet = document.getElementById('Duet');
 
+var setTranslate = {};
+setTranslate["codewords"]="Basic";
+setTranslate["codewords-nsfw"] = "NSFW";
+setTranslate["codewords-duet"] = "Duet";
+
 basicSet.addEventListener('click', () =>{
     changeSet("codewords");
     moveIcon(basicSet);
@@ -21,6 +26,7 @@ function changeSet(newSet) {
     console.log("changing set");
     socket.emit('change-word-set', {
         roomname: roomname,
+        username, username,
         set: newSet,
     });
 }

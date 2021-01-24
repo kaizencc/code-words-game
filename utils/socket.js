@@ -97,7 +97,7 @@ function socket(io) {
             const messageObject = {
                 username: data.username, 
                 message: "", 
-                event: "joined"
+                event: "joined",
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
@@ -106,6 +106,14 @@ function socket(io) {
         // Changing word set.
         socket.on('change-word-set', async (data) => {
             await Mongo.changeWordSet(data.roomname, data.set);
+            // Emitting word set change to clients.
+            const messageObject = {
+                username: data.username, 
+                message: data.set, 
+                event: "wordset",
+            };
+            await Mongo.addMessage(data.roomname, messageObject);
+            io.to(data.roomname).emit('chat', messageObject);
         })
 
         // Creating a new game.

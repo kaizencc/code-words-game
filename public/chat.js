@@ -91,6 +91,9 @@ socket.on('chat', (data) => {
         case "switch":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>switched to ' + data.message + '</em></p>';
             break;
+        case "wordset":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>changed word sets to ' + setTranslate[data.message] + '</em></p>';
+            break;
         case "chat":
             output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
             feedback.innerHTML = '';
