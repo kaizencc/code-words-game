@@ -49,7 +49,8 @@ function socket(io) {
                 await Mongo.createRoom({
                     _id: data.roomname,
                     players: [user], // Array of players connected to the room.
-                    words: await newGame(), // Initialize the board for the room.
+                    words: await newGame(null), // Initialize the board for the room.
+                    wordSet: "codewords", // Initial name of word set.
                     messages: [], // Storage of chat messages for the room.
                     isRedTurn: false,
                 })
@@ -102,6 +103,11 @@ function socket(io) {
             io.to(data.roomname).emit('chat', messageObject);
         })
 
+        // Changing word set.
+        socket.on('change-word-set', async (data) => {
+            await Mongo.changeWordSet(data.roomname, data.set);
+        })
+
         // Creating a new game.
         socket.on('new-game', async (data) => {
             const messageObject = {
@@ -111,7 +117,7 @@ function socket(io) {
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
-            await Mongo.updateAllWordsInRoom(data.roomname, await newGame());
+            await Mongo.updateAllWordsInRoom(data.roomname, await newGame(data.roomname));
             await Mongo.resetRoles(data.roomname);
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 

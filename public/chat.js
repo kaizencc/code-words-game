@@ -29,13 +29,15 @@ socket.emit('joined-user', {
 
 // Sending data when user clicks send.
 send.addEventListener('click', () =>{
-    socket.emit('chat', {
-        username: username,
-        message: message.value,
-        roomname: roomname,
-        event: "chat",
-    })
-    message.value = '';
+    if (message.value !==""){
+        socket.emit('chat', {
+            username: username,
+            message: message.value,
+            roomname: roomname,
+            event: "chat",
+        })
+        message.value = "";
+    }
 })
 
 // Allow the enter key to send a message.

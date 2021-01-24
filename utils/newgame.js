@@ -8,9 +8,9 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
-async function newGame(){
+async function newGame(room){
     newWords = [];
-    const array = await Mongo.getWordArray();
+    const array = await Mongo.getWordArray(room);
     for(var i=0; i<25; i++){
         const button = {
             text: array[i].word,

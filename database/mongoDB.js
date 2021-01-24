@@ -1,4 +1,3 @@
-const { verify } = require('crypto');
 const {MongoClient} = require('mongodb');
 const {initializeMongoWordlists} = require ('./addWordsScript');
  
@@ -360,10 +359,29 @@ async function getAllMessages(room){
 
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+}
+
+// Change rooms wordSet.
+async function changeWordSet(room, newWordSet){
+    const query = { _id: room};
+    const updateDocument = { $set: { wordSet: newWordSet}};
+    await updateMongoDocument(query, updateDocument);
+}
+
+async function getWordSet(room){
+    const doc = await users.findOne({ _id: room});
+    console.log(doc.wordSet, room);
+    return doc.wordSet;
+}
 
 // Get word array from array of ids using the wordset collection.
-async function getWordArray(){
+async function getWordArray(room){
+    var currentWordSet;
+    if(room){
+        currentWordSet = wordDb.collection(await getWordSet(room));
+    } else {
+        currentWordSet = wordDb.collection("codewords");
+    }
     const size = await currentWordSet.countDocuments();
     var arr = []
     var usedSet = new Set();
@@ -440,6 +458,7 @@ module.exports = {
     addMessage,
     getAllMessages,
     getWordArray,
+    changeWordSet,
     getAllStatisticsInRoom,
     addTurnStatistics,
     garbageCollector,

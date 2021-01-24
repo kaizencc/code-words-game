@@ -96,9 +96,9 @@ async function createCollection(db, name){
 }
 
 function initializeMongoWordlists(db){
-    addWords(db, 'codenames',path.join(__dirname, "files/codes.csv")).catch(console.error);
-    addWords(db, 'codenames2',path.join(__dirname, "files/codes2.csv")).catch(console.error);
-    addWords(db, 'codenames-duet',path.join(__dirname, "files/code-duet.csv")).catch(console.error);
+    addWords(db, 'codewords',path.join(__dirname, "files/codes.csv")).catch(console.error);
+    addWords(db, 'codewords-nsfw',path.join(__dirname, "files/nsfw.csv")).catch(console.error);
+    addWords(db, 'codewords-duet',path.join(__dirname, "files/code-duet.csv")).catch(console.error);
 }
 
 module.exports = {initializeMongoWordlists};

@@ -25,7 +25,7 @@ function createModalTitle(winner){
     const modalTitle = document.getElementById('modal-title');
     modalTitle.innerHTML = "";
     modalTitle.appendChild(createIcon(winner));
-    modalTitle.appendChild(document.createTextNode(` ${capitalizeFirstLetter(winner)} Team Wins! `));
+    modalTitle.appendChild(document.createTextNode(` ${capitalizeFirstLetter(winner)} Wins! `));
     modalTitle.appendChild(createIcon(winner));
 }
 
