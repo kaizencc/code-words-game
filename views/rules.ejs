@@ -10,11 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Rakkas&display=swap" rel="stylesheet">
 </head>
-<style>
-    p {
-        font-size: 25px;
-    }
-</style>
 <body>
     <nav class="navbar fixed-top navbar-light bg-light">
         <div class="col-2">
@@ -62,14 +57,14 @@
                 </div>
                 <div class="row">
                     <div class="col text-center">
-                        <p>
+                        <h5>
                             CryptoNight is an online spin of popular board game <a href="https://en.wikipedia.org/wiki/Codenames_(board_game)" target="_blank">Codenames</a>.
                             In CryptoNight, the objective is simple: "diffuse" all your teams bombs before the other team, without accidentally selecting the kryptonite clue!
                             The game is for 4 players, 2 on each team. Each team has a "Superhero" character and a "Sidekick" character. 
                             In turns, the Sidekick gives one-word clues that can point to multiple words on the board, and the Superhero must blindly select the correct words. 
                             Be careful though! Each of the Superhero's guesses holds risk – they could accidentally select a dud, the other team's bomb, or the kryptonite!
                             Compete to see which team can claim to be the best superhero duo!
-                        </p>
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -88,13 +83,13 @@
                 </div>
                 <div class="row">
                     <div class="col text-center">
-                        <p>
+                        <h5>
                             You will need exactly 4 players to play CryptoNight. 
                             To get started, one player can create a room and the other three can join into the room that was created.
                             In the room, each player can manually toggle which team they are on and which role to play.
                             You can also communicate with each other using the chat section, which will be available throughout the game.
                             When everyone has split into teams of 2 each with a superhero and sidekick, click 'start game'!
-                        </p>
+                        </h5>
                     </div>
                 </div>
                 <div class="row mt-5">
@@ -121,19 +116,19 @@
                 </div>
                 <div class="row">
                     <div class="col text-center">
-                        <p>
+                        <h5>
                             The game board consists of 25 word "bombs", 9 of which are Red, 8 Blue, 1 Green (the kryptonite), and the rest Yellow.
                             Red and Blue bombs correlate to each team, and Red has one extra because they get to go first.
                             Yellow bombs are duds while the Green bomb is the kryptonite that loses the game for the team that selects it.
                             Sidekicks should avoid sending clues that might suggest the kyrptonite clue is their own!
-                        </p>
-                        <p>
+                        </h5>
+                        <h5 class="pt-2">
                             Once the game has started, each player takes turns, starting with the Red Sidekick. 
                             When the Red Sidekick has locked in their clue (or when time is up), the clue is sent over to the Red Superhero.
                             The Red Superhero can guess until they make a mistake, they click 'end turn', or their time is up.
                             Then, the process repeats itself with the Blue Sidekick and Superhero, and so on.
                             Each time a red or blue bomb is diffused, their respective scores decrease by one.
-                        </p>
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -152,15 +147,45 @@
                 </div>
                 <div class="row">
                     <div class="col text-center">
-                        <p>
+                        <h5>
                             A team can win the game if they diffuse all the bombs of their colors. 
                             To be successful, each Sidekick's clue can correspond to multiple words related to their bombs.
                             If a Superhero selects the kryptonite clue, however, that team immediately loses and the game is over.
-                        </p>
+                            After the game is over, a pop up screen will deliver nifty statistics like the average time it took per player per turn.
+                            Compete with your friends and make sure you're not the slowpoke of the group!
+                        </h5>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>
+                            <span class="text-primary">
+                                <i class="fas fa-user-secret"></i>
+                            </span>
+                            Support:
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <h5>
+                            There are many ways you can support CryptoNight in addition to helping me stay on top of the cost to run this website! 
+                            You can visit the source code on <a href="https://github.com/kaizen3031593/code-words-game" target="_blank">github</a> and give me a star.
+                            Found any bugs or want to suggest features? Send me a github issue or email me at zen.conroy@gmail.com.
+                            Love the game? Tell your friends and spread the word.
+                            Any feedback is strongly encouraged!
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100">
+        <%- include('partials/footer'); %>
     </div>
     <script src="/rules.js"></script>
 </body>

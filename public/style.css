@@ -85,3 +85,5 @@ p { margin:0 !important; }
 .hidden {
     display:none;
 }
+
+.fixed-row-bottom { position: fixed; bottom: 0;}
