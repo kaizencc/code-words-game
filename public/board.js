@@ -98,6 +98,7 @@ function newGameSettings(){
     endTimer();
     setTime();
     setWordSet();
+    showSettings();
     updateRedScore("9");
     updateBlueScore("8");
     sessionStorage.removeItem('broadcast-msg');

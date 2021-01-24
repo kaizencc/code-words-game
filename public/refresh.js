@@ -58,12 +58,14 @@ function setSavedDisplay(){
             unlockRoles();
             unlockTeams();
             turnOffButtons();
+            showSettings();
             break;
         case "form":
             showFormDisplay();
             lockRoles();
             lockTeams();
             turnOffButtons();
+            hideSettings();
             break;
         case "clue":
             showClueDisplay();
@@ -71,6 +73,7 @@ function setSavedDisplay(){
             lockRoles();
             lockTeams();
             turnOnButtons();
+            hideSettings();
             break;
         case "idle":
             showIdleDisplay();
@@ -78,6 +81,7 @@ function setSavedDisplay(){
             lockRoles();
             lockTeams();
             turnOffButtons();
+            hideSettings();
             break;
     }
 }

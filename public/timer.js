@@ -91,6 +91,18 @@ function setTime(){
     }
 }
 
+function hideSettings(){
+    console.log("HIDE");
+    document.getElementById('set2').style.display = "none";
+    document.getElementById('set1').style.display = "none";
+}
+
+function showSettings(){
+    console.log("SHOW");
+    document.getElementById('set2').style.display = null;
+    document.getElementById('set1').style.display = null;
+}
+
 function changeTime(newTime) {
     console.log("changing time");
     socket.emit('change-time', {

@@ -67,6 +67,7 @@ socket.on('ensure-all-roles', (data) => {
 socket.on('lock-variables', () => {
     lockRoles();
     lockTeams();
+    hideSettings();
 })
 
 function lockTeams(){
