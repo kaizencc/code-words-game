@@ -26,6 +26,7 @@ function setSavedScore(){
 }
 
 function setSavedBroadcast(){
+    console.log("BROADCAST",sessionStorage.getItem('broadcast-msg'),sessionStorage.getItem('broadcast-color'));
     if (sessionStorage.getItem('broadcast-msg')){
         changeBroadcast(sessionStorage.getItem('broadcast-msg'), null);
         if (sessionStorage.getItem('broadcast-color') === "red"){
@@ -43,6 +44,7 @@ function setSavedTime(){
 }
 
 function setSavedDisplay(){
+    console.log("DISPLAY",sessionStorage.getItem('display'));
     switch(sessionStorage.getItem('display')){
         case "start":
             console.log("I'm here");

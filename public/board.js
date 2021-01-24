@@ -16,7 +16,7 @@ socket.on('board-game', (data) => {
     }
 
     // Build board triggered by new game button.
-    if (data.new){
+    if (data.new || (!isRefreshed() && data.username && data.username === username)){
         newGameSettings();
     }
 
@@ -49,7 +49,7 @@ socket.on('board-game', (data) => {
 
     // If refreshed, return to saved game state.
     console.log('when it matters: ', sessionStorage.getItem('restore'))
-    if(sessionStorage.getItem('restore') === '1'){
+    if(isRefreshed()){
         returnToGameState();
     }
 })
@@ -77,6 +77,10 @@ function createButton(word, role, myturn){
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
     return btn;
+}
+
+function isRefreshed(){
+    return sessionStorage.getItem('restore') === '1';
 }
 
 function gem(){
