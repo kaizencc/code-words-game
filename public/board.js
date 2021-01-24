@@ -65,7 +65,7 @@ function createButton(word, role, myturn){
         btn.classList.add(word.color);
         btn.disabled = true;
         if(word.color === buttonColor.BLACK){
-            btn.innerHTML = gem();
+            btn.innerHTML = icon("far fa-gem", "white");
         }
     } else if (myturn){
         btn.classList.add(buttonColor.GRAY)
@@ -83,9 +83,9 @@ function isRefreshed(){
     return sessionStorage.getItem('restore') === '1';
 }
 
-function gem(){
-    return `<span class="text-white">
-        <i class="far fa-gem"></i>
+function icon(name, color){
+    return `<span class="text-${color}">
+        <i class="${name}"></i>
         </span>`
 }
 

@@ -80,16 +80,18 @@ function sortTimeByAvg(playerStats){
 }
 
 function createModalFinalScores(redScore, blueScore, winner){
-    //const modalBody = document.getElementById('modal-body');
     document.getElementById('red-final').innerHTML = redScore;
     document.getElementById('blue-final').innerHTML = blueScore;
     if (winner === "red"){
         document.getElementById('red-modal').style.setProperty("border-width", "thick", "important");
         document.getElementById('blue-modal').style.setProperty("border-width", "thin", "important");
-
+        document.getElementById('red-title').innerHTML = icon("fas fa-medal", "danger") + document.getElementById('red-title').innerHTML;
+        document.getElementById('blue-title').innerHTML += icon("fas fa-bomb","primary");
     } else {
         document.getElementById('red-modal').style.setProperty("border-width", "thin", "important");
         document.getElementById('blue-modal').style.setProperty("border-width", "thick", "important");
+        document.getElementById('red-title').innerHTML = icon("fas fa-bomb", "danger") + document.getElementById('red-title').innerHTML;
+        document.getElementById('blue-title').innerHTML += icon("fas fa-medal","primary");
     }
 }
 
