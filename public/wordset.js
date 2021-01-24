@@ -9,17 +9,14 @@ setTranslate["codewords-duet"] = "Duet";
 
 basicSet.addEventListener('click', () =>{
     changeSet("codewords");
-    moveIcon(basicSet);
 })
 
 nsfwSet.addEventListener('click', () =>{
     changeSet("codewords-nsfw");
-    moveIcon(nsfwSet);
 })
 
 duetSet.addEventListener('click', () =>{
     changeSet("codewords-duet");
-    moveIcon(duetSet);
 })
 
 function changeSet(newSet) {
@@ -31,8 +28,29 @@ function changeSet(newSet) {
     });
 }
 
-function moveIcon(to){
-    var children = document.getElementById("dd").children;
+socket.on('change-word-set', (data) => {
+    sessionStorage.setItem('word-set', data.set);
+    setWordSet();
+})
+
+function setWordSet(){
+    if (sessionStorage.getItem('word-set')){
+        switch (sessionStorage.getItem('word-set')){
+            case "codewords":
+                moveIcon(basicSet, "dd1");
+                break;
+            case "codewords-nsfw":
+                moveIcon(nsfwSet, "dd1");
+                break;
+            case "codewords-duet":
+                moveIcon(duetSet, "dd1");
+                break;
+        }
+    }
+}
+
+function moveIcon(to, at){
+    var children = document.getElementById(at).children;
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (child === to){

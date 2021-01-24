@@ -102,7 +102,9 @@ sendClueBtn.addEventListener('click', () => {
 
 function spyTurnFinished(){
     // Find total time spent
-    const elapsedTime = 60-Number(counter.innerHTML);
+    const startTime = sessionStorage.getItem('start-time') || "60";
+    const elapsedTime = Number(startTime)-Number(counter.innerHTML);
+    console.log(startTime, elapsedTime, counter.innerHTML);
 
     socket.emit('play-game-operator', {
         roomname: roomname,
@@ -154,7 +156,9 @@ socket.on('turn-over', (data) => {
 
 function turnFinished(){
     // Determine amount of time spent.
-    const elapsedTime = 60-Number(counter.innerHTML);
+    const startTime = sessionStorage.getItem('start-time') || "60";
+    const elapsedTime = Number(startTime)-Number(counter.innerHTML);
+    console.log(startTime, elapsedTime, counter.innerHTML);
 
     turnOffButtons();
     socket.emit('play-game-spy', {
@@ -237,7 +241,7 @@ socket.on('reset-display', ()=>{
 })
 
 socket.on('show-current-spy', (data)=>{
-    clock(data.username);
+    clock(data.username, data.time);
 
     setReceivedClue("");
     setIdleClue("");
@@ -256,7 +260,7 @@ socket.on('show-current-spy', (data)=>{
 })
 
 socket.on('show-current-operator', (data)=>{
-    clock(data.username);
+    clock(data.username, data.time);
 
     setReceivedClue(data.clue + ", " + data.number);
     setIdleClue(data.clue + ", " + data.number);

@@ -400,6 +400,19 @@ async function getWordArray(room){
     return allValues;
 }
 
+// Get time for timer.
+async function getTime(room) {
+    const doc = await users.findOne({ _id: room});
+    console.log(doc.time, room);
+    return doc.time;
+}
+
+async function changeTime(room, time){
+    const query = { _id: room};
+    const updateDocument = { $set: { time: time }};
+    await updateMongoDocument(query, updateDocument);
+}
+
 // Adds a statistic to the player.
 async function addTurnStatistics(room, username, stat){
     const query = { _id: room, "players.username": username};
@@ -462,5 +475,7 @@ module.exports = {
     getAllStatisticsInRoom,
     addTurnStatistics,
     garbageCollector,
+    getTime,
+    changeTime,
 };
  

@@ -96,6 +96,8 @@ function newGameSettings(){
     unlockRoles();
     resetTurns();
     endTimer();
+    setTime();
+    setWordSet();
     updateRedScore("9");
     updateBlueScore("8");
     sessionStorage.removeItem('broadcast-msg');
@@ -148,7 +150,8 @@ const buttonColor = {
 
 socket.on('found-word', (data) => {
     // Find elapsed time, necessary if game is over.
-    const elapsedTime = 60-Number(counter.innerHTML);
+    const startTime = sessionStorage.getItem('start-time') || "60";
+    const elapsedTime = Number(startTime)-Number(counter.innerHTML);
 
     const teamColor = data.color;
     // Change score if necessary.

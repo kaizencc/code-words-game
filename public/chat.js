@@ -94,6 +94,12 @@ socket.on('chat', (data) => {
         case "wordset":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>changed word sets to ' + setTranslate[data.message] + '</em></p>';
             break;
+        case "time":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>changed timer to ' + data.message + ' seconds </em></p>';
+            break;
+        case "notime":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>turned timer off </em></p>';
+            break;
         case "chat":
             output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
             feedback.innerHTML = '';

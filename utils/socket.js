@@ -53,6 +53,7 @@ function socket(io) {
                     wordSet: "codewords", // Initial name of word set.
                     messages: [], // Storage of chat messages for the room.
                     isRedTurn: false,
+                    time: 60, // For timer.
                 })
 
             }
@@ -105,6 +106,7 @@ function socket(io) {
 
         // Changing word set.
         socket.on('change-word-set', async (data) => {
+            io.to(data.roomname).emit('change-word-set', {set: data.set});
             await Mongo.changeWordSet(data.roomname, data.set);
             // Emitting word set change to clients.
             const messageObject = {
@@ -112,6 +114,31 @@ function socket(io) {
                 message: data.set, 
                 event: "wordset",
             };
+            await Mongo.addMessage(data.roomname, messageObject);
+            io.to(data.roomname).emit('chat', messageObject);
+        })
+
+        // Changing time.
+        socket.on('change-time', async (data) => {
+            io.to(data.roomname).emit('change-time', {time: data.time});
+            await Mongo.changeTime(data.roomname, data.time);
+            var messageObject;
+            if (data.time > 0){
+                // Emitting time change to clients.
+                messageObject = {
+                    username: data.username, 
+                    message: data.time, 
+                    event: "time",
+                };
+            } else {
+                // Turning off timer.
+                messageObject = {
+                    username: data.username, 
+                    message: data.time, 
+                    event: "notime",
+                };
+            }
+
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
         })
@@ -164,6 +191,7 @@ function socket(io) {
             io.to(data.roomname).emit('show-current-spy', {
                 username: spy,
                 turn: redTurn,
+                time: await Mongo.getTime(data.roomname),
             });
         })
 
@@ -187,6 +215,7 @@ function socket(io) {
                 clue: data.clue,
                 number: data.number,
                 turn: redTurn,
+                time: await Mongo.getTime(data.roomname),
             });
         })
 

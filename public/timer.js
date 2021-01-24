@@ -38,9 +38,64 @@ function endTimer(){
 }
 
 // Start the clock.
-function clock(forPlayer){
-    sessionStorage.setItem('time', '60');
+function clock(forPlayer, time){
+    sessionStorage.setItem('time', String(time));
     sessionStorage.setItem('time-for', forPlayer);
     clearTimer();
-    startTimer(60, forPlayer);
+    if (time > 0){
+        startTimer(time, forPlayer);
+    }
+}
+
+const normalTime = document.getElementById('Normal');
+const speedTime = document.getElementById('Speed');
+const slowTime = document.getElementById('Slow');
+const noTime = document.getElementById('None');
+
+normalTime.addEventListener('click', () =>{
+    changeTime(60);
+})
+
+speedTime.addEventListener('click', () =>{
+    changeTime(30);
+})
+
+slowTime.addEventListener('click', () =>{
+    changeTime(90);
+})
+
+noTime.addEventListener('click', () =>{
+    changeTime(0);
+})
+
+socket.on('change-time', (data) => {
+    sessionStorage.setItem('start-time', String(data.time));
+    setTime();
+})
+
+function setTime(){
+    if (sessionStorage.getItem('start-time')){
+        switch (sessionStorage.getItem('start-time')){
+            case "30":
+                moveIcon(speedTime, "dd2");
+                break;
+            case "90":
+                moveIcon(slowTime, "dd2");
+                break;
+            case "0":
+                moveIcon(noTime, "dd2");
+                break;
+            case "60":
+                moveIcon(normalTime, "dd2");
+        }
+    }
+}
+
+function changeTime(newTime) {
+    console.log("changing time");
+    socket.emit('change-time', {
+        roomname: roomname,
+        username, username,
+        time: newTime,
+    });
 }

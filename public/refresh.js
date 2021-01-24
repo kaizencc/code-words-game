@@ -18,6 +18,12 @@ function returnToGameState(){
     // Saved display status.
     setSavedDisplay();
 
+    // Saved time.
+    setTime();
+
+    // Saved word set.
+    setWordSet();
+
 }
 
 function setSavedScore(){
@@ -39,7 +45,7 @@ function setSavedBroadcast(){
 
 function setSavedTime(){
     if (sessionStorage.getItem('time')){
-        startTimer(Number(sessionStorage.getItem('time'))-2, sessionStorage.getItem('time-for'));
+        clock(sessionStorage.getItem('time-for'),Number(sessionStorage.getItem('time'))-2);
     }
 }
 
