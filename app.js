@@ -4,11 +4,13 @@ const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
 const alertMessage = require('./utils/messages');
 const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
+//app.use(favicon(path.join(__dirname,'favicon.ico')));
 var port = process.env.PORT || 3000;
 
 // Alert banner defaults to hidden
