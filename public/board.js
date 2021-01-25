@@ -74,6 +74,12 @@ function createButton(word, role, myturn){
         btn.classList.add(buttonColor.GRAY)
         btn.disabled = true;
     }
+
+    if (word.show){
+        btn.classList.add("border");
+        btn.classList.add("border-success");
+        btn.style.setProperty("border-width", "thick", "important");
+    }
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
     return btn;
