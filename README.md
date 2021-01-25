@@ -1,10 +1,14 @@
-# Welcome to Code Words Game
+# Welcome to Code Words Game aka [cryptonight.codes](https://cryptonight.codes)
+
+## Visit the site - [cryptonight.codes](https://cryptonight.codes)
 
 ## Inspiration
 
 This is my take on the popular game, Codenames. I played it every week online with my family during the months of quarantine in 2020. We would play on the website [http://codewordsgame.com](http://codewordsgame.com), which serves as the initial inspiration for this project. However, I came across frustrating issues on that version where my timer was often incorrect leading to me running out of time before sending my clue. I decided it would be worthwhile to create a similar version of the game with my own personal take. 
 
-I began this project with no prior experience building websites beyond a simple one-page React app for my personal portfolio. I greatly benefited from having a month free of responsibilities due to Covid-19 (January 2021) to research each step I took thoroughly. I learned so much from this experience (see "Some Thoughts" section below). With the belief that other aspiring developers could find themselves in my shoes at some point, I hope I can help by detailing my journey. 
+Looking to spice up the game with a bit more of a theme, I landed on "CryptoNight." The idea is a superhero theme game where a team consists of a superhero and sidekick working to diffuse bombs and avoid the "cryptonight" word. 
+
+I began this project with no prior experience building websites beyond a simple one-page React app for my personal portfolio. I greatly benefited from having a month free of responsibilities due to Covid-19 (January 2021) to research each step I took thoroughly. A few of my learnings are detailed in the "Some Thoughts" section below. With the belief that other aspiring developers could find themselves in my shoes at some point, I hope I can help by detailing my journey. 
 
 ## My Journey
 
@@ -18,14 +22,15 @@ To design the frontend, I used **Bootstrap** – I was semi-familiar with **Boot
 
 On the server side, I used **Node.js** with the **Express.js** web framework. **Express.js** helped me manage HTTP requests in the **Node.js** server. In addition, the node modules **body-parser** was used fo rhte middleware and **Socket.io** to communicate between the server and the (potentially) many browser rooms.
 
-Finally, the database was handled by **MongoDB**. After lots of research, I turned to **MongoDB** because its document style database was similar to Javascript objects (JSON) and its free tier was more than enough for me. I used **MongoDB Atlas** to manage my database.
+The database was handled by **MongoDB**. After looking at a few options, I turned to **MongoDB** because its document style database was similar to Javascript objects (JSON) and its free tier was more than enough for me. I used **MongoDB Atlas** to manage my database.
 
 ## Some Thoughts
 
-  - Migrating from my initial psuedo-database of Javascript object storages to **MongoDB** was not trivial and took two days. I had to learn what `async` and `await` were and how to use it to my advantage.
+  - Migrating from my initial psuedo-database of Javascript object storages to **MongoDB** was not trivial and took two days. I had lots of issues with `async` and `await`.
   - If I were to start from scratch, I certainly would have used **Typescript** over **Javascript**. Often I wanted to keep my code more legible by declaring the types of my parameters but could not do so. By the time I realized this, I was in too deep.
   - I also could have spent more time researching a well-documented stack. I started with a vanilla tutorial and only considered a database from there. I should have started with full knowledge of the stack I was going to try, like the **MERN** stack. Funnily enough, I ended up quite close to that stack anyway.
   - I researched **Colyseus.io** after having completed a signficant portion of my project, so I didn't go in that direction. But the next time I use Node.js to build a game I would certainly start with that open-source library, which is like **socket.io** on steroids and made for online multiplayer games.
+  - Without following extremely detailed tutorials on DigitalOcean for setting up a production server, I would have not been able to work through the multitude of challenges I faced configuring AWS and nginx.
 
 ## Using this Repository
 
