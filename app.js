@@ -4,7 +4,6 @@ const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
 const alertMessage = require('./utils/messages');
 const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
-var favicon = require('serve-favicon');
 const path = require('path');
 
 const app = express();
