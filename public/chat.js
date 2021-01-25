@@ -9,7 +9,7 @@ const blueUsers = document.getElementById('users-blue');
 //Socket server URL
 const hostname = "localhost";
 const elasticIp = "35.172.99.231";
-const socket = io.connect(`http://${hostname}:3000`);
+const socket = io.connect();
 
 //Fetch URL Params from URL
 const queryString = window.location.search;
