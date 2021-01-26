@@ -77,17 +77,17 @@ function lockTeams(){
 
 function lockRoles(){
     // Remove event listeners.
-    spyMaster.removeEventListener('click', spyEventHandler);
-    fieldOperator.removeEventListener('click', fieldEventHandler);
+    sidekick.removeEventListener('click', sidekickEventHandler);
+    superhero.removeEventListener('click', superheroEventHandler);
 
     // Disable buttons
-    spyMaster.classList.add('disabled');
-    fieldOperator.classList.add('disabled');
+    sidekick.classList.add('disabled');
+    superhero.classList.add('disabled');
 
 }
 
 /************************************************************************************
- *                              Spymaster Display Elements
+ *                              sidekick Display Elements
  ***********************************************************************************/
 
 const sendClueBtn = document.getElementById('sendin');
@@ -137,7 +137,7 @@ function checkNumber() {
 }
 
 /************************************************************************************
- *                           Field Operator Display Elements
+ *                           Superhero Display Elements
  ***********************************************************************************/
 
 const receivedClue = document.getElementById('received-clue');
@@ -253,9 +253,9 @@ socket.on('show-current-spy', (data)=>{
         turnOffButtons();
         showIdleDisplay();
         if (data.turn){
-            broadcastTurn("Red Spymaster's turn", data.turn);
+            broadcastTurn("Red sidekick's turn", data.turn);
         } else {
-            broadcastTurn("Blue Spymaster's turn", data.turn)
+            broadcastTurn("Blue sidekick's turn", data.turn)
         }
     }
 })
@@ -273,9 +273,9 @@ socket.on('show-current-operator', (data)=>{
         turnOffButtons();
         showIdleDisplay();
         if (data.turn){
-            broadcastTurn("Red Operator's turn", data.turn);
+            broadcastTurn("Red Superhero's turn", data.turn);
         } else {
-            broadcastTurn("Blue Operator's turn", data.turn)
+            broadcastTurn("Blue Superhero's turn", data.turn)
         }
     }
 })

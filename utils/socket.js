@@ -184,9 +184,9 @@ function socket(io) {
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
             var spy;
             if (redTurn){
-                spy = await Mongo.getUsernameOfRedSpymaster(data.roomname);
+                spy = await Mongo.getUsernameOfRedSidekick(data.roomname);
             } else {
-                spy = await Mongo.getUsernameOfBlueSpymaster(data.roomname);
+                spy = await Mongo.getUsernameOfBlueSidekick(data.roomname);
             }
             io.to(data.roomname).emit('show-current-spy', {
                 username: spy,
@@ -206,9 +206,9 @@ function socket(io) {
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
             var op;
             if (redTurn){
-                op = await Mongo.getUsernameOfRedOperator(data.roomname);
+                op = await Mongo.getUsernameOfRedSuperhero(data.roomname);
             } else {
-                op = await Mongo.getUsernameOfBlueOperator(data.roomname);
+                op = await Mongo.getUsernameOfBlueSuperhero(data.roomname);
             }
             io.to(data.roomname).emit('show-current-operator', {
                 username: op,
@@ -236,10 +236,10 @@ function socket(io) {
         })
 
         socket.on('ensure-all-roles', async (data) => {
-            if ((await Mongo.getUsernameOfRedSpymaster(data.roomname)) &&
-                (await Mongo.getUsernameOfBlueSpymaster(data.roomname)) &&
-                (await Mongo.getUsernameOfRedOperator(data.roomname)) &&
-                (await Mongo.getUsernameOfBlueOperator(data.roomname))){
+            if ((await Mongo.getUsernameOfRedSidekick(data.roomname)) &&
+                (await Mongo.getUsernameOfBlueSidekick(data.roomname)) &&
+                (await Mongo.getUsernameOfRedSuperhero(data.roomname)) &&
+                (await Mongo.getUsernameOfBlueSuperhero(data.roomname))){
                     io.to(data.roomname).emit('ensure-all-roles', {
                         good: true,
                         username: data.username,
@@ -273,13 +273,13 @@ function socket(io) {
             const roles = await Mongo.getRolesInRoom(data.roomname);
             console.log(data.username, roles);
             if (roles[data.username]){
-                // Player is a spymaster
+                // Player is a sidekick
                 io.to(data.roomname).emit('spy-turn-over', {
                     username: data.username,
                 })
 
             } else {
-                // Player is a operator
+                // Player is a superhero
                 io.to(data.roomname).emit('turn-over', {
                     username: data.username,
                 })
@@ -310,8 +310,8 @@ function socket(io) {
             })
         })
 
-        // Changing role to spymaster.
-        socket.on('role-change-spy', async (data) => {
+        // Changing role to sidekick.
+        socket.on('role-change-sidekick', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, true);
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
@@ -320,8 +320,8 @@ function socket(io) {
             });
         })
 
-        // Changing role to field operator.
-        socket.on('role-change-field', async (data) => {
+        // Changing role to superhero.
+        socket.on('role-change-superhero', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, false);
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 

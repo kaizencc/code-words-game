@@ -212,7 +212,7 @@ async function getRolesInRoom(room){
     return roles;
 }
 
-async function getUsernameOfRedSpymaster(room){
+async function getUsernameOfRedSidekick(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === true && player.team === "red" && !player.toBeDeleted);
     if(p.length > 0){
@@ -222,7 +222,7 @@ async function getUsernameOfRedSpymaster(room){
     return null;
 }
 
-async function getUsernameOfRedOperator(room){
+async function getUsernameOfRedSuperhero(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === false && player.team === "red" && !player.toBeDeleted);
     if(p.length > 0){
@@ -232,7 +232,7 @@ async function getUsernameOfRedOperator(room){
     return null;
 }
 
-async function getUsernameOfBlueSpymaster(room){
+async function getUsernameOfBlueSidekick(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === true && player.team === "blue" && !player.toBeDeleted);
     if(p.length > 0){
@@ -242,7 +242,7 @@ async function getUsernameOfBlueSpymaster(room){
     return null;
 }
 
-async function getUsernameOfBlueOperator(room){
+async function getUsernameOfBlueSuperhero(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === false && player.team === "blue" && !player.toBeDeleted);
     if(p.length > 0){
@@ -453,10 +453,10 @@ module.exports = {
     getUsersInRoom,
     deletedUsernameExistsInRoom,
     getRolesInRoom,
-    getUsernameOfRedSpymaster,
-    getUsernameOfRedOperator,
-    getUsernameOfBlueSpymaster,
-    getUsernameOfBlueOperator,
+    getUsernameOfRedSidekick,
+    getUsernameOfRedSuperhero,
+    getUsernameOfBlueSidekick,
+    getUsernameOfBlueSuperhero,
     changeTurn,
     resetTurn,
     getIsRedTurn,

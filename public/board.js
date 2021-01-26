@@ -1,7 +1,7 @@
 const board = document.getElementById('board');
 const newGameBtn = document.getElementById('newgame');
-const fieldOperator = document.getElementById('field');
-const spyMaster = document.getElementById('spy');
+const superhero = document.getElementById('super');
+const sidekick = document.getElementById('side');
 const redTeam = document.getElementById('red-team');
 const blueTeam = document.getElementById('blue-team');
 
@@ -28,9 +28,9 @@ socket.on('board-game', (data) => {
     // Update role buttons.
     role = data.roles[username];
     if (role){
-        changeToSpyMaster();
+        changeToSidekick();
     } else {
-        changeToFieldOperator();
+        changeToSuperhero();
     }
 
     // Clear current board buttons, if any.
@@ -79,6 +79,11 @@ function createButton(word, role, myturn){
         btn.classList.add("border");
         btn.classList.add("border-dark");
         btn.style.setProperty("border-width", "thick", "important");
+        if (btn.classList.contains(buttonColor.RED) || btn.classList.contains(buttonColor.BLUE)){
+            btn.innerHTML = icon("fas fa-check-circle", "dark");
+        } else if (btn.classList.contains(buttonColor.YELLOW)){
+            btn.innerHTML = icon("fas fa-minus-circle", "dark");
+        }
     }
     var t = document.createTextNode(word.text);
     btn.appendChild(t);
@@ -268,55 +273,53 @@ function updateRedScore(score){
  ***********************************************************************************/
 
 // Helper functions to change HTML buttons.
-function changeToSpyMaster(){
-    spyMaster.classList.add("active");
-    fieldOperator.classList.remove("active");
+function changeToSidekick(){
+    sidekick.classList.add("active");
+    superhero.classList.remove("active");
 }
 
-function changeToFieldOperator(){
-    spyMaster.classList.remove("active");
-    fieldOperator.classList.add("active");
+function changeToSuperhero(){
+    sidekick.classList.remove("active");
+    superhero.classList.add("active");
 }
 
-function spyEventHandler() {
-    console.log("hadsf");
-    changeToSpyMaster();
-    socket.emit('role-change-spy', {
+function sidekickEventHandler() {
+    changeToSidekick();
+    socket.emit('role-change-sidekick', {
         username: username, 
         roomname: roomname
     });
     socket.emit('chat', {
         username: username,
         roomname: roomname,
-        message: 'spymaster',
+        message: 'sidekick',
         event: 'switch'
     });
 }
 
-function fieldEventHandler(){
-    console.log('heloooo');
-    changeToFieldOperator();
-    socket.emit('role-change-field', {
+function superheroEventHandler(){
+    changeToSuperhero();
+    socket.emit('role-change-superhero', {
         username: username, 
         roomname: roomname
     });
     socket.emit('chat', {
         username: username,
         roomname: roomname,
-        message: 'field operator',
+        message: 'superhero',
         event: 'switch'
     });
 }
 
 function unlockRoles(){
-    // Change role to spymaster.
-    spyMaster.addEventListener('click', spyEventHandler);
+    // Change role to sidekick.
+    sidekick.addEventListener('click', sidekickEventHandler);
 
-    // Change role to field operator.
-    fieldOperator.addEventListener('click', fieldEventHandler);
+    // Change role to superhero.
+    superhero.addEventListener('click', superheroEventHandler);
 
-    spyMaster.classList.remove('disabled');
-    fieldOperator.classList.remove('disabled');
+    sidekick.classList.remove('disabled');
+    superhero.classList.remove('disabled');
 }
 
 function unlockTeams(){
