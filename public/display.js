@@ -55,7 +55,7 @@ socket.on('ensure-all-roles', (data) => {
                 roomname: roomname,
             });
             // Begin game.
-            socket.emit('play-game-spy', {
+            socket.emit('play-game-sidekick', {
                 roomname: roomname,
             });
         } else {
@@ -97,17 +97,17 @@ const number = document.getElementById('number');
 sendClueBtn.addEventListener('click', () => {
     // Make sure number is valid.
     if (checkNumber()){
-        spyTurnFinished();
+        sidekickTurnFinished();
     }
 })
 
-function spyTurnFinished(){
+function sidekickTurnFinished(){
     // Find total time spent
     const startTime = sessionStorage.getItem('start-time') || "60";
     const elapsedTime = Number(startTime)-Number(counter.innerHTML);
     console.log(startTime, elapsedTime, counter.innerHTML);
 
-    socket.emit('play-game-operator', {
+    socket.emit('play-game-superhero', {
         roomname: roomname,
         username: username,
         time: elapsedTime,
@@ -120,9 +120,9 @@ function spyTurnFinished(){
     clue.value = "";
 }
 
-socket.on('spy-turn-over', (data) => {
+socket.on('sidekick-turn-over', (data) => {
     if (data.username === username){
-        spyTurnFinished();
+        sidekickTurnFinished();
     }
 })
 
@@ -162,7 +162,7 @@ function turnFinished(){
     console.log(startTime, elapsedTime, counter.innerHTML);
 
     turnOffButtons();
-    socket.emit('play-game-spy', {
+    socket.emit('play-game-sidekick', {
         roomname: roomname,
         username: username,
         time: elapsedTime,
@@ -241,7 +241,7 @@ socket.on('reset-display', ()=>{
     showStartDisplay();
 })
 
-socket.on('show-current-spy', (data)=>{
+socket.on('show-current-sidekick', (data)=>{
     clock(data.username, data.time);
 
     setReceivedClue("");
@@ -253,18 +253,15 @@ socket.on('show-current-spy', (data)=>{
         turnOffButtons();
         showIdleDisplay();
         if (data.turn){
-            broadcastTurn("Red sidekick's turn", data.turn);
+            broadcastTurn("Red Sidekick's turn", data.turn);
         } else {
-            broadcastTurn("Blue sidekick's turn", data.turn)
+            broadcastTurn("Blue Sidekick's turn", data.turn)
         }
     }
 })
 
-socket.on('show-current-operator', (data)=>{
+socket.on('show-current-superhero', (data)=>{
     clock(data.username, data.time);
-
-    setReceivedClue(data.clue + ", " + data.number);
-    setIdleClue(data.clue + ", " + data.number);
     if (data.username === username){
         turnOnButtons();
         showClueDisplay();
@@ -278,16 +275,30 @@ socket.on('show-current-operator', (data)=>{
             broadcastTurn("Blue Superhero's turn", data.turn)
         }
     }
+    setReceivedClue(data.clue + ", " + data.number);
+    setIdleClue(data.clue + ", " + data.number);
 })
 
 function setReceivedClue(text){
+    changeClueColor(receivedClue, sessionStorage.getItem('broadcast-color'));
     receivedClue.innerHTML = text;
     sessionStorage.setItem('received-clue', text);
 }
 
 function setIdleClue(text){
+    changeClueColor(idleClue, sessionStorage.getItem('broadcast-color'));
     idleClue.innerHTML = text;
     sessionStorage.setItem('idle-clue', text);
+}
+
+function changeClueColor(element, color){
+    if (color == "red"){
+        element.classList.remove("text-primary");
+        element.classList.add("text-danger");
+    } else {
+        element.classList.remove("text-danger");
+        element.classList.add("text-primary");        
+    }
 }
 
 function broadcastTurn(text, turn){

@@ -172,7 +172,7 @@ function socket(io) {
             await Mongo.resetTurn(data.roomname);
         })
 
-        socket.on('play-game-spy', async (data) => {
+        socket.on('play-game-sidekick', async (data) => {
             if(data.time){
                 // Update database with time spent and turn.
                 const stat = {
@@ -182,20 +182,20 @@ function socket(io) {
             }
             await Mongo.changeTurn(data.roomname);
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
-            var spy;
+            var sidekick;
             if (redTurn){
-                spy = await Mongo.getUsernameOfRedSidekick(data.roomname);
+                sidekick = await Mongo.getUsernameOfRedSidekick(data.roomname);
             } else {
-                spy = await Mongo.getUsernameOfBlueSidekick(data.roomname);
+                sidekick = await Mongo.getUsernameOfBlueSidekick(data.roomname);
             }
-            io.to(data.roomname).emit('show-current-spy', {
-                username: spy,
+            io.to(data.roomname).emit('show-current-sidekick', {
+                username: sidekick,
                 turn: redTurn,
                 time: await Mongo.getTime(data.roomname),
             });
         })
 
-        socket.on("play-game-operator", async (data) => {
+        socket.on("play-game-superhero", async (data) => {
             if(data.time){
                 // Update database with time spent and turn.
                 const stat = {
@@ -204,14 +204,14 @@ function socket(io) {
                 await Mongo.addTurnStatistics(data.roomname, data.username, stat);
             }
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
-            var op;
+            var superhero;
             if (redTurn){
-                op = await Mongo.getUsernameOfRedSuperhero(data.roomname);
+                superhero = await Mongo.getUsernameOfRedSuperhero(data.roomname);
             } else {
-                op = await Mongo.getUsernameOfBlueSuperhero(data.roomname);
+                superhero = await Mongo.getUsernameOfBlueSuperhero(data.roomname);
             }
-            io.to(data.roomname).emit('show-current-operator', {
-                username: op,
+            io.to(data.roomname).emit('show-current-superhero', {
+                username: superhero,
                 clue: data.clue,
                 number: data.number,
                 turn: redTurn,
@@ -274,7 +274,7 @@ function socket(io) {
             console.log(data.username, roles);
             if (roles[data.username]){
                 // Player is a sidekick
-                io.to(data.roomname).emit('spy-turn-over', {
+                io.to(data.roomname).emit('sidekick-turn-over', {
                     username: data.username,
                 })
 
