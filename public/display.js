@@ -59,6 +59,12 @@ socket.on('ensure-all-roles', (data) => {
                 roomname: roomname,
             });
         } else {
+            // Message chat with the current roles of each player.
+            socket.emit('chat', {
+                roomname: roomname,
+                message: data.users,
+                event: "all-roles",
+            });
             alert("All 4 roles are not occupied yet.");
         }
     }

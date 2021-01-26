@@ -106,6 +106,16 @@ socket.on('chat', (data) => {
         case "clue":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>sent the clue ' + data.message + '</em></p>';
             break;
+        case "all-roles":
+            output.innerHTML += '<p class="text-success"><strong>CryptoNight Role Selection Helper:</strong></p>';
+            data.message.forEach(m => {
+                if (m.role){
+                    output.innerHTML += '<p class="text-success">--> <strong><em>' + m.username + ' </strong>is currently the ' + m.team + ' sidekick</em></p>';
+                } else {
+                    output.innerHTML += '<p class="text-success">--> <strong><em>' + m.username + ' </strong>is currently the ' + m.team + ' superhero</em></p>';
+                }
+            })
+            break;
         case "chat":
             output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
             feedback.innerHTML = '';

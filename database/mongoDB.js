@@ -181,7 +181,7 @@ async function garbageCollector(room){
 
 // TODO: function that deletes marked players.
 
-// Returns an array of all the usernames in a room.
+// Returns an array of a {username, team} object for the room.
 async function getUsersInRoom(room){
     const result = await getPlayersInRoom(room);
     var players = [];

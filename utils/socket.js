@@ -245,9 +245,13 @@ function socket(io) {
                         username: data.username,
                     })
             } else {
+                var users = await Mongo.getUsersInRoom(data.roomname);
+                const roles = await Mongo.getRolesInRoom(data.roomname);
+                users.forEach(user => user.role = roles[user.username]);
                 io.to(data.roomname).emit('ensure-all-roles', {
                     good: false,
                     username: data.username,
+                    users: users,
                 })
             }
         })
