@@ -76,6 +76,7 @@ function createButton(word, role, myturn){
     }
 
     if (word.show){
+        // Update the board with border and icon when it has been clicked.
         btn.classList.add("border");
         btn.classList.add("border-dark");
         btn.style.setProperty("border-width", "thick", "important");

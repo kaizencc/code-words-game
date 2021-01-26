@@ -115,6 +115,14 @@ function sidekickTurnFinished(){
         number: number.value,
     });
 
+    // Message chat with current move.
+    socket.emit('chat', {
+        username: username,
+        roomname: roomname,
+        message: `${clue.value}, ${number.value}`,
+        event: "clue",
+    });
+
     // Empty values.
     number.value = "";
     clue.value = "";

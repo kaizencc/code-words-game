@@ -9,7 +9,7 @@ const blueUsers = document.getElementById('users-blue');
 //Socket server URL
 const hostname = "localhost";
 const elasticIp = "35.172.99.231";
-const socket = io.connect();
+const socket = io.connect(`http://${hostname}:3000`);
 
 //Fetch URL Params from URL
 const queryString = window.location.search;
@@ -99,6 +99,12 @@ socket.on('chat', (data) => {
             break;
         case "notime":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>turned timer off </em></p>';
+            break;
+        case "game-won":
+            output.innerHTML += '<p>--> <strong><em>' + data.message + ' </strong></em></p> <hr>';
+            break;
+        case "clue":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>sent the clue ' + data.message + '</em></p>';
             break;
         case "chat":
             output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';

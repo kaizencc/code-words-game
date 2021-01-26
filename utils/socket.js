@@ -355,6 +355,15 @@ function socket(io) {
                 blueScore: data.blueScore,
                 stats: (await Mongo.getAllStatisticsInRoom(data.roomname)),
             });
+
+            // Message in the chat.
+            const messageObject = {
+                username: null, 
+                message: `${capitalizeFirstLetter(data.winner)} team won: Red: ${data.redScore} <--> Blue: ${data.blueScore}.`, 
+                event: "game-won",
+            };
+            await Mongo.addMessage(data.roomname, messageObject);
+            io.to(data.roomname).emit('chat', messageObject);
         })
     
         // Emitting messages to Clients.
@@ -405,6 +414,10 @@ function socket(io) {
             
         })
     })
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 module.exports = socket;
