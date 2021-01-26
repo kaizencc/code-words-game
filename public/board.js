@@ -77,7 +77,7 @@ function createButton(word, role, myturn){
 
     if (word.show){
         btn.classList.add("border");
-        btn.classList.add("border-success");
+        btn.classList.add("border-dark");
         btn.style.setProperty("border-width", "thick", "important");
     }
     var t = document.createTextNode(word.text);
