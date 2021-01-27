@@ -4,12 +4,16 @@
 
 const counter = document.getElementById('timer');
 var timer;
+var tickAudio = new Audio('https://freesound.org/data/previews/254/254316_4062622-lq.mp3');
 
 // Begins countdown, responding to socket if time is up.
 function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
         sessionStorage.setItem('time', count);
+        if(count <= 10 && forPlayer === username){
+            tickAudio.play();
+        }
         if(count == 0) {
             if (forPlayer === username){
                 socket.emit('time-up', {

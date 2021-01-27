@@ -161,6 +161,8 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
+var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
+
 socket.on('found-word', (data) => {
     // Find elapsed time, necessary if game is over.
     const startTime = sessionStorage.getItem('start-time') || "60";
@@ -188,6 +190,7 @@ socket.on('found-word', (data) => {
         }
 
         if (data.username === username){
+            explosion.play();
             socket.emit('game-over', {
                 roomname: roomname,
                 username: username,
