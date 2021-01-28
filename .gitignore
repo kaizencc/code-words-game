@@ -1,4 +1,7 @@
 # Dependency directories
 node_modules/
 
+# Passwords
+database/mongoConfig.js
+
 main/

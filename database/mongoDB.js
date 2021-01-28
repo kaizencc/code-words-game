@@ -1,17 +1,11 @@
 const {MongoClient} = require('mongodb');
+const {uri} = require('./mongoConfig.js'); 
+// const {uri} = require('./mongoConfigExample.js'); // Example Mongo Credentials. 
 const {initializeMongoWordlists} = require ('./addWordsScript');
  
 /************************************************************************************
  *                              Connection Information
  ***********************************************************************************/
-
-/**
- * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
- * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
- */
-const dbPassword = "bJr6m5UqPuYoZMaR";
-const dbName = "Cluster0";
-const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 // Storage variables for client connection and database
 var client;
