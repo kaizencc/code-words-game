@@ -9,8 +9,17 @@ const buttonColor = {
 }
 
 async function newGame(room){
+    // Find number of words in the current word set.
+    const size = await Mongo.countNumberOfWords(room);
+
+    // Pick 25 random numbers between 0 and size.
+    const arrayIDs = selectRandomIDs(size);
+
+    // Get words with the given IDs.
+    const array = await Mongo.getWordArray(room, arrayIDs);
+
+    // Create button objects for each word.
     newWords = [];
-    const array = await Mongo.getWordArray(room);
     for(var i=0; i<25; i++){
         const button = {
             text: array[i].word,
@@ -22,6 +31,28 @@ async function newGame(room){
     newWords = shuffle(newWords);
     newWords = selectColors(newWords);
     return newWords;
+}
+
+function selectRandomIDs(size){
+    // Randomly select 25 words from the set.
+    var arr = []
+    var usedSet = new Set();
+    for(var i=0; i<25; i++){
+        var num = randomIntFromInterval(0,size-1);
+        // No duplicates.
+        while (usedSet.has(num)) {
+            console.log(num);
+            num = randomIntFromInterval(0,size-1);
+        }
+        usedSet.add(num);
+        arr.push(num);
+    }
+    return arr;
+}
+
+// Helper function in `getWordArray`
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 // Utility function to randomly select words for each team, along with the bomb word.

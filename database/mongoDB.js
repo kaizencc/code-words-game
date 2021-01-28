@@ -495,12 +495,17 @@ async function changeWordSet(room, newWordSet){
  * Gets the current word set of the room.
  * 
  * @param room [string] Roomname
- * @returns [[string]] The 25 words on the board.
+ * @returns [[string]] The name of the wordset associated with the room.
  */
 async function getWordSet(room){
     const doc = await users.findOne({ _id: room});
     console.log(doc.wordSet, room);
     return doc.wordSet;
+}
+
+async function countNumberOfWords(room){
+    wordSet = wordDb.collection(await getWordSet(room));
+    return wordSet.countDocuments();
 }
 
 /**
@@ -509,30 +514,10 @@ async function getWordSet(room){
  * @param room [string] Roomname
  * @returns [[string]] 25 words in an array
  */
-async function getWordArray(room){
+async function getWordArray(room, ids){
     // Find the word set that the room is using.
-    var wordSet;
-    if(room){
-        wordSet = wordDb.collection(await getWordSet(room));
-    } else {
-        // Default word set.
-        wordSet = wordDb.collection("codewords");
-    }
-    // Randomly select 25 words from the set.
-    const size = await wordSet.countDocuments();
-    var arr = []
-    var usedSet = new Set();
-    for(var i=0; i<25; i++){
-        var num = randomIntFromInterval(0,size-1);
-        // No duplicates.
-        while (usedSet.has(num)) {
-            console.log(num);
-            num = randomIntFromInterval(0,size-1);
-        }
-        usedSet.add(num);
-        arr.push(num);
-    }
-    const cursor = await wordSet.find({_id: {"$in": arr} });
+    wordSet = wordDb.collection(await getWordSet(room));
+    const cursor = await wordSet.find({_id: {"$in": ids} });
     const allValues = await cursor.toArray();
     return allValues;
 }
@@ -639,6 +624,7 @@ module.exports = {
     updateAllWordsInRoom,
     getWordInRoom,
     updateWordInRoom,
+    countNumberOfWords,
     addMessage,
     getAllMessages,
     getWordArray,

@@ -49,12 +49,14 @@ function socket(io) {
                 await Mongo.createRoom({
                     _id: data.roomname,
                     players: [user], // Array of players connected to the room.
-                    words: await newGame(null), // Initialize the board for the room.
+                    words: [], // Initialize the board for the room.
                     wordSet: "codewords", // Initial name of word set.
                     messages: [], // Storage of chat messages for the room.
                     isRedTurn: false,
                     time: 60, // For timer.
                 })
+
+                await Mongo.updateAllWordsInRoom(data.roomname, await newGame(data.roomname));
 
             }
 
