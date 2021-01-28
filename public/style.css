@@ -87,3 +87,8 @@ p { margin:0 !important; }
 }
 
 .fixed-row-bottom { position: fixed; bottom: 0;}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: #fff !important;
+    background-color: #5cb85c !important;
+}

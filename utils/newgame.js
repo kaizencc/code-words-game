@@ -24,10 +24,6 @@ async function newGame(room){
     return newWords;
 }
 
-function checkReadiness(){
-    // Make sure there are 4 total players, 1 in each role.
-}
-
 // Utility function to randomly select words for each team, along with the bomb word.
 function selectColors(array){
     randomArray=[]

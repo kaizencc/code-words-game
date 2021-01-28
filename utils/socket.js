@@ -145,6 +145,7 @@ function socket(io) {
 
         // Creating a new game.
         socket.on('new-game', async (data) => {
+            // Alert users of new game
             const messageObject = {
                 username: data.username, 
                 message: "new game", 
@@ -152,8 +153,14 @@ function socket(io) {
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
+
+            // Update words.
             await Mongo.updateAllWordsInRoom(data.roomname, await newGame(data.roomname));
+
+            // Reset roles.
             await Mongo.resetRoles(data.roomname);
+
+            // Update board.
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),

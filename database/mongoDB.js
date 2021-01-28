@@ -1,6 +1,10 @@
 const {MongoClient} = require('mongodb');
 const {initializeMongoWordlists} = require ('./addWordsScript');
  
+/************************************************************************************
+ *                              Connection Information
+ ***********************************************************************************/
+
 /**
  * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
  * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
@@ -14,9 +18,10 @@ var client;
 var db;
 var users;
 var wordDb;
-var currentWordSet;
 
-// Called when app opens to populate `client` and `db`.
+/**
+ * Opens a connection with the MongoDB database and populates the `client` and `db` variables.
+ */
 async function openMongoConnection(){
     client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
@@ -26,7 +31,6 @@ async function openMongoConnection(){
         users = db.collection("users");
 
         wordDb = client.db('words');
-        currentWordSet = wordDb.collection("codenames2");
 
         // Remove all documents in collection at start of application.
         clearAll();
@@ -39,31 +43,40 @@ async function openMongoConnection(){
 
 }
 
-// Helper function in openMongoConnection. DO NOT CALL ANYWHERE ELSE!
+/**
+ * Closes the connection with the database.
+ */
+async function closeMongoConnection(){
+    await client.close();
+}
+
+/************************************************************************************
+ *                              Helper Methods, Unexported
+ ***********************************************************************************/
+
+/**
+ * Clears all the documents in the `users` database.
+ * DO NOT CALL ANYWHERE ELSE BESIDES openMongoConnection
+ */
 async function clearAll(){
     const result = await users.deleteMany({});
     console.log(`Removed ${result.deletedCount} document(s).`)
 }
 
-// Helper method for all updates.
+/**
+ * Generic helper function for the `updateOne` MongoDB method.
+ */
 async function updateMongoDocument(query, update){
     const result = await users.updateOne(query, update); 
     console.log(`modified ${result.modifiedCount} document(s).`)
     return result;
 }
 
-// Called when app exits.
-async function closeMongoConnection(){
-    await client.close();
-}
-
-// Helper function to get document by _id
-// async function getDocumentById(collection, id){
-//     const document = await collection.findOne({ _id: id});
-//     return document;
-// }
-
-// Helper function to get players from a room.
+/**
+ * Gets all the player objects in a room.
+ * 
+ * @param room [string] Roomname
+ */
 async function getPlayersInRoom(room){
     const document = await users.findOne({ _id: room});
     if(document){
@@ -72,19 +85,36 @@ async function getPlayersInRoom(room){
     return null;
 }
 
-// Create room in users collection.
+/************************************************************************************
+ *                              Simple Room CRUD Functions
+ ***********************************************************************************/
+
+/**
+ * Creates a new room in the users collection.
+ * 
+ * @param room [string] Roomname
+ */
 async function createRoom(room){
     const result = await users.insertOne(room);
     console.log(`New listing created with the following id: ${result.insertedId}`);
 }
 
-// Delete room in users collection.
+/**
+ * Deletes a room with the roomname in the users collection.
+ * 
+ * @param room [string] Roomname
+ */
 async function deleteRoom(room){
     const result = await users.deleteOne({ _id: room });
     console.log(`${result.deletedCount} document(s) were deleted.`);
 }
 
-// Add to a room that already exists.
+/**
+ * Add a player object to a room with the roomname.
+ * 
+ * @param room [string] Roomname
+ * @param player [Player] The player object to add.
+ */
 async function addPlayer(room, player){
     const query = { _id: room};
     const updateDocument = { $push: { "players": player}};
@@ -92,7 +122,13 @@ async function addPlayer(room, player){
     console.log(`${player.username} added to ${result.modifiedCount} room`);
 }
 
-// Find a room by roomname (_id).
+/**
+ * Find a room by the roomname.
+ * 
+ * @param room [string] Roomname
+ * @param homepage [bool] Whether or not the request originated from the homepage.
+ * @returns [bool] If room exists.
+ */
 async function roomExists(room, homepage) {
     // See if room exists but can be deleted.
     if (homepage){
@@ -104,7 +140,17 @@ async function roomExists(room, homepage) {
     } else return false;
 }
 
-// Get player by socketId.
+/************************************************************************************
+ *                              Deleting Player Functions
+ ***********************************************************************************/
+
+/**
+ * Get a players username from their socketId.
+ * 
+ * @param room [string] Roomname
+ * @parma socketId [string] The socket of the user.
+ * @returns [string] The players username.
+ */
 async function getPlayerBySocketId(room, socketId){
     const result = await getPlayersInRoom(room);
     if (result) {
@@ -116,7 +162,14 @@ async function getPlayerBySocketId(room, socketId){
     }
 }
 
-// Updates a player's socket Id (and reset deleted mark)
+/**
+ * This function gets called when a user refreshes and returns to the same room with a new socketId.
+ * The player object gets updated with the new socketId and `toBeDeleted` gets reset to `false`.
+ * 
+ * @param room [string] Roomname
+ * @param username [string] The players username
+ * @param socketId [string] The NEW socketId of the user
+ */
 async function updateSocketId(room, username, socketId){
     var query = { _id: room, "players.username": username};
     var updateDocument = { $set: { "players.$.socket": socketId}};
@@ -126,7 +179,14 @@ async function updateSocketId(room, username, socketId){
     await updateMongoDocument(query, updateDocument);
 }
 
-// Remove player from a room that already exists.
+/**
+ * This function gets called when a user disconnects from the socket; they leave the room or refresh.
+ * The player object does not get deleted by rather the `toBeDeleted` tag gets marked as `true`.
+ * 
+ * @param room [string] Roomname
+ * @param socketId [string] The socket of the user.
+ * @returns [string] The name of the user that was removed.
+ */
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
     const username = await getPlayerBySocketId(room, socketId);
@@ -141,7 +201,14 @@ async function removePlayerBySocketId(room, socketId){
     }
 }
 
-// Check to see if username is among the deleted players (used when checking for refresh).
+/**
+ * Checks if a username exists in the room (and has been marked as `toBeDeleted`).
+ * The idea is that users cannot enter a room without a unique username so this should only be `true` when a refresh happens.
+ * 
+ * @param room [string] Roomname
+ * @param username [string] The username of the player.
+ * @returns [bool] If the username exists in the room.
+ */
 async function deletedUsernameExistsInRoom(room, username){
     const players = await getPlayersInRoom(room);
     if(players){
@@ -160,7 +227,11 @@ async function deletedUsernameExistsInRoom(room, username){
     return false;
 }
 
-// Deletes all marked players and then checks if the room can be deleted as well.
+/**
+ * This function gets called when a new room gets created and should delete any dead rooms.
+ * 
+ * @param room [string] Roomname
+ */
 async function garbageCollector(room){
     const result = await getPlayersInRoom(room);
     if (result){
@@ -179,9 +250,16 @@ async function garbageCollector(room){
 
 }
 
-// TODO: function that deletes marked players.
+/************************************************************************************
+ *                              Player Functions
+ ***********************************************************************************/
 
-// Returns an array of a {username, team} object for the room.
+/**
+ * Gets the users in the room.
+ * 
+ * @param room [string] Roomname
+ * @returns [{username, team}] 
+ */
 async function getUsersInRoom(room){
     const result = await getPlayersInRoom(room);
     var players = [];
@@ -198,7 +276,12 @@ async function getUsersInRoom(room){
     return players;
 }
 
-// Returns a dictionary of username to roles in a room.
+/**
+ * Gets the users in the room along with their roles.
+ * 
+ * @param room [string] Roomname
+ * @returns [{username: role}]
+ */
 async function getRolesInRoom(room){
     const result = await getPlayersInRoom(room);
     var roles = {}
@@ -211,6 +294,10 @@ async function getRolesInRoom(room){
     }
     return roles;
 }
+
+/************************************************************************************
+ *                              Usernames of 4 Roles
+ ***********************************************************************************/
 
 async function getUsernameOfRedSidekick(room){
     const players = await getPlayersInRoom(room);
@@ -252,21 +339,16 @@ async function getUsernameOfBlueSuperhero(room){
     return null;
 }
 
-async function changeTurn(room){
-    const turn = await getIsRedTurn(room);
-    const query = { _id: room };
-    const updateDocument = { $set: { "isRedTurn": turn===false }};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
-}
+/************************************************************************************
+ *                              Turn Functions
+ ***********************************************************************************/
 
-async function resetTurn(room){
-    const query = { _id: room };
-    const updateDocument = { $set: { "isRedTurn": false }};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
-}
-
+/**
+ * Gets whose turn it currently is.
+ * 
+ * @param room [string] Roomname
+ * @returns [bool] true if it is reds turn.
+ */
 async function getIsRedTurn(room){
     const document = await users.findOne({ _id: room});
     if(document){
@@ -274,30 +356,41 @@ async function getIsRedTurn(room){
     }
 }
 
-// Returns word list
-async function getAllWordsInRoom(room){
-    const document = await users.findOne({ _id: room});
-    if(document){
-        return document.words;
-    }
-    return [];
+async function changeTurn(room){
+    const turn = await getIsRedTurn(room);
+    const query = { _id: room };
+    const updateDocument = { $set: { "isRedTurn": turn===false }};
+    await updateMongoDocument(query, updateDocument);
 }
+
+async function resetTurn(room){
+    const query = { _id: room };
+    const updateDocument = { $set: { "isRedTurn": false }};
+    await updateMongoDocument(query, updateDocument);
+}
+
+/************************************************************************************
+ *                              Role Functions
+ ***********************************************************************************/
 
 // Reset all roles in a room to "field" for a new game.
 async function resetRoles(room){
     const query = { _id: room };
     const updateDocument = { $set: { "players.$[].show": false }};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
+    await updateMongoDocument(query, updateDocument);
+
 }
 
 // Switch between roles.
 async function switchRoles(username, room, show){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.show": show}};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
+    await updateMongoDocument(query, updateDocument);
 }
+
+/************************************************************************************
+ *                              Team Functions
+ ***********************************************************************************/
 
 // Change a player's team.
 async function changeTeams(username, room, newTeam){
@@ -319,28 +412,9 @@ async function getTeam(username, room){
     return null;
 }
 
-// Update words with new word list.
-async function updateAllWordsInRoom(room, newWords){
-    const query = { _id: room};
-    const updateDocument = { $set: { words: newWords}};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
-}
-
-// Get a single word from the room.
-async function getWordInRoom(room, word){
-    const words = await getAllWordsInRoom(room);
-    const result = words.filter(w => w.text === word);
-    return result[0];
-}
-
-// Update a single word from the room.
-async function updateWordInRoom(room, word){
-    const query = { _id: room, "words.text": word};
-    const updateDocument = { $set: { "words.$.show": true}};
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
-}
+/************************************************************************************
+ *                              Message Functions
+ ***********************************************************************************/
 
 // Store messages.
 async function addMessage(room, messageObject){
@@ -357,32 +431,95 @@ async function getAllMessages(room){
     return doc.messages;
 }
 
-function randomIntFromInterval(min, max) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min);
+/************************************************************************************
+ *                              Word/WordSet Functions
+ ***********************************************************************************/
+
+// Returns word list
+async function getAllWordsInRoom(room){
+    const document = await users.findOne({ _id: room});
+    if(document){
+        return document.words;
+    }
+    return [];
 }
 
-// Change rooms wordSet.
+// Update words with new word list.
+/**
+ * @param room [string] Roomname
+ * @param newWords [[string]] 
+ */
+async function updateAllWordsInRoom(room, newWords){
+    const query = { _id: room};
+    const updateDocument = { $set: { words: newWords}};
+    await updateMongoDocument(query, updateDocument);
+}
+
+/**
+ * Gets a word object from the room.
+ * 
+ * @param room [string] Roomname
+ * @param word [string] Word
+ */
+async function getWordInRoom(room, word){
+    const words = await getAllWordsInRoom(room);
+    const result = words.filter(w => w.text === word);
+    return result[0];
+}
+
+/**
+ * Marks a word as `show` after it has been clicked.
+ * 
+ * @param room [string] Roomname
+ * @param word [string] The word that was clicked.
+ */
+async function updateWordInRoom(room, word){
+    const query = { _id: room, "words.text": word};
+    const updateDocument = { $set: { "words.$.show": true}};
+    await updateMongoDocument(query, updateDocument);
+}
+
+/**
+ * Changes the current word set of the room.
+ * 
+ * @param room [string] Roomname
+ * @param newWordSet [string] Name of the new word set.
+ */
 async function changeWordSet(room, newWordSet){
     const query = { _id: room};
     const updateDocument = { $set: { wordSet: newWordSet}};
     await updateMongoDocument(query, updateDocument);
 }
 
+/**
+ * Gets the current word set of the room.
+ * 
+ * @param room [string] Roomname
+ * @returns [[string]] The 25 words on the board.
+ */
 async function getWordSet(room){
     const doc = await users.findOne({ _id: room});
     console.log(doc.wordSet, room);
     return doc.wordSet;
 }
 
-// Get word array from array of ids using the wordset collection.
+/**
+ * Finds and returns 25 random words from the word set of the room.
+ * 
+ * @param room [string] Roomname
+ * @returns [[string]] 25 words in an array
+ */
 async function getWordArray(room){
-    var currentWordSet;
+    // Find the word set that the room is using.
+    var wordSet;
     if(room){
-        currentWordSet = wordDb.collection(await getWordSet(room));
+        wordSet = wordDb.collection(await getWordSet(room));
     } else {
-        currentWordSet = wordDb.collection("codewords");
+        // Default word set.
+        wordSet = wordDb.collection("codewords");
     }
-    const size = await currentWordSet.countDocuments();
+    // Randomly select 25 words from the set.
+    const size = await wordSet.countDocuments();
     var arr = []
     var usedSet = new Set();
     for(var i=0; i<25; i++){
@@ -395,25 +532,55 @@ async function getWordArray(room){
         usedSet.add(num);
         arr.push(num);
     }
-    const cursor = await currentWordSet.find({_id: {"$in": arr} });
+    const cursor = await wordSet.find({_id: {"$in": arr} });
     const allValues = await cursor.toArray();
     return allValues;
 }
 
-// Get time for timer.
+// Helper function in `getWordArray`
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+/************************************************************************************
+ *                              Time Functions
+ ***********************************************************************************/
+
+/**
+ * Gets the maximum amount of time per turn for the timer.
+ * 
+ * @param room [string] Roomname
+ * @returns [number]
+ */
 async function getTime(room) {
     const doc = await users.findOne({ _id: room});
     console.log(doc.time, room);
     return doc.time;
 }
 
+/**
+ * Changes the maximum amount of time per turn.
+ * 
+ * @param room [string] Roomname
+ * @param time [number] Maximum amount of time per turn.
+ */
 async function changeTime(room, time){
     const query = { _id: room};
     const updateDocument = { $set: { time: time }};
     await updateMongoDocument(query, updateDocument);
 }
 
-// Adds a statistic to the player.
+/************************************************************************************
+ *                              Statistic Functions
+ ***********************************************************************************/
+
+/**
+ * Adds a statistic regarding its turn for the player.
+ * 
+ * @param room [string] Roomname
+ * @param username [string] Player username
+ * @param stat [Statistic] Object with the specific statistics governing the turn.
+ */
 async function addTurnStatistics(room, username, stat){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $push: { "players.$.stats": stat}};
@@ -421,7 +588,12 @@ async function addTurnStatistics(room, username, stat){
     console.log(`${username} added a statistic.`);
 }
 
-// Returns all the times in the room as an object {username: time}
+/**
+ * Gets the statistics of each player and returns them as an object to be iterated.
+ * 
+ * @param room [string] Roomname
+ * @returns [{username, stats, team}] Statistics for each user in the room.
+ */
 async function getAllStatisticsInRoom(room){
     const result = await getPlayersInRoom(room);
     var statistics = [];
@@ -437,7 +609,6 @@ async function getAllStatisticsInRoom(room){
         }); 
     }
     return statistics;
-
 }
 
 module.exports = {
