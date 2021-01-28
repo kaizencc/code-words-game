@@ -299,6 +299,12 @@ async function getRolesInRoom(room){
  *                              Usernames of 4 Roles
  ***********************************************************************************/
 
+ /**
+  * Gets username of the red sidekick.
+  * 
+  * @param room [string] Roomname
+  * @returns [string] username if exists, null if not
+  */
 async function getUsernameOfRedSidekick(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === true && player.team === "red" && !player.toBeDeleted);
@@ -309,6 +315,12 @@ async function getUsernameOfRedSidekick(room){
     return null;
 }
 
+ /**
+  * Gets username of the red superhero.
+  * 
+  * @param room [string] Roomname
+  * @returns [string] username if exists, null if not
+  */
 async function getUsernameOfRedSuperhero(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === false && player.team === "red" && !player.toBeDeleted);
@@ -319,6 +331,12 @@ async function getUsernameOfRedSuperhero(room){
     return null;
 }
 
+ /**
+  * Gets username of the blue sidekick.
+  * 
+  * @param room [string] Roomname
+  * @returns [string] username if exists, null if not
+  */
 async function getUsernameOfBlueSidekick(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === true && player.team === "blue" && !player.toBeDeleted);
@@ -329,6 +347,12 @@ async function getUsernameOfBlueSidekick(room){
     return null;
 }
 
+ /**
+  * Gets username of the blue superhero.
+  * 
+  * @param room [string] Roomname
+  * @returns [string] username if exists, null if not
+  */
 async function getUsernameOfBlueSuperhero(room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.show === false && player.team === "blue" && !player.toBeDeleted);
@@ -337,6 +361,35 @@ async function getUsernameOfBlueSuperhero(room){
     } 
     console.log('DNE');
     return null;
+}
+
+/************************************************************************************
+ *                              Role Functions
+ ***********************************************************************************/
+
+/**
+ * Resets all roles to sidekick when new game is clicked.
+ * 
+ * @param room [string] Roomname
+ */
+async function resetRoles(room){
+    const query = { _id: room };
+    const updateDocument = { $set: { "players.$[].show": false }};
+    await updateMongoDocument(query, updateDocument);
+
+}
+
+/**
+ * Switch from one role to another.
+ * 
+ * @param username [string] Player's username
+ * @param room [string] Roomname
+ * @param show [bool] Whether or not to show the colors.
+ */
+async function switchRoles(username, room, show){
+    const query = { _id: room, "players.username": username};
+    const updateDocument = { $set: { "players.$.show": show}};
+    await updateMongoDocument(query, updateDocument);
 }
 
 /************************************************************************************
@@ -356,6 +409,11 @@ async function getIsRedTurn(room){
     }
 }
 
+/**
+ * Changes the turn from one color to the next.
+ * 
+ * @param room [string] Roomname
+ */
 async function changeTurn(room){
     const turn = await getIsRedTurn(room);
     const query = { _id: room };
@@ -363,6 +421,11 @@ async function changeTurn(room){
     await updateMongoDocument(query, updateDocument);
 }
 
+/**
+ * Resets the turn to red when new game is clicked.
+ * 
+ * @param room [string] Roomname
+ */
 async function resetTurn(room){
     const query = { _id: room };
     const updateDocument = { $set: { "isRedTurn": false }};
@@ -370,38 +433,30 @@ async function resetTurn(room){
 }
 
 /************************************************************************************
- *                              Role Functions
- ***********************************************************************************/
-
-// Reset all roles in a room to "field" for a new game.
-async function resetRoles(room){
-    const query = { _id: room };
-    const updateDocument = { $set: { "players.$[].show": false }};
-    await updateMongoDocument(query, updateDocument);
-
-}
-
-// Switch between roles.
-async function switchRoles(username, room, show){
-    const query = { _id: room, "players.username": username};
-    const updateDocument = { $set: { "players.$.show": show}};
-    await updateMongoDocument(query, updateDocument);
-}
-
-/************************************************************************************
  *                              Team Functions
  ***********************************************************************************/
 
-// Change a player's team.
+/**
+ * Get the team that a player is on.
+ * 
+ * @param room [string] Roomname
+ * @param username [string] Player's username
+ * @param newTeam [string] Either "red" or "blue"
+ */
 async function changeTeams(username, room, newTeam){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $set: { "players.$.team": newTeam}};
     console.log("change teams", room, username, newTeam);
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
+    await updateMongoDocument(query, updateDocument);
 }
 
-// Get a player's team.
+/**
+ * Get the team that a player is on.
+ * 
+ * @param room [string] Roomname
+ * @param username [string] Player's username
+ * @returns [string] Either "red" or "blue"
+ */
 async function getTeam(username, room){
     const players = await getPlayersInRoom(room);
     const p = players.filter(player => player.username === username);
@@ -416,16 +471,25 @@ async function getTeam(username, room){
  *                              Message Functions
  ***********************************************************************************/
 
-// Store messages.
+/**
+ * Stores a message in the room.
+ * 
+ * @param room [string] Roomname
+ * @param messageObject [messageObject] Message that was sent.
+ */
 async function addMessage(room, messageObject){
     const query = { _id: room};
     const updateDocument = { $push: { "messages": messageObject}};
     console.log('add message')
-    const answer = await updateMongoDocument(query, updateDocument);
-    return answer;
+    await updateMongoDocument(query, updateDocument);
 }
 
-// Get all messages from a room.
+/**
+ * Returns all the messages in a room.
+ * 
+ * @param room [string] Roomname
+ * @returns [[messageObject]] Array of messageObjects
+ */
 async function getAllMessages(room){
     const doc = await users.findOne({ _id: room});
     return doc.messages;
@@ -435,7 +499,12 @@ async function getAllMessages(room){
  *                              Word/WordSet Functions
  ***********************************************************************************/
 
-// Returns word list
+/**
+ * Returns the 25 word array in the room.
+ * 
+ * @param room [string] Roomname
+ * @returns [[string]] The 25 words in a room.
+ */
 async function getAllWordsInRoom(room){
     const document = await users.findOne({ _id: room});
     if(document){
@@ -444,10 +513,11 @@ async function getAllWordsInRoom(room){
     return [];
 }
 
-// Update words with new word list.
 /**
+ * Update words in the room with a new set of words.
+ * 
  * @param room [string] Roomname
- * @param newWords [[string]] 
+ * @param newWords [[string]] New set of words.
  */
 async function updateAllWordsInRoom(room, newWords){
     const query = { _id: room};
@@ -503,6 +573,12 @@ async function getWordSet(room){
     return doc.wordSet;
 }
 
+/**
+ * Returns the number of words in the current word set.
+ * 
+ * @param room [string] Roomname
+ * @returns number of words in the word set.
+ */
 async function countNumberOfWords(room){
     wordSet = wordDb.collection(await getWordSet(room));
     return wordSet.countDocuments();
@@ -520,11 +596,6 @@ async function getWordArray(room, ids){
     const cursor = await wordSet.find({_id: {"$in": ids} });
     const allValues = await cursor.toArray();
     return allValues;
-}
-
-// Helper function in `getWordArray`
-function randomIntFromInterval(min, max) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 /************************************************************************************
