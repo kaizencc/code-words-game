@@ -403,7 +403,6 @@ function socket(io) {
 
             // Remove player from room.
             var username = await Mongo.removePlayerBySocketId(roomname, socket.id);
-            console.log("BIG", username);
 
             // Check to make sure user has left the room and not refreshed.            
             if (username){
