@@ -6,9 +6,6 @@ const roomMessage = document.getElementById('room-message');
 const redUsers = document.getElementById('users-red');
 const blueUsers = document.getElementById('users-blue');
 
-//Socket server URL
-// const hostname = "localhost";
-// const elasticIp = "35.172.99.231";
 const socket = io.connect();
 
 //Fetch URL Params from URL
@@ -18,26 +15,53 @@ const username = urlParams.get('username');
 const roomname = urlParams.get('roomname');
 console.log(username, roomname);
 
+// Dictionary of all prompts to their functions.
+prompts = {"/stats": getStats, "/help": getHelp}
+
+// CryptoNight Statistics
+function getStats(components){
+    console.log(components);
+}
+
+// CryptoNight Command Helper
+function getHelp(){
+    socket.emit('chat', {
+        username: username,
+        forUser: username,
+        message: Object.keys(prompts).join("&ensp;|&ensp;"),
+        roomname: roomname,
+        event: "help",
+    })
+}
+
 // Display the roomname the user is connected to.
 roomMessage.innerHTML = `${roomname} Chat`;
 
 // Emitting username and roomname of newly joined user to server.
 socket.emit('joined-user', {
     username: username,
-    roomname: roomname
+    roomname: roomname,
 })
 
 // Sending data when user clicks send.
 send.addEventListener('click', () =>{
-    if (message.value !==""){
+    var isPrompt = false;
+    if (message.value[0] === "/"){
+        const components = message.value.split(' ');
+        if(components[0] in prompts){
+            isPrompt = true;
+            prompts[components[0]](components);
+        }
+    }
+    if (!isPrompt && message.value !==""){
         socket.emit('chat', {
             username: username,
             message: message.value,
             roomname: roomname,
             event: "chat",
         })
-        message.value = "";
     }
+    message.value = "";
 })
 
 // Allow the enter key to send a message.
@@ -70,6 +94,7 @@ socket.on('disconnected-user', (data)=>{
 // Display button clicks, switched users, and messages.
 socket.on('chat', (data) => {
     if (data.forUser && data.forUser !== username){
+        feedback.innerHTML = '';
         return;
     }
     switch(data.event){
@@ -119,6 +144,10 @@ socket.on('chat', (data) => {
         case "chat":
             output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
             feedback.innerHTML = '';
+            break;
+        case "help":
+            output.innerHTML += '<p class="text-success"><strong>CryptoNight Command Helper:</strong></p>';
+            output.innerHTML += `<p class="text-success"><strong>${data.message}</strong></p>`;
             break;
     }
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;

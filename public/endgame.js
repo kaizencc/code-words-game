@@ -58,6 +58,10 @@ socket.on('game-over', async (data) => {
     }
 
     if (username === data.redSuperhero){
+        // Add time into gameStats
+        avgTimes.forEach(o =>{
+            gameStats[o.username].time = o.avg;
+        })
         console.log(gameStats);
         socket.emit('add-endgame-statistic', {
             roomname: roomname,
@@ -239,7 +243,7 @@ function sortTimeByAvg(playerStats){
             team: playerStats[i].team,
         })
     }
-    // avgTimes is [{username, avg}]
+    // avgTimes is [{username, avg, team}]
     console.log(avgTimes);
     avgTimes.sort(function (a,b) {
         return a.avg - b.avg;
