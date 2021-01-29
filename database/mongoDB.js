@@ -677,11 +677,30 @@ async function addEndgameStatistic(room, stats){
     await updateMongoDocument(query, updateDocument);
 }
 
-async function clearStatistics(room){
+/**
+ * Clears the current game statistics for each player.
+ * 
+ * @param {string} room Roomname
+ */
+async function clearPlayerStatistics(room){
     const query = { _id: room};
     const updateDocument = { $set: { "players.$[].stats": []}};
     await updateMongoDocument(query, updateDocument);
     console.log(`statistics cleared.`);
+}
+
+/**
+ * Gets all the lifetime game statistics of a particular room.
+ * 
+ * @param {string} room Roomname
+ * @returns {[{username: {}}]} array of gameStatistics, dictionaries of username to statistic.
+ */
+async function getGameStatisticsInRoom(room){
+    const document = await users.findOne({ _id: room});
+    if(document){
+        return document.gameStatistics;
+    }
+    return [];
 }
 
 module.exports = {
@@ -720,7 +739,8 @@ module.exports = {
     getAllStatisticsInRoom,
     addTurnStatistics,
     addEndgameStatistic,
-    clearStatistics,
+    clearPlayerStatistics,
+    getGameStatisticsInRoom,
     garbageCollector,
     getTime,
     changeTime,

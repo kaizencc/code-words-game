@@ -164,7 +164,7 @@ function socket(io) {
             await Mongo.resetRoles(data.roomname);
 
             // Clear statistics, if any.
-            await Mongo.clearStatistics(data.roomname);
+            await Mongo.clearPlayerStatistics(data.roomname);
 
             // Update board.
             io.to(data.roomname).emit('board-game', {
@@ -394,6 +394,13 @@ function socket(io) {
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
+        })
+
+        socket.on('get-statistics', async (data) => {
+            io.to(data.roomname).emit('get-statistics', {
+                username: data.username,
+                stats: (await Mongo.getGameStatisticsInRoom(data.roomname)),
+            })
         })
 
         // When game is over, add statistics to monogDb.

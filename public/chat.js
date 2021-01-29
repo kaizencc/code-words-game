@@ -19,15 +19,17 @@ console.log(username, roomname);
 prompts = {"/stats": getStats, "/help": getHelp}
 
 // CryptoNight Statistics
-function getStats(components){
-    console.log(components);
+function getStats(){
+    socket.emit('get-statistics', {
+        username: username,
+        roomname: roomname,
+    })
 }
 
 // CryptoNight Command Helper
 function getHelp(){
     socket.emit('chat', {
         username: username,
-        forUser: username,
         message: Object.keys(prompts).join("&ensp;|&ensp;"),
         roomname: roomname,
         event: "help",
@@ -50,7 +52,7 @@ send.addEventListener('click', () =>{
         const components = message.value.split(' ');
         if(components[0] in prompts){
             isPrompt = true;
-            prompts[components[0]](components);
+            prompts[components[0]]();
         }
     }
     if (!isPrompt && message.value !==""){
@@ -94,7 +96,6 @@ socket.on('disconnected-user', (data)=>{
 // Display button clicks, switched users, and messages.
 socket.on('chat', (data) => {
     if (data.forUser && data.forUser !== username){
-        feedback.innerHTML = '';
         return;
     }
     switch(data.event){
@@ -148,7 +149,14 @@ socket.on('chat', (data) => {
         case "help":
             output.innerHTML += '<p class="text-success"><strong>CryptoNight Command Helper:</strong></p>';
             output.innerHTML += `<p class="text-success"><strong>${data.message}</strong></p>`;
+            feedback.innerHTML = '';
             break;
+        case "stats":
+            console.log(typeof(data.message), data.message)
+            output.innerHTML += '<p class="text-success"><strong>CryptoNight Win/Loss Statistics:</strong></p>';
+            output.innerHTML += data.message;
+            feedback.innerHTML = '';
+            break; 
     }
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })

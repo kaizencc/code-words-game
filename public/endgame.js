@@ -30,6 +30,13 @@ socket.on('game-over', async (data) => {
     var rowInfo = addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
 
     if (username === data.redSuperhero){
+        if(data.winner === "red"){
+            rowInfo.win = 1;
+            rowInfo.loss = 0;
+        } else {
+            rowInfo.win = 0;
+            rowInfo.loss = 1;
+        }
         gameStats[data.redSuperhero] = rowInfo;
     }
 
@@ -38,22 +45,43 @@ socket.on('game-over', async (data) => {
     rowInfo = addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
 
     if (username === data.redSuperhero){
+        if(data.winner === "red"){
+            rowInfo.win = 0;
+            rowInfo.loss = 1;
+        } else {
+            rowInfo.win = 1;
+            rowInfo.loss = 0;
+        }
         gameStats[data.blueSuperhero] = rowInfo;
     }
 
     // Create sidekick table
     const redSidekickStats = getPlayerStatistics(data.stats, data.redSidekick);
     const finalRedSidekickStats = calculateSidekickStats(redSidekickStats, redSuperheroStats);
-    rowInfo = addSidekickRow(data.redSidekick, finalRedSidekickStats, "red");
+    rowInfo = addSidekickRow(data.redSidekick, finalRedSidekickStats, "red", data.winner);
 
     if (username === data.redSuperhero){
+        if(data.winner === "red"){
+            rowInfo.win = 1;
+            rowInfo.loss = 0;
+        } else {
+            rowInfo.win = 0;
+            rowInfo.loss = 1;
+        }
         gameStats[data.redSidekick] = rowInfo;
     }
     const blueSidekickStats = getPlayerStatistics(data.stats, data.blueSidekick);
     const finalBlueSidekickStats = calculateSidekickStats(blueSidekickStats, blueSuperheroStats);
-    rowInfo = addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue");
+    rowInfo = addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue", data.winner);
 
     if (username === data.redSuperhero){
+        if(data.winner === "red"){
+            rowInfo.win = 0;
+            rowInfo.loss = 1;
+        } else {
+            rowInfo.win = 1;
+            rowInfo.loss = 0;
+        }
         gameStats[data.blueSidekick] = rowInfo;
     }
 
@@ -61,7 +89,8 @@ socket.on('game-over', async (data) => {
         // Add time into gameStats
         avgTimes.forEach(o =>{
             gameStats[o.username].time = o.avg;
-        })
+        })        
+
         console.log(gameStats);
         socket.emit('add-endgame-statistic', {
             roomname: roomname,
@@ -296,3 +325,55 @@ newGameBtn.addEventListener('click', () =>{
         roomname: roomname,
     });
 })
+
+/************************************************************************************
+ *                              Get Statistics Helpers
+ ***********************************************************************************/
+
+socket.on('get-statistics', (data)=>{
+    statistics = parseGameStats(data);
+    socket.emit('chat', {
+        username: username,
+        message: getMessage(statistics),
+        roomname: roomname,
+        event: "stats",
+    })
+})
+
+// Returns {username: {wins:0 losses:0}}
+function parseGameStats(data){
+    statistics = {}
+    for (const [key, value] of Object.entries(data)) {
+        if(key in statistics){
+            statistics[key] = 0;
+        } else {
+            statistics[key] = 0;
+        }
+    }
+}
+
+function getMessage(statistics){
+    var tableHead = `<table class="table table-sm table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">W</th>
+                        <th scope="col">L</th>
+                    </tr>
+                    </thead>`;
+    var tableBody = `<tbody>`;
+    for (const [key, value] of Object.entries(statistics)) {
+        tableBody += makeRow(key, value.wins, value.losses);
+    }
+    var tableFooter = `</tbody></table>`;
+
+    return tableHead + tableBody + tableFooter;
+}
+
+function makeRow(username, wins, losses){
+    return `<tr>
+                <td>${username}</td>
+                <td>${wins}</td>
+                <td>${losses}</td>
+            </tr>`
+}
