@@ -20,7 +20,11 @@ socket.on('game-over', async (data) => {
     // Create superhero table
     const redSuperheroStats = getPlayerStatistics(data.stats, data.redSuperhero);
     const finalRedSuperheroStats = calculateClickStats(redSuperheroStats);
-    addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
+    const rowInfo = addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
+
+    rowInfo.role = "superhero";
+
+
     const blueSuperheroStats = getPlayerStatistics(data.stats, data.blueSuperhero);
     const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats);
     addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
@@ -120,7 +124,6 @@ function addSuperheroRow(player, stats, color){
     document.getElementById('superhero-table').appendChild(row);
 
     return {
-        username: player,
         correct: stats.correct,
         wrong: totalWrong,
         percentage: percentage,
@@ -143,7 +146,6 @@ function addSidekickRow(player, stats, color){
     document.getElementById('sidekick-table').appendChild(row);
 
     return {
-        username: player,
         avgClueNumber: stats.avgClueNumber,
         avgSuccessNumber: stats.avgSuccessNumber,
     }

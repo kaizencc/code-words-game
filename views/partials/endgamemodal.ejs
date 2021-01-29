@@ -1,0 +1,105 @@
+<!-- End Game Modal -->
+<div class="modal bg-light" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="col-2">
+            </div>
+            <div class="col-8 text-center">
+                <!-- Winning Team-->
+                <h3 id="modal-title" class="modal-title">Modal title</h3>
+            </div>
+            <div class="col-2">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        </div>
+        <div id="modal-body" class="modal-body">
+            <!-- Final Scores -->
+            <div class="row">
+                <div id="red-modal" class="col text-center text-danger border border-danger rounded">
+                    <h3 id="red-title">Red Team</h3>
+                    <h4 id="red-final">9</h4>
+                </div>
+                <div id="blue-modal" class="col text-center text-primary border border-primary rounded">
+                    <h3 id="blue-title">Blue Team</h3>
+                    <h4 id="blue-final">9</h4>
+                </div>
+            </div>
+            <!-- Time Statistics -->
+            <div class="row justify-content-center">
+                <div class="col-12 text-center">
+                    <h4 class="text-success"> Average Time Per Turn </h4>
+                </div>
+                <div class="col-6">
+                    <div id="time-stats" class="list-group card">
+                    </div>
+                </div>
+            </div>
+            <!-- Turn Statistics -->
+            <div class="row justify-content-center">
+                <div class="col-6 text-center">
+                    <h4 class="text-success"> Superhero Statistics </h4>
+                </div>
+                <div class="col-6 text-center">
+                    <h4 class="text-success"> Sidekick Statistics </h4>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <table class="table table-sm">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Correct</th>
+                            <th scope="col">Wrong</th>
+                            <th scope="col">%</th>
+                          </tr>
+                        </thead>
+                        <tbody id = "superhero-table">
+                        </tbody>
+                      </table>
+                </div>
+                <div class="col-6">
+                    <table class="table table-sm">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Avg Clue #</th>
+                            <th scope="col">Avg Success #</th>
+                          </tr>
+                        </thead>
+                        <tbody id="sidekick-table">
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            <!-- Venmo Advertisement-->
+            <div class="row my-2 border border-success rounded">
+                <div class="col-2">
+                    <% for(var i=0; i<8; i++){ %>
+                        <span class="text-success">
+                            <i class="far fa-money-bill-alt"></i>
+                        </span>
+                    <% } %>
+                </div>
+                <div class="col-8 text-center text-success">
+                    <p>
+                        Love the game? Want to see more features like more word sets and statistics? 
+                        Venmo @kaizenconroy to support my passion project!
+                    </p>
+                </div>
+                <div class="col-2">
+                    <% for(var i=0; i<8; i++){ %>
+                        <span class="text-success">
+                            <i class="far fa-money-bill-alt"></i>
+                        </span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    </div>
+</div>
