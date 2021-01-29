@@ -50,7 +50,7 @@ async function closeMongoConnection(){
 
 /**
  * Clears all the documents in the `users` database.
- * DO NOT CALL ANYWHERE ELSE BESIDES openMongoConnection
+ * DO NOT CALL ANYWHERE ELSE BESIDES openMongoConnection.
  */
 async function clearAll(){
     const result = await users.deleteMany({});
@@ -59,6 +59,10 @@ async function clearAll(){
 
 /**
  * Generic helper function for the `updateOne` MongoDB method.
+ * 
+ * @param {{}} query The query to execute.
+ * @param {{}} update What to update results of the query.
+ * @returns {{}} result object from mongoDb.
  */
 async function updateMongoDocument(query, update){
     const result = await users.updateOne(query, update); 
@@ -69,7 +73,7 @@ async function updateMongoDocument(query, update){
 /**
  * Gets all the player objects in a room.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function getPlayersInRoom(room){
     const document = await users.findOne({ _id: room});
@@ -86,7 +90,7 @@ async function getPlayersInRoom(room){
 /**
  * Creates a new room in the users collection.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function createRoom(room){
     const result = await users.insertOne(room);
@@ -96,7 +100,7 @@ async function createRoom(room){
 /**
  * Deletes a room with the roomname in the users collection.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function deleteRoom(room){
     const result = await users.deleteOne({ _id: room });
@@ -106,8 +110,8 @@ async function deleteRoom(room){
 /**
  * Add a player object to a room with the roomname.
  * 
- * @param room [string] Roomname
- * @param player [Player] The player object to add.
+ * @param {string} room Roomname
+ * @param {{}} player The player object to add.
  */
 async function addPlayer(room, player){
     const query = { _id: room};
@@ -119,9 +123,9 @@ async function addPlayer(room, player){
 /**
  * Find a room by the roomname.
  * 
- * @param room [string] Roomname
- * @param homepage [bool] Whether or not the request originated from the homepage.
- * @returns [bool] If room exists.
+ * @param {string} room Roomname
+ * @param {boolean} homepage Whether or not the request originated from the homepage.
+ * @returns {boolean} If room exists.
  */
 async function roomExists(room, homepage) {
     // See if room exists but can be deleted.
@@ -141,9 +145,9 @@ async function roomExists(room, homepage) {
 /**
  * Get a players username from their socketId.
  * 
- * @param room [string] Roomname
- * @parma socketId [string] The socket of the user.
- * @returns [string] The players username.
+ * @param {string} room Roomname
+ * @param {string} socketId The socket of the user.
+ * @returns {string} The players username.
  */
 async function getPlayerBySocketId(room, socketId){
     const result = await getPlayersInRoom(room);
@@ -160,9 +164,9 @@ async function getPlayerBySocketId(room, socketId){
  * This function gets called when a user refreshes and returns to the same room with a new socketId.
  * The player object gets updated with the new socketId and `toBeDeleted` gets reset to `false`.
  * 
- * @param room [string] Roomname
- * @param username [string] The players username
- * @param socketId [string] The NEW socketId of the user
+ * @param {string} room Roomname
+ * @param {string} username The players username
+ * @param {string} socketId The NEW socketId of the user
  */
 async function updateSocketId(room, username, socketId){
     var query = { _id: room, "players.username": username};
@@ -177,9 +181,9 @@ async function updateSocketId(room, username, socketId){
  * This function gets called when a user disconnects from the socket; they leave the room or refresh.
  * The player object does not get deleted by rather the `toBeDeleted` tag gets marked as `true`.
  * 
- * @param room [string] Roomname
- * @param socketId [string] The socket of the user.
- * @returns [string] The name of the user that was removed.
+ * @param {string} room Roomname
+ * @param {string} socketId The socket of the user.
+ * @returns {string} The name of the user that was removed.
  */
 async function removePlayerBySocketId(room, socketId){
     // First, find username of player.
@@ -199,9 +203,9 @@ async function removePlayerBySocketId(room, socketId){
  * Checks if a username exists in the room (and has been marked as `toBeDeleted`).
  * The idea is that users cannot enter a room without a unique username so this should only be `true` when a refresh happens.
  * 
- * @param room [string] Roomname
- * @param username [string] The username of the player.
- * @returns [bool] If the username exists in the room.
+ * @param {string} room Roomname
+ * @param {string} username The username of the player.
+ * @returns {boolean} If the username exists in the room.
  */
 async function deletedUsernameExistsInRoom(room, username){
     const players = await getPlayersInRoom(room);
@@ -224,7 +228,7 @@ async function deletedUsernameExistsInRoom(room, username){
 /**
  * This function gets called when a new room gets created and should delete any dead rooms.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function garbageCollector(room){
     const result = await getPlayersInRoom(room);
@@ -251,8 +255,8 @@ async function garbageCollector(room){
 /**
  * Gets the users in the room.
  * 
- * @param room [string] Roomname
- * @returns [{username, team}] 
+ * @param {string} room Roomname
+ * @returns {{username, team}}
  */
 async function getUsersInRoom(room){
     const result = await getPlayersInRoom(room);
@@ -273,8 +277,8 @@ async function getUsersInRoom(room){
 /**
  * Gets the users in the room along with their roles.
  * 
- * @param room [string] Roomname
- * @returns [{username: role}]
+ * @param {string} room Roomname
+ * @returns {{username: boolean}} Dictionary of usernames to whether or not they are sidekicks.
  */
 async function getRolesInRoom(room){
     const result = await getPlayersInRoom(room);
@@ -296,8 +300,8 @@ async function getRolesInRoom(room){
  /**
   * Gets username of the red sidekick.
   * 
-  * @param room [string] Roomname
-  * @returns [string] username if exists, null if not
+  * @param {string} room Roomname
+  * @returns {string | null} username if exists, null if not
   */
 async function getUsernameOfRedSidekick(room){
     const players = await getPlayersInRoom(room);
@@ -312,8 +316,8 @@ async function getUsernameOfRedSidekick(room){
  /**
   * Gets username of the red superhero.
   * 
-  * @param room [string] Roomname
-  * @returns [string] username if exists, null if not
+  * @param {string} room Roomname
+  * @returns {string | null} username if exists, null if not
   */
 async function getUsernameOfRedSuperhero(room){
     const players = await getPlayersInRoom(room);
@@ -328,8 +332,8 @@ async function getUsernameOfRedSuperhero(room){
  /**
   * Gets username of the blue sidekick.
   * 
-  * @param room [string] Roomname
-  * @returns [string] username if exists, null if not
+  * @param {string} room Roomname
+  * @returns {string | null} username if exists, null if not
   */
 async function getUsernameOfBlueSidekick(room){
     const players = await getPlayersInRoom(room);
@@ -344,8 +348,8 @@ async function getUsernameOfBlueSidekick(room){
  /**
   * Gets username of the blue superhero.
   * 
-  * @param room [string] Roomname
-  * @returns [string] username if exists, null if not
+  * @param {string} room Roomname
+  * @returns {string | null} username if exists, null if not
   */
 async function getUsernameOfBlueSuperhero(room){
     const players = await getPlayersInRoom(room);
@@ -364,7 +368,7 @@ async function getUsernameOfBlueSuperhero(room){
 /**
  * Resets all roles to sidekick when new game is clicked.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function resetRoles(room){
     const query = { _id: room };
@@ -376,9 +380,9 @@ async function resetRoles(room){
 /**
  * Switch from one role to another.
  * 
- * @param username [string] Player's username
- * @param room [string] Roomname
- * @param show [bool] Whether or not to show the colors.
+ * @param {string} username Player's username
+ * @param {string} room Roomname
+ * @param {boolean} show Whether or not to show the colors.
  */
 async function switchRoles(username, room, show){
     const query = { _id: room, "players.username": username};
@@ -393,8 +397,8 @@ async function switchRoles(username, room, show){
 /**
  * Gets whose turn it currently is.
  * 
- * @param room [string] Roomname
- * @returns [bool] true if it is reds turn.
+ * @param {string} room Roomname
+ * @returns {boolean} true if it is reds turn.
  */
 async function getIsRedTurn(room){
     const document = await users.findOne({ _id: room});
@@ -406,7 +410,7 @@ async function getIsRedTurn(room){
 /**
  * Changes the turn from one color to the next.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function changeTurn(room){
     const turn = await getIsRedTurn(room);
@@ -418,7 +422,7 @@ async function changeTurn(room){
 /**
  * Resets the turn to red when new game is clicked.
  * 
- * @param room [string] Roomname
+ * @param {string} room Roomname
  */
 async function resetTurn(room){
     const query = { _id: room };
@@ -433,9 +437,9 @@ async function resetTurn(room){
 /**
  * Get the team that a player is on.
  * 
- * @param room [string] Roomname
- * @param username [string] Player's username
- * @param newTeam [string] Either "red" or "blue"
+ * @param {string} room Roomname
+ * @param {string} username Player's username
+ * @param {string} newTeam Either "red" or "blue"
  */
 async function changeTeams(username, room, newTeam){
     const query = { _id: room, "players.username": username};
@@ -447,9 +451,9 @@ async function changeTeams(username, room, newTeam){
 /**
  * Get the team that a player is on.
  * 
- * @param room [string] Roomname
- * @param username [string] Player's username
- * @returns [string] Either "red" or "blue"
+ * @param {string} room Roomname
+ * @param {string} username Player's username
+ * @returns {string} Either "red" or "blue"
  */
 async function getTeam(username, room){
     const players = await getPlayersInRoom(room);
@@ -468,8 +472,8 @@ async function getTeam(username, room){
 /**
  * Stores a message in the room.
  * 
- * @param room [string] Roomname
- * @param messageObject [messageObject] Message that was sent.
+ * @param {string} room Roomname
+ * @param {{}} messageObject Message that was sent.
  */
 async function addMessage(room, messageObject){
     const query = { _id: room};
@@ -481,8 +485,8 @@ async function addMessage(room, messageObject){
 /**
  * Returns all the messages in a room.
  * 
- * @param room [string] Roomname
- * @returns [[messageObject]] Array of messageObjects
+ * @param {string} room Roomname
+ * @returns {[{}}]} Array of messageObjects
  */
 async function getAllMessages(room){
     const doc = await users.findOne({ _id: room});
@@ -496,8 +500,8 @@ async function getAllMessages(room){
 /**
  * Returns the 25 word array in the room.
  * 
- * @param room [string] Roomname
- * @returns [[string]] The 25 words in a room.
+ * @param {string} room Roomname
+ * @returns {[string]} The 25 words in a room.
  */
 async function getAllWordsInRoom(room){
     const document = await users.findOne({ _id: room});
@@ -510,8 +514,8 @@ async function getAllWordsInRoom(room){
 /**
  * Update words in the room with a new set of words.
  * 
- * @param room [string] Roomname
- * @param newWords [[string]] New set of words.
+ * @param {string} room Roomname
+ * @param {[string]} newWords New set of words.
  */
 async function updateAllWordsInRoom(room, newWords){
     const query = { _id: room};
@@ -522,8 +526,8 @@ async function updateAllWordsInRoom(room, newWords){
 /**
  * Gets a word object from the room.
  * 
- * @param room [string] Roomname
- * @param word [string] Word
+ * @param {string} room Roomname
+ * @param {string} word Word
  */
 async function getWordInRoom(room, word){
     const words = await getAllWordsInRoom(room);
@@ -534,8 +538,8 @@ async function getWordInRoom(room, word){
 /**
  * Marks a word as `show` after it has been clicked.
  * 
- * @param room [string] Roomname
- * @param word [string] The word that was clicked.
+ * @param {string} room Roomname
+ * @param {string} word The word that was clicked.
  */
 async function updateWordInRoom(room, word){
     const query = { _id: room, "words.text": word};
@@ -546,8 +550,8 @@ async function updateWordInRoom(room, word){
 /**
  * Changes the current word set of the room.
  * 
- * @param room [string] Roomname
- * @param newWordSet [string] Name of the new word set.
+ * @param {string} room Roomname
+ * @param {string} newWordSet Name of the new word set.
  */
 async function changeWordSet(room, newWordSet){
     const query = { _id: room};
@@ -558,8 +562,8 @@ async function changeWordSet(room, newWordSet){
 /**
  * Gets the current word set of the room.
  * 
- * @param room [string] Roomname
- * @returns [[string]] The name of the wordset associated with the room.
+ * @param {string} room Roomname
+ * @returns {[string]} The name of the wordset associated with the room.
  */
 async function getWordSet(room){
     const doc = await users.findOne({ _id: room});
@@ -570,8 +574,8 @@ async function getWordSet(room){
 /**
  * Returns the number of words in the current word set.
  * 
- * @param room [string] Roomname
- * @returns number of words in the word set.
+ * @param {string} room Roomname
+ * @returns {number} number of words in the word set.
  */
 async function countNumberOfWords(room){
     wordSet = wordDb.collection(await getWordSet(room));
@@ -581,8 +585,8 @@ async function countNumberOfWords(room){
 /**
  * Finds and returns 25 random words from the word set of the room.
  * 
- * @param room [string] Roomname
- * @returns [[string]] 25 words in an array
+ * @param {string} room Roomname
+ * @returns {[string]} 25 words in an array
  */
 async function getWordArray(room, ids){
     // Find the word set that the room is using.
@@ -599,8 +603,8 @@ async function getWordArray(room, ids){
 /**
  * Gets the maximum amount of time per turn for the timer.
  * 
- * @param room [string] Roomname
- * @returns [number]
+ * @param {string} room Roomname
+ * @returns {number} The maximum time per turn.
  */
 async function getTime(room) {
     const doc = await users.findOne({ _id: room});
@@ -611,8 +615,8 @@ async function getTime(room) {
 /**
  * Changes the maximum amount of time per turn.
  * 
- * @param room [string] Roomname
- * @param time [number] Maximum amount of time per turn.
+ * @param {string} room Roomname
+ * @param {number} time Maximum amount of time per turn.
  */
 async function changeTime(room, time){
     const query = { _id: room};
@@ -627,9 +631,9 @@ async function changeTime(room, time){
 /**
  * Adds a statistic regarding its turn for the player.
  * 
- * @param room [string] Roomname
- * @param username [string] Player username
- * @param stat [Statistic] Object with the specific statistics governing the turn.
+ * @param {string} room Roomname
+ * @param {string} username Player username
+ * @param {{}} stat Object with the specific statistics governing the turn.
  */
 async function addTurnStatistics(room, username, stat){
     const query = { _id: room, "players.username": username};
