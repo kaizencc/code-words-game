@@ -638,7 +638,7 @@ async function changeTime(room, time){
 async function addTurnStatistics(room, username, stat){
     const query = { _id: room, "players.username": username};
     const updateDocument = { $push: { "players.$.stats": stat}};
-    const answer = await updateMongoDocument(query, updateDocument);
+    await updateMongoDocument(query, updateDocument);
     console.log(`${username} added a statistic.`);
 }
 
@@ -677,6 +677,13 @@ async function addEndgameStatistic(room, stats){
     await updateMongoDocument(query, updateDocument);
 }
 
+async function clearStatistics(room){
+    const query = { _id: room};
+    const updateDocument = { $set: { "players.$[].stats": []}};
+    await updateMongoDocument(query, updateDocument);
+    console.log(`statistics cleared.`);
+}
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -713,6 +720,7 @@ module.exports = {
     getAllStatisticsInRoom,
     addTurnStatistics,
     addEndgameStatistic,
+    clearStatistics,
     garbageCollector,
     getTime,
     changeTime,

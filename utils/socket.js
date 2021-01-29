@@ -163,6 +163,9 @@ function socket(io) {
             // Reset roles.
             await Mongo.resetRoles(data.roomname);
 
+            // Clear statistics, if any.
+            await Mongo.clearStatistics(data.roomname);
+
             // Update board.
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 

@@ -97,7 +97,7 @@ table {
     border-collapse: separate !important;
 }
 
-.table>tbody>tr>td,
+/* .table>tbody>tr>td,
 .table>tbody>tr>th,
 .table>tfoot>tr>td,
 .table>tfoot>tr>th,
@@ -105,4 +105,4 @@ table {
 .table>thead>tr>th {
     padding: 8px;
     border-radius: 5px !important;
-}
+} */

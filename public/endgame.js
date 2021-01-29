@@ -1,4 +1,3 @@
-
 /************************************************************************************
  *                              Game Over Modal
  ***********************************************************************************/
@@ -20,6 +19,10 @@ socket.on('game-over', async (data) => {
     // Create gameStats dictionary to be sent to mongoDb
     // Only need one player to keep track of game stats
     var gameStats = {};
+
+    // Clear tables.
+    document.getElementById('superhero-table').innerHTML="";
+    document.getElementById('sidekick-table').innerHTML="";
 
     // Create superhero table
     const redSuperheroStats = getPlayerStatistics(data.stats, data.redSuperhero);
