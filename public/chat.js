@@ -152,7 +152,6 @@ socket.on('chat', (data) => {
             feedback.innerHTML = '';
             break;
         case "stats":
-            console.log(typeof(data.message), data.message)
             output.innerHTML += '<p class="text-success"><strong>CryptoNight Win/Loss Statistics:</strong></p>';
             output.innerHTML += data.message;
             feedback.innerHTML = '';

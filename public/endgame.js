@@ -331,7 +331,10 @@ newGameBtn.addEventListener('click', () =>{
  ***********************************************************************************/
 
 socket.on('get-statistics', (data)=>{
-    statistics = parseGameStats(data);
+    if(username !== data.username){
+        return;
+    }
+    statistics = parseGameStats(data.stats);
     socket.emit('chat', {
         username: username,
         message: getMessage(statistics),
@@ -340,16 +343,20 @@ socket.on('get-statistics', (data)=>{
     })
 })
 
-// Returns {username: {wins:0 losses:0}}
+// Returns {username: [wins:0 losses:0]}
 function parseGameStats(data){
-    statistics = {}
-    for (const [key, value] of Object.entries(data)) {
-        if(key in statistics){
-            statistics[key] = 0;
-        } else {
-            statistics[key] = 0;
+    statistics = {};
+    data.forEach(gameStat => {
+        for (const [key, value] of Object.entries(gameStat)) {
+            if(key in statistics){
+                statistics[key][0] += value.win;
+                statistics[key][1] += value.loss;
+            } else {
+                statistics[key] = [value.win, value.loss];
+            }
         }
-    }
+    })
+    return statistics;
 }
 
 function getMessage(statistics){
@@ -363,7 +370,7 @@ function getMessage(statistics){
                     </thead>`;
     var tableBody = `<tbody>`;
     for (const [key, value] of Object.entries(statistics)) {
-        tableBody += makeRow(key, value.wins, value.losses);
+        tableBody += makeRow(key, value[0], value[1]);
     }
     var tableFooter = `</tbody></table>`;
 
