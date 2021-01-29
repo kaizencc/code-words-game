@@ -17,13 +17,21 @@ socket.on('game-over', async (data) => {
     const avgTimes = sortTimeByAvg(data.stats);
     createModalTimeStatistic(avgTimes);
 
-    // Create table
-    const redSuperheroStats = data.stats.filter(statistic => statistic.username === data.redSuperhero);
-    const finalRedSuperheroStats = calculateClickStats(redSuperheroStats[0].stats);
-    addSuperheroRow(data.redSuperhero, finalRedSuperheroStats);
-    const blueSuperheroStats = data.stats.filter(statistic => statistic.username === data.blueSuperhero);
-    const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats[0].stats);
-    addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats);
+    // Create superhero table
+    const redSuperheroStats = getPlayerStatistics(data.stats, data.redSuperhero);
+    const finalRedSuperheroStats = calculateClickStats(redSuperheroStats);
+    addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
+    const blueSuperheroStats = getPlayerStatistics(data.stats, data.blueSuperhero);
+    const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats);
+    addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
+
+    // Create sidekick table
+    const redSidekickStats = getPlayerStatistics(data.stats, data.redSidekick);
+    const finalRedSidekickStats = calculateSidekickStats(redSidekickStats, redSuperheroStats);
+    addSidekickRow(data.redSidekick, finalRedSidekickStats, "red");
+    const blueSidekickStats = getPlayerStatistics(data.stats, data.blueSidekick);
+    const finalBlueSidekickStats = calculateSidekickStats(blueSidekickStats, blueSuperheroStats);
+    addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue");
 
     // Wait a second and Show modal.
     await sleep(1000);
@@ -31,6 +39,39 @@ socket.on('game-over', async (data) => {
         $(".modal").css('display', 'block');
     });
 })
+
+function getPlayerStatistics(stats, username){
+    const result = stats.filter(statistic => statistic.username === username);
+    return result[0].stats;
+}
+
+function calculateSidekickStats(sidekickStats, superheroStats){
+    var totalWords = 0;
+    var totalRounds= 0;
+    sidekickStats.forEach(s => {
+        totalRounds +=1;
+        totalWords += Number(s.number);
+    })
+
+    var totalCorrect =0;
+    superheroStats.forEach(s => {
+        totalCorrect += s.correct;
+    })
+
+    var avgWords = 0;
+    var avgPartner = 0;
+    if (totalRounds > 0){
+        avgWords = totalWords / totalRounds;
+        avgWords = Math.round((avgWords + Number.EPSILON) * 100) / 100;
+        avgPartner = totalCorrect / totalRounds;
+        avgPartner = Math.round((avgPartner + Number.EPSILON) * 100) / 100;
+    }
+
+    return {
+        avgWords: avgWords,
+        avgPartner: avgPartner,
+    }
+}
 
 function calculateClickStats(stats){
     var correct = 0;
@@ -52,7 +93,8 @@ function calculateClickStats(stats){
     }
 }
 
-function addSuperheroRow(player, stats){
+// Add row to superhero table.
+function addSuperheroRow(player, stats, color){
     console.log(stats, stats.correct, stats.opposite, stats.yellow);
     var row = document.createElement('tr');
     row.appendChild(addCol(player));
@@ -66,10 +108,32 @@ function addSuperheroRow(player, stats){
         percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
         row.appendChild(addCol(percentage));
     }
+    if (color === "red"){
+        row.className = "text-danger";
+    } else {
+        row.className = "text-primary";
+    }
 
     document.getElementById('superhero-table').appendChild(row);
 }
 
+// Add row to sidekick table.
+function addSidekickRow(player, stats, color){
+    console.log(stats, stats.number);
+    var row = document.createElement('tr');
+    row.appendChild(addCol(player));
+    row.appendChild(addCol(stats.avgWords));
+    row.appendChild(addCol(stats.avgPartner));
+
+    if (color === "red"){
+        row.className = "text-danger";
+    } else {
+        row.className = "text-primary";
+    }
+    document.getElementById('sidekick-table').appendChild(row);
+}
+
+// Helper function to add a column to a table.
 function addCol(text){
     const col = document.createElement('th');
     col.scope = "col";
@@ -77,6 +141,7 @@ function addCol(text){
     return col;
 }
 
+// Creates title of either red or blue win.
 function createModalTitle(winner){
     const modalTitle = document.getElementById('modal-title');
     modalTitle.innerHTML = "";
@@ -85,6 +150,7 @@ function createModalTitle(winner){
     modalTitle.appendChild(createIcon(winner));
 }
 
+// Creates time statistics of all 4 players
 function createModalTimeStatistic(times){
     const list = document.getElementById('time-stats');
     list.innerHTML = "";
