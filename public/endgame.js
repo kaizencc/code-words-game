@@ -25,6 +25,8 @@ socket.on('game-over', async (data) => {
     const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats);
     addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
 
+    // Add table information
+
     // Create sidekick table
     const redSidekickStats = getPlayerStatistics(data.stats, data.redSidekick);
     const finalRedSidekickStats = calculateSidekickStats(redSidekickStats, redSuperheroStats);
@@ -58,18 +60,18 @@ function calculateSidekickStats(sidekickStats, superheroStats){
         totalCorrect += s.correct;
     })
 
-    var avgWords = 0;
-    var avgPartner = 0;
+    var avgClueNumber = 0;
+    var avgSuccessNumber = 0;
     if (totalRounds > 0){
-        avgWords = totalWords / totalRounds;
-        avgWords = Math.round((avgWords + Number.EPSILON) * 100) / 100;
-        avgPartner = totalCorrect / totalRounds;
-        avgPartner = Math.round((avgPartner + Number.EPSILON) * 100) / 100;
+        avgClueNumber = totalWords / totalRounds;
+        avgClueNumber = Math.round((avgClueNumber + Number.EPSILON) * 100) / 100;
+        avgSuccessNumber = totalCorrect / totalRounds;
+        avgSuccessNumber = Math.round((avgSuccessNumber + Number.EPSILON) * 100) / 100;
     }
 
     return {
-        avgWords: avgWords,
-        avgPartner: avgPartner,
+        avgClueNumber: avgClueNumber,
+        avgSuccessNumber: avgSuccessNumber,
     }
 }
 
@@ -101,10 +103,11 @@ function addSuperheroRow(player, stats, color){
     row.appendChild(addCol(stats.correct));
     const totalWrong = stats.opposite + stats.yellow + stats.cryptonight;
     row.appendChild(addCol(totalWrong));
+    var percentage = 0;
     if (totalWrong + stats.correct === 0){
-        row.appendChild(addCol(0));
+        row.appendChild(addCol(percentage));
     } else {
-        var percentage = stats.correct/(totalWrong + stats.correct);
+        percentage = stats.correct/(totalWrong + stats.correct);
         percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
         row.appendChild(addCol(percentage));
     }
@@ -115,6 +118,13 @@ function addSuperheroRow(player, stats, color){
     }
 
     document.getElementById('superhero-table').appendChild(row);
+
+    return {
+        username: player,
+        correct: stats.correct,
+        wrong: totalWrong,
+        percentage: percentage,
+    }
 }
 
 // Add row to sidekick table.
@@ -122,8 +132,8 @@ function addSidekickRow(player, stats, color){
     console.log(stats, stats.number);
     var row = document.createElement('tr');
     row.appendChild(addCol(player));
-    row.appendChild(addCol(stats.avgWords));
-    row.appendChild(addCol(stats.avgPartner));
+    row.appendChild(addCol(stats.avgClueNumber));
+    row.appendChild(addCol(stats.avgSuccessNumber));
 
     if (color === "red"){
         row.className = "text-danger";
@@ -131,6 +141,12 @@ function addSidekickRow(player, stats, color){
         row.className = "text-primary";
     }
     document.getElementById('sidekick-table').appendChild(row);
+
+    return {
+        username: player,
+        avgClueNumber: stats.avgClueNumber,
+        avgSuccessNumber: stats.avgSuccessNumber,
+    }
 }
 
 // Helper function to add a column to a table.

@@ -52,6 +52,7 @@ function socket(io) {
                     words: [], // Initialize the board for the room.
                     wordSet: "codewords", // Initial name of word set.
                     messages: [], // Storage of chat messages for the room.
+                    gameStatistics: [], // Storage of statistics for each game.
                     isRedTurn: false,
                     time: 60, // For timer.
                 })
