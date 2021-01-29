@@ -5,6 +5,8 @@ const sidekick = document.getElementById('side');
 const redTeam = document.getElementById('red-team');
 const blueTeam = document.getElementById('blue-team');
 
+var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
+
 /************************************************************************************
  *                              Build Board Buttons
  ***********************************************************************************/
@@ -150,6 +152,9 @@ board.addEventListener('click', function(e){
             message: text,
             event: "button",
         });
+
+        // Update number of button clicks per turn
+        sessionStorage.setItem('button-count', String(Number(sessionStorage.getItem('button-count'))+1));
     }
 })
 
@@ -161,8 +166,6 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
-var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
-
 socket.on('found-word', (data) => {
     // Find elapsed time, necessary if game is over.
     const startTime = sessionStorage.getItem('start-time') || "60";
@@ -173,6 +176,10 @@ socket.on('found-word', (data) => {
     const color = data.wordButton.color;
     console.log(color);
     if (color === buttonColor.BLACK){
+
+        // Update to show cryptonight clue hit
+        sessionStorage.setItem('cryptonight', '1');
+
         // Game is over, other team wins.
         var winningTeam = "";
         var finalRedScore = "";
@@ -195,6 +202,10 @@ socket.on('found-word', (data) => {
                 roomname: roomname,
                 username: username,
                 time: elapsedTime,
+                buttonCount: Number(sessionStorage.getItem('button-count')),
+                cryptonight: Number(sessionStorage.getItem('cryptonight')),
+                wrong: Number(sessionStorage.getItem('wrong')),
+                yellow: Number(sessionStorage.getItem('yellow')),
                 winner: winningTeam,
                 redScore: finalRedScore,
                 blueScore: finalBlueScore,
@@ -206,6 +217,10 @@ socket.on('found-word', (data) => {
         
         // If color does not match team color, turn is over.
         if (teamColor !== "red" && data.username === username){
+
+            // Update to show cryptonight clue hit
+            sessionStorage.setItem('wrong', '1');
+
             socket.emit('turn-over', {
                 roomname: roomname,
                 username: username,
@@ -218,6 +233,10 @@ socket.on('found-word', (data) => {
                 roomname: roomname,
                 username: username,
                 time: elapsedTime,
+                buttonCount: Number(sessionStorage.getItem('button-count')),
+                cryptonight: Number(sessionStorage.getItem('cryptonight')),
+                wrong: Number(sessionStorage.getItem('wrong')),
+                yellow: Number(sessionStorage.getItem('yellow')),
                 winner: "red",
                 redScore: "0",
                 blueScore: blueTeam.innerHTML,
@@ -231,6 +250,9 @@ socket.on('found-word', (data) => {
 
         // If color does not match team color, turn is over
         if (teamColor !== "blue" && data.username === username){
+            // Update to show cryptonight clue hit
+            sessionStorage.setItem('wrong', '1');
+
             socket.emit('turn-over', {
                 roomname: roomname,
                 username: username,
@@ -243,6 +265,10 @@ socket.on('found-word', (data) => {
                 roomname: roomname,
                 username: username,
                 time: elapsedTime,
+                buttonCount: Number(sessionStorage.getItem('button-count')),
+                cryptonight: Number(sessionStorage.getItem('cryptonight')),
+                wrong: Number(sessionStorage.getItem('wrong')),
+                yellow: Number(sessionStorage.getItem('yellow')),
                 winner: "blue",
                 redScore: redTeam.innerHTML,
                 blueScore: "0",
@@ -253,6 +279,9 @@ socket.on('found-word', (data) => {
         updateBlueScore(String(blueScore-1));
     } else {
         if (data.username === username){
+            // Update to show cryptonight clue hit
+            sessionStorage.setItem('yellow', '1');
+
             // Yellow button indicates turn is over.
             socket.emit('turn-over', {
                 roomname: roomname,

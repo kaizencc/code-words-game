@@ -111,7 +111,6 @@ function sidekickTurnFinished(){
     // Find total time spent
     const startTime = sessionStorage.getItem('start-time') || "60";
     const elapsedTime = Number(startTime)-Number(counter.innerHTML);
-    console.log(startTime, elapsedTime, counter.innerHTML);
 
     socket.emit('play-game-superhero', {
         roomname: roomname,
@@ -159,28 +158,33 @@ const endTurnBtn = document.getElementById('end-turn');
 
 // If user clicks end turn.
 endTurnBtn.addEventListener('click', () => {
-    turnFinished();
+    superheroTurnFinished();
 })
 
 // Called if user clicks a wrong color button.
 socket.on('turn-over', (data) => {
     if (data.username === username){
-        turnFinished();
+        superheroTurnFinished();
     }
 })
 
-function turnFinished(){
+function superheroTurnFinished(){
     // Determine amount of time spent.
     const startTime = sessionStorage.getItem('start-time') || "60";
     const elapsedTime = Number(startTime)-Number(counter.innerHTML);
-    console.log(startTime, elapsedTime, counter.innerHTML);
 
     turnOffButtons();
     socket.emit('play-game-sidekick', {
         roomname: roomname,
         username: username,
         time: elapsedTime,
+        buttonCount: Number(sessionStorage.getItem('button-count')),
+        cryptonight: Number(sessionStorage.getItem('cryptonight')),
+        wrong: Number(sessionStorage.getItem('wrong')),
+        yellow: Number(sessionStorage.getItem('yellow')),
     });
+
+
 }
 
 /************************************************************************************
@@ -262,6 +266,7 @@ socket.on('show-current-sidekick', (data)=>{
     setIdleClue("");
     if (data.username === username){
         showFormDisplay();
+        startSidekickStorageClickStats();
         broadcastYourTurn(data.turn);
     } else {
         turnOffButtons();
@@ -274,11 +279,15 @@ socket.on('show-current-sidekick', (data)=>{
     }
 })
 
+function startSidekickStorageClickStats(){
+}
+
 socket.on('show-current-superhero', (data)=>{
     clock(data.username, data.time);
     if (data.username === username){
         turnOnButtons();
         showClueDisplay();
+        startSuperheroStorageClickStats();
         broadcastYourTurn(data.turn);
     } else {
         turnOffButtons();
@@ -292,6 +301,13 @@ socket.on('show-current-superhero', (data)=>{
     setReceivedClue(data.clue + ", " + data.number);
     setIdleClue(data.clue + ", " + data.number);
 })
+
+function startSuperheroStorageClickStats(){
+    sessionStorage.setItem('button-count','0');
+    sessionStorage.setItem('cryptonight','0');
+    sessionStorage.setItem('wrong','0');
+    sessionStorage.setItem('yellow','0');
+}
 
 function setReceivedClue(text){
     changeClueColor(receivedClue, sessionStorage.getItem('broadcast-color'));

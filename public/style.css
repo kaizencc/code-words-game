@@ -92,3 +92,17 @@ p { margin:0 !important; }
     color: #fff !important;
     background-color: #5cb85c !important;
 }
+
+table {
+    border-collapse: separate !important;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+    padding: 8px;
+    border-radius: 5px !important;
+}

@@ -17,7 +17,7 @@
     <%- include('partials/tagmanager'); %>
     <!-- End Game Modal -->
     <div class="modal bg-light" id="myModal" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
         
         <!-- Modal content-->
         <div class="modal-content">
@@ -52,6 +52,49 @@
                     <div class="col-6">
                         <div id="time-stats" class="list-group card">
                         </div>
+                    </div>
+                </div>
+                <!-- Turn Statistics -->
+                <div class="row justify-content-center">
+                    <div class="col-6 text-center">
+                        <h4 class="text-success"> Superhero Statistics </h4>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h4 class="text-success"> Sidekick Statistics </h4>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-6">
+                        <table class="table table-sm">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Correct</th>
+                                <th scope="col">Wrong</th>
+                                <th scope="col">%</th>
+                              </tr>
+                            </thead>
+                            <tbody id = "superhero-table">
+                            </tbody>
+                          </table>
+                    </div>
+                    <div class="col-6">
+                        <table class="table table-sm">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Avg Words</th>
+                                <th scope="col">Avg Partner</th>
+                              </tr>
+                            </thead>
+                            <tbody id="sidekick-table">
+                              <tr>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                              </tr>
+                            </tbody>
+                          </table>
                     </div>
                 </div>
                 <!-- Venmo Advertisement-->

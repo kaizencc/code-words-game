@@ -186,6 +186,10 @@ function socket(io) {
                 // Update database with time spent and turn.
                 const stat = {
                     time: data.time,
+                    correct: data.buttonCount - data.cryptonight - data.wrong - data.yellow,
+                    yellow: data.yellow,
+                    opposite: data.wrong,
+                    cryptonight: data.cryptonight,
                 }
                 await Mongo.addTurnStatistics(data.roomname, data.username, stat);
             }
@@ -209,6 +213,7 @@ function socket(io) {
                 // Update database with time spent and turn.
                 const stat = {
                     time: data.time,
+                    number: data.number,
                 }
                 await Mongo.addTurnStatistics(data.roomname, data.username, stat);
             }
@@ -350,6 +355,10 @@ function socket(io) {
                 // Update database with time spent and turn.
                 const stat = {
                     time: data.time,
+                    correct: data.buttonCount - data.cryptonight - data.wrong - data.yellow,
+                    yellow: data.yellow,
+                    opposite: data.wrong,
+                    cryptonight: data.cryptonight,
                 }
                 await Mongo.addTurnStatistics(data.roomname, data.username, stat);
             }
@@ -367,6 +376,10 @@ function socket(io) {
                 redScore: data.redScore,
                 blueScore: data.blueScore,
                 stats: (await Mongo.getAllStatisticsInRoom(data.roomname)),
+                redSuperhero: (await Mongo.getUsernameOfRedSuperhero(data.roomname)),
+                blueSuperhero: (await Mongo.getUsernameOfBlueSuperhero(data.roomname)),
+                redSidekick: (await Mongo.getUsernameOfRedSidekick(data.roomname)),
+                blueSidekick: (await Mongo.getUsernameOfBlueSidekick(data.roomname)),
             });
 
             // Message in the chat.

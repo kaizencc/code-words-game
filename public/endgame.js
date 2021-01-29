@@ -12,14 +12,70 @@ socket.on('game-over', async (data) => {
     console.log("game over");
     createModalTitle(data.winner);
     createModalFinalScores(data.redScore, data.blueScore, data.winner);
+
+    // Create average time statistics
     const avgTimes = sortTimeByAvg(data.stats);
     createModalTimeStatistic(avgTimes);
+
+    // Create table
+    const redSuperheroStats = data.stats.filter(statistic => statistic.username === data.redSuperhero);
+    const finalRedSuperheroStats = calculateClickStats(redSuperheroStats[0].stats);
+    addSuperheroRow(data.redSuperhero, finalRedSuperheroStats);
+    const blueSuperheroStats = data.stats.filter(statistic => statistic.username === data.blueSuperhero);
+    const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats[0].stats);
+    addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats);
+
     // Wait a second and Show modal.
     await sleep(1000);
     $("#myModal").modal("show").on('shown.bs.modal', function () {
         $(".modal").css('display', 'block');
     });
 })
+
+function calculateClickStats(stats){
+    var correct = 0;
+    var opposite = 0;
+    var yellow = 0;
+    var crypto = 0;
+    stats.forEach(s =>{
+        correct += s.correct;
+        opposite += s.opposite;
+        yellow += s.yellow;
+        crypto += s.cryptonight;
+    })
+    console.log(correct, opposite, yellow, crypto);
+    return {
+        correct: correct, 
+        opposite: opposite, 
+        yellow: yellow,
+        cryptonight: crypto,
+    }
+}
+
+function addSuperheroRow(player, stats){
+    console.log(stats, stats.correct, stats.opposite, stats.yellow);
+    var row = document.createElement('tr');
+    row.appendChild(addCol(player));
+    row.appendChild(addCol(stats.correct));
+    const totalWrong = stats.opposite + stats.yellow + stats.cryptonight;
+    row.appendChild(addCol(totalWrong));
+    if (totalWrong + stats.correct === 0){
+        row.appendChild(addCol(0));
+    } else {
+        var percentage = stats.correct/(totalWrong + stats.correct);
+        percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
+        row.appendChild(addCol(percentage));
+    }
+
+    document.getElementById('superhero-table').appendChild(row);
+}
+
+function addCol(text){
+    const col = document.createElement('th');
+    col.scope = "col";
+    col.innerHTML = text;
+    return col;
+}
 
 function createModalTitle(winner){
     const modalTitle = document.getElementById('modal-title');
