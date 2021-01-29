@@ -392,9 +392,14 @@ function socket(io) {
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
         })
+
+        // When game is over, add statistics to monogDb.
+        socket.on('add-endgame-statistic', async (data) => {
+            await Mongo.addEndgameStatistic(data.roomname, data.gameStats);
+        })
     
         // Emitting messages to Clients.
-        socket.on('chat', async (data) =>{
+        socket.on('chat', async (data) => {
             const messageObject = {
                 username: data.username, 
                 message: data.message, 

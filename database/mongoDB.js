@@ -641,8 +641,8 @@ async function addTurnStatistics(room, username, stat){
 /**
  * Gets the statistics of each player and returns them as an object to be iterated.
  * 
- * @param room [string] Roomname
- * @returns [{username, stats, team}] Statistics for each user in the room.
+ * @param {string} room Roomname
+ * @returns {{username, stats, team}} Statistics for each user in the room.
  */
 async function getAllStatisticsInRoom(room){
     const result = await getPlayersInRoom(room);
@@ -659,6 +659,18 @@ async function getAllStatisticsInRoom(room){
         }); 
     }
     return statistics;
+}
+
+/**
+ * When the game is over, add the statistics shown in the modal to the database.
+ * 
+ * @param {string} room Roomname
+ * @param {{}} stats Statistic object to be added to the room
+ */
+async function addEndgameStatistic(room, stats){
+    const query = { _id: room};
+    const updateDocument = { $push: { "gameStatistics": stats}};
+    await updateMongoDocument(query, updateDocument);
 }
 
 module.exports = {
@@ -696,6 +708,7 @@ module.exports = {
     changeWordSet,
     getAllStatisticsInRoom,
     addTurnStatistics,
+    addEndgameStatistic,
     garbageCollector,
     getTime,
     changeTime,

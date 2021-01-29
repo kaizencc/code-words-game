@@ -17,27 +17,50 @@ socket.on('game-over', async (data) => {
     const avgTimes = sortTimeByAvg(data.stats);
     createModalTimeStatistic(avgTimes);
 
+    // Create gameStats dictionary to be sent to mongoDb
+    // Only need one player to keep track of game stats
+    var gameStats = {};
+
     // Create superhero table
     const redSuperheroStats = getPlayerStatistics(data.stats, data.redSuperhero);
     const finalRedSuperheroStats = calculateClickStats(redSuperheroStats);
-    const rowInfo = addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
+    var rowInfo = addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
 
-    rowInfo.role = "superhero";
-
+    if (username === data.redSuperhero){
+        gameStats[data.redSuperhero] = rowInfo;
+    }
 
     const blueSuperheroStats = getPlayerStatistics(data.stats, data.blueSuperhero);
     const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats);
-    addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
+    rowInfo = addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
 
-    // Add table information
+    if (username === data.redSuperhero){
+        gameStats[data.blueSuperhero] = rowInfo;
+    }
 
     // Create sidekick table
     const redSidekickStats = getPlayerStatistics(data.stats, data.redSidekick);
     const finalRedSidekickStats = calculateSidekickStats(redSidekickStats, redSuperheroStats);
-    addSidekickRow(data.redSidekick, finalRedSidekickStats, "red");
+    rowInfo = addSidekickRow(data.redSidekick, finalRedSidekickStats, "red");
+
+    if (username === data.redSuperhero){
+        gameStats[data.redSidekick] = rowInfo;
+    }
     const blueSidekickStats = getPlayerStatistics(data.stats, data.blueSidekick);
     const finalBlueSidekickStats = calculateSidekickStats(blueSidekickStats, blueSuperheroStats);
-    addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue");
+    rowInfo = addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue");
+
+    if (username === data.redSuperhero){
+        gameStats[data.blueSidekick] = rowInfo;
+    }
+
+    if (username === data.redSuperhero){
+        console.log(gameStats);
+        socket.emit('add-endgame-statistic', {
+            roomname: roomname,
+            gameStats: gameStats,
+        });
+    }
 
     // Wait a second and Show modal.
     await sleep(1000);
@@ -127,6 +150,7 @@ function addSuperheroRow(player, stats, color){
         correct: stats.correct,
         wrong: totalWrong,
         percentage: percentage,
+        role: "superhero",
     }
 }
 
@@ -148,6 +172,7 @@ function addSidekickRow(player, stats, color){
     return {
         avgClueNumber: stats.avgClueNumber,
         avgSuccessNumber: stats.avgSuccessNumber,
+        role: "sidekick",
     }
 }
 
