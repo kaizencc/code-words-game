@@ -26,7 +26,7 @@ socket.on('game-over', async (data) => {
 
     // Create superhero table
     const redSuperheroStats = getPlayerStatistics(data.stats, data.redSuperhero);
-    const finalRedSuperheroStats = calculateClickStats(redSuperheroStats);
+    const finalRedSuperheroStats = calculateSuperheroStats(redSuperheroStats);
     var rowInfo = addSuperheroRow(data.redSuperhero, finalRedSuperheroStats, "red");
 
     if (username === data.redSuperhero){
@@ -41,7 +41,7 @@ socket.on('game-over', async (data) => {
     }
 
     const blueSuperheroStats = getPlayerStatistics(data.stats, data.blueSuperhero);
-    const finalBlueSuperheroStats = calculateClickStats(blueSuperheroStats);
+    const finalBlueSuperheroStats = calculateSuperheroStats(blueSuperheroStats);
     rowInfo = addSuperheroRow(data.blueSuperhero, finalBlueSuperheroStats, "blue");
 
     if (username === data.redSuperhero){
@@ -135,32 +135,34 @@ function calculateSidekickStats(sidekickStats, superheroStats){
     return {
         avgClueNumber: avgClueNumber,
         avgSuccessNumber: avgSuccessNumber,
+        totalRounds: totalRounds,
     }
 }
 
-function calculateClickStats(stats){
+function calculateSuperheroStats(stats){
     var correct = 0;
     var opposite = 0;
     var yellow = 0;
     var crypto = 0;
+    var totalRounds = 0;
     stats.forEach(s =>{
+        totalRounds += 1;
         correct += s.correct;
         opposite += s.opposite;
         yellow += s.yellow;
         crypto += s.cryptonight;
     })
-    console.log(correct, opposite, yellow, crypto);
     return {
         correct: correct, 
         opposite: opposite, 
         yellow: yellow,
         cryptonight: crypto,
+        totalRounds: totalRounds,
     }
 }
 
 // Add row to superhero table.
 function addSuperheroRow(player, stats, color){
-    console.log(stats, stats.correct, stats.opposite, stats.yellow);
     var row = document.createElement('tr');
     row.appendChild(addCol(player));
     row.appendChild(addCol(stats.correct));
@@ -187,12 +189,12 @@ function addSuperheroRow(player, stats, color){
         wrong: totalWrong,
         percentage: percentage,
         role: "superhero",
+        rounds: stats.totalRounds,
     }
 }
 
 // Add row to sidekick table.
 function addSidekickRow(player, stats, color){
-    console.log(stats, stats.number);
     var row = document.createElement('tr');
     row.appendChild(addCol(player));
     row.appendChild(addCol(stats.avgClueNumber));
@@ -209,6 +211,7 @@ function addSidekickRow(player, stats, color){
         avgClueNumber: stats.avgClueNumber,
         avgSuccessNumber: stats.avgSuccessNumber,
         role: "sidekick",
+        rounds: stats.totalRounds,
     }
 }
 
@@ -325,62 +328,3 @@ newGameBtn.addEventListener('click', () =>{
         roomname: roomname,
     });
 })
-
-/************************************************************************************
- *                              Get Statistics Helpers
- ***********************************************************************************/
-
-socket.on('get-statistics', (data)=>{
-    if(username !== data.username){
-        return;
-    }
-    statistics = parseGameStats(data.stats);
-    socket.emit('chat', {
-        username: username,
-        message: getMessage(statistics),
-        roomname: roomname,
-        event: "stats",
-    })
-})
-
-// Returns {username: [wins:0 losses:0]}
-function parseGameStats(data){
-    statistics = {};
-    data.forEach(gameStat => {
-        for (const [key, value] of Object.entries(gameStat)) {
-            if(key in statistics){
-                statistics[key][0] += value.win;
-                statistics[key][1] += value.loss;
-            } else {
-                statistics[key] = [value.win, value.loss];
-            }
-        }
-    })
-    return statistics;
-}
-
-function getMessage(statistics){
-    var tableHead = `<table class="table table-sm table-striped">
-                    <thead>
-                    <tr>
-                        <th scope="col">Username</th>
-                        <th scope="col">W</th>
-                        <th scope="col">L</th>
-                    </tr>
-                    </thead>`;
-    var tableBody = `<tbody>`;
-    for (const [key, value] of Object.entries(statistics)) {
-        tableBody += makeRow(key, value[0], value[1]);
-    }
-    var tableFooter = `</tbody></table>`;
-
-    return tableHead + tableBody + tableFooter;
-}
-
-function makeRow(username, wins, losses){
-    return `<tr>
-                <td>${username}</td>
-                <td>${wins}</td>
-                <td>${losses}</td>
-            </tr>`
-}

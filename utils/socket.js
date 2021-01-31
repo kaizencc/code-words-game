@@ -219,6 +219,7 @@ function socket(io) {
                     time: data.time,
                     number: data.number,
                 }
+                console.log("SIDE", stat);
                 await Mongo.addTurnStatistics(data.roomname, data.username, stat);
             }
             const redTurn = await Mongo.getIsRedTurn(data.roomname);
@@ -400,6 +401,7 @@ function socket(io) {
             io.to(data.roomname).emit('get-statistics', {
                 username: data.username,
                 stats: (await Mongo.getGameStatisticsInRoom(data.roomname)),
+                request: data.request,
             })
         })
 

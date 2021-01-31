@@ -19,32 +19,32 @@ console.log(username, roomname);
 prompts = {
     "/help": getHelp,
     "/stats": getStats,
-    "/stats current": getStats,
+    "/stats time": getStats,
     "/stats superhero": getStats,
     "/stats sidekick": getStats, 
 }
 
 // CryptoNight Statistics
 function getStats(command){
-    if (command.length === 1){
-        socket.emit('get-statistics', {
-            username: username,
-            roomname: roomname,
-        })
-    } else if (command[1] === "current"){
-        console.log(command[1]);
-    } else if (command[1] === "superhero"){
-        console.log(command[1]);
-    } else if (command[1] === "sidekick"){
-        console.log(command[1]);
-    } else {
-        socket.emit('chat', {
-            username: username,
-            message: command.join(" "),
-            roomname: roomname,
-            event: "chat",
-        })
+    var request = "record";
+    if(command.length > 1){
+        if(command[1] === "time" || command[1] === "superhero" || command[1] === "sidekick"){
+            request = command[1];
+        } else {
+            socket.emit('chat', {
+                username: username,
+                message: command.join(" "),
+                roomname: roomname,
+                event: "chat",
+            })
+            return;
+        }
     }
+    socket.emit('get-statistics', {
+        username: username,
+        roomname: roomname,
+        request: request,
+    })
 }
 
 // CryptoNight Command Helper
@@ -173,7 +173,7 @@ socket.on('chat', (data) => {
             feedback.innerHTML = '';
             break;
         case "stats":
-            output.innerHTML += '<p class="text-success"><strong>CryptoNight Win/Loss Statistics:</strong></p>';
+            output.innerHTML += `<p class="text-success"><strong>CryptoNight Statistics:</strong></p>`;
             output.innerHTML += data.message;
             feedback.innerHTML = '';
             break; 
