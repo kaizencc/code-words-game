@@ -198,6 +198,7 @@ socket.on('found-word', (data) => {
 
         if (data.username === username){
             explosion.play();
+            showIdleDisplay();
             socket.emit('game-over', {
                 roomname: roomname,
                 username: username,
@@ -229,6 +230,7 @@ socket.on('found-word', (data) => {
 
         // Game is over, red team wins.
         if (redScore == 1 && data.username === username){
+            showIdleDisplay();
             socket.emit('game-over', {
                 roomname: roomname,
                 username: username,
@@ -261,6 +263,7 @@ socket.on('found-word', (data) => {
 
         // Game is over
         if (blueScore == 1 && data.username === username){
+            showIdleDisplay();
             socket.emit('game-over', {
                 roomname: roomname,
                 username: username,

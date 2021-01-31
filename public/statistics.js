@@ -15,8 +15,10 @@ socket.on('get-statistics', (data)=>{
             getTimeStats(data.stats);
             break;
         case "superhero":
+            getSuperheroStats(data.stats);
             break;
         case "sidekick":
+            getSidekickStats(data.stats);
             break;
     }
 })
@@ -25,11 +27,92 @@ socket.on('get-statistics', (data)=>{
  *                              Sidekick Stats
  ***********************************************************************************/
 
+function getSidekickStats(stats){
+    header = ["Username", "G", "Guess%","Success%"];
+    statistics = parseSidekickStats(stats);
+    socket.emit('chat', {
+        username: username,
+        message: getMessage(statistics, header),
+        roomname: roomname,
+        event: "stats",
+    })
+}
+
+function parseSidekickStats(data){
+    statistics = {};
+    data.forEach(gameStat => {
+        for (const [key, value] of Object.entries(gameStat)) {
+            if(value.role === "sidekick"){
+                if(key in statistics){
+                    statistics[key][0] += value.rounds;
+                    statistics[key][1] += value.avgClueNumber*value.rounds;
+                    statistics[key][2] += value.avgSuccessNumber*value.rounds;
+                    statistics[key][3] += 1;
+                } else {
+                    statistics[key] = [value.rounds, value.avgClueNumber*value.rounds, value.avgSuccessNumber*value.rounds, 1];
+                }
+            }
+        }
+    })
+    sidekickStats = {};
+    for (const [key, value] of Object.entries(statistics)) {
+        var avgClue=0;
+        var avgSuccess=0;
+        if (value[0] > 0){
+            avgClue = value[1] / value[0];
+            // Round to 2 decimal places if necessary.
+            avgClue = Math.round((avgClue + Number.EPSILON) * 100) / 100;
+
+            avgSuccess = value[2] / value[0];
+            avgSuccess = Math.round((avgSuccess + Number.EPSILON) * 100) / 100;
+        }
+
+        sidekickStats[key] = [value[3], avgClue, avgSuccess];
+    }
+    return sidekickStats;
+} 
 
 /************************************************************************************
  *                              Superhero Stats
  ***********************************************************************************/
 
+function getSuperheroStats(stats){
+    header = ["Username", "G", `<i class="fas fa-check"></i>`, `<i class="fas fa-times"></i>`, `<i class="fas fa-percent"></i>`];
+    statistics = parseSuperheroStats(stats);
+    socket.emit('chat', {
+        username: username,
+        message: getMessage(statistics, header),
+        roomname: roomname,
+        event: "stats",
+    })
+}
+
+function parseSuperheroStats(data){
+    statistics = {};
+    data.forEach(gameStat => {
+        for (const [key, value] of Object.entries(gameStat)) {
+            if(value.role === "superhero"){
+                if(key in statistics){
+                    statistics[key][0] +=1
+                    statistics[key][1] += value.correct;
+                    statistics[key][2] += value.wrong;
+                } else {
+                    statistics[key] = [1, value.correct, value.wrong];
+                }
+            }
+        }
+    })
+    for (const [_, value] of Object.entries(statistics)) {
+        var avg=0;
+        if ((value[1]+value[0]) > 0){
+            avg = value[1] / (value[0] + value[1]);
+            // Round to 2 decimal places if necessary.
+            avg = Math.round((avg + Number.EPSILON) * 100) / 100;
+        }
+        value.push(avg);
+    }
+    return statistics;
+} 
 
 /************************************************************************************
  *                              Time Stats
@@ -58,7 +141,6 @@ function parseTimeStats(data){
             }
         }
     })
-    console.log(statistics);
     timeStats = {};
     for (const [key, value] of Object.entries(statistics)) {
         var avg=0;
@@ -69,7 +151,6 @@ function parseTimeStats(data){
         }
         timeStats[key] = [avg];
     }
-    console.log(timeStats);
     return timeStats;
 }
 
@@ -103,6 +184,10 @@ function parseRecordStats(data){
     return statistics;
 }
 
+/************************************************************************************
+ *                              Helper Functions for All Stats
+ ***********************************************************************************/
+
 function getMessage(statistics, statNames){
     var tableHead = `<table class="table table-sm table-striped">
                     <thead>
@@ -127,8 +212,4 @@ function makeRow(username, values){
     }
     row += `</tr>`;
     return row;
-}
-
-function makeItem(value){
-    return `<td>${value}</td>`;
 }
