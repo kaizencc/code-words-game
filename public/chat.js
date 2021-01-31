@@ -16,21 +16,42 @@ const roomname = urlParams.get('roomname');
 console.log(username, roomname);
 
 // Dictionary of all prompts to their functions.
-prompts = {"/stats": getStats, "/help": getHelp}
+prompts = {
+    "/help": getHelp,
+    "/stats": getStats,
+    "/stats current": getStats,
+    "/stats superhero": getStats,
+    "/stats sidekick": getStats, 
+}
 
 // CryptoNight Statistics
-function getStats(){
-    socket.emit('get-statistics', {
-        username: username,
-        roomname: roomname,
-    })
+function getStats(command){
+    if (command.length === 1){
+        socket.emit('get-statistics', {
+            username: username,
+            roomname: roomname,
+        })
+    } else if (command[1] === "current"){
+        console.log(command[1]);
+    } else if (command[1] === "superhero"){
+        console.log(command[1]);
+    } else if (command[1] === "sidekick"){
+        console.log(command[1]);
+    } else {
+        socket.emit('chat', {
+            username: username,
+            message: command.join(" "),
+            roomname: roomname,
+            event: "chat",
+        })
+    }
 }
 
 // CryptoNight Command Helper
 function getHelp(){
     socket.emit('chat', {
         username: username,
-        message: Object.keys(prompts).join("&ensp;|&ensp;"),
+        message: Object.keys(prompts).join("<br>"),
         roomname: roomname,
         event: "help",
     })
@@ -52,7 +73,7 @@ send.addEventListener('click', () =>{
         const components = message.value.split(' ');
         if(components[0] in prompts){
             isPrompt = true;
-            prompts[components[0]]();
+            prompts[components[0]](components);
         }
     }
     if (!isPrompt && message.value !==""){
