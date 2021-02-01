@@ -28,7 +28,7 @@ socket.on('get-statistics', (data)=>{
  ***********************************************************************************/
 
 function getSidekickStats(stats){
-    header = ["Username", "G", "Guess%","Success%"];
+    header = ["Username", "G", `<i class="fas fa-search"></i>/<i class="fas fa-redo"></i>`,`<i class="fas fa-check"></i>/<i class="fas fa-redo"></i>`];
     statistics = parseSidekickStats(stats);
     socket.emit('chat', {
         username: username,

@@ -93,9 +93,9 @@ p { margin:0 !important; }
     background-color: #5cb85c !important;
 }
 
-table {
+/* table {
     border-collapse: separate !important;
-}
+} */
 
 /* .table>tbody>tr>td,
 .table>tbody>tr>th,
