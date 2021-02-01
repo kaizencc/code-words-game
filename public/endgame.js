@@ -20,6 +20,8 @@ socket.on('game-over', async (data) => {
     // Only need one player to keep track of game stats
     var gameStats = {};
 
+    var leaderboardStats = {};
+
     // Clear tables.
     document.getElementById('superhero-table').innerHTML="";
     document.getElementById('sidekick-table').innerHTML="";
@@ -33,11 +35,17 @@ socket.on('game-over', async (data) => {
         if(data.winner === "red"){
             rowInfo.win = 1;
             rowInfo.loss = 0;
+            finalRedSuperheroStats.wins= 1;
+            finalRedSuperheroStats.losses=0;
         } else {
             rowInfo.win = 0;
             rowInfo.loss = 1;
+            finalRedSuperheroStats.wins= 0;
+            finalRedSuperheroStats.losses=1;
         }
         gameStats[data.redSuperhero] = rowInfo;
+        finalRedSuperheroStats.role = "superhero",
+        leaderboardStats[data.redSuperhero] = finalRedSuperheroStats;
     }
 
     const blueSuperheroStats = getPlayerStatistics(data.stats, data.blueSuperhero);
@@ -48,41 +56,61 @@ socket.on('game-over', async (data) => {
         if(data.winner === "red"){
             rowInfo.win = 0;
             rowInfo.loss = 1;
+            finalBlueSuperheroStats.wins= 0;
+            finalBlueSuperheroStats.losses=1;
         } else {
             rowInfo.win = 1;
             rowInfo.loss = 0;
+            finalBlueSuperheroStats.wins= 1;
+            finalBlueSuperheroStats.losses=0;
         }
         gameStats[data.blueSuperhero] = rowInfo;
+        finalBlueSuperheroStats.role = "superhero",
+        leaderboardStats[data.blueSuperhero] = finalBlueSuperheroStats;
     }
 
     // Create sidekick table
     const redSidekickStats = getPlayerStatistics(data.stats, data.redSidekick);
-    const finalRedSidekickStats = calculateSidekickStats(redSidekickStats, redSuperheroStats);
-    rowInfo = addSidekickRow(data.redSidekick, finalRedSidekickStats, "red", data.winner);
+    rawStats = calculateRawSidekickStats(redSidekickStats, redSuperheroStats);
+    const finalRedSidekickStats = calculateSidekickStats(rawStats);
+    rowInfo = addSidekickRow(data.redSidekick, finalRedSidekickStats, "red");
 
     if (username === data.redSuperhero){
         if(data.winner === "red"){
             rowInfo.win = 1;
             rowInfo.loss = 0;
+            rawStats.wins= 1;
+            rawStats.losses=0;
         } else {
             rowInfo.win = 0;
             rowInfo.loss = 1;
+            rawStats.wins= 0;
+            rawStats.losses=1;
         }
         gameStats[data.redSidekick] = rowInfo;
+        rawStats.role = "sidekick",
+        leaderboardStats[data.redSidekick] = rawStats;
     }
     const blueSidekickStats = getPlayerStatistics(data.stats, data.blueSidekick);
-    const finalBlueSidekickStats = calculateSidekickStats(blueSidekickStats, blueSuperheroStats);
-    rowInfo = addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue", data.winner);
+    rawStats = calculateRawSidekickStats(blueSidekickStats, blueSuperheroStats);
+    const finalBlueSidekickStats = calculateSidekickStats(rawStats);
+    rowInfo = addSidekickRow(data.blueSidekick, finalBlueSidekickStats, "blue");
 
     if (username === data.redSuperhero){
         if(data.winner === "red"){
             rowInfo.win = 0;
             rowInfo.loss = 1;
+            rawStats.wins= 0;
+            rawStats.losses=1;
         } else {
             rowInfo.win = 1;
             rowInfo.loss = 0;
+            rawStats.wins= 1;
+            rawStats.losses=0;
         }
         gameStats[data.blueSidekick] = rowInfo;
+        rawStats.role = "sidekick",
+        leaderboardStats[data.blueSidekick] = rawStats;
     }
 
     if (username === data.redSuperhero){
@@ -95,6 +123,11 @@ socket.on('game-over', async (data) => {
         socket.emit('add-endgame-statistic', {
             roomname: roomname,
             gameStats: gameStats,
+        });
+
+        socket.emit('update-leaderboard', {
+            roomname: roomname,
+            leaderboardStats: leaderboardStats,
         });
     }
 
@@ -110,9 +143,10 @@ function getPlayerStatistics(stats, username){
     return result[0].stats;
 }
 
-function calculateSidekickStats(sidekickStats, superheroStats){
+function calculateRawSidekickStats(sidekickStats, superheroStats){
     var totalWords = 0;
     var totalRounds= 0;
+    var cryptonight = 0;
     sidekickStats.forEach(s => {
         totalRounds +=1;
         totalWords += Number(s.number);
@@ -121,21 +155,31 @@ function calculateSidekickStats(sidekickStats, superheroStats){
     var totalCorrect =0;
     superheroStats.forEach(s => {
         totalCorrect += s.correct;
+        cryptonight += s.cryptonight;
     })
 
+    return {
+        totalWords: totalWords,
+        totalRounds: totalRounds,
+        totalCorrect: totalCorrect,
+        cryptonight: cryptonight,
+    }
+}
+
+function calculateSidekickStats(rawStats){
     var avgClueNumber = 0;
     var avgSuccessNumber = 0;
-    if (totalRounds > 0){
-        avgClueNumber = totalWords / totalRounds;
+    if (rawStats.totalRounds > 0){
+        avgClueNumber = rawStats.totalWords / rawStats.totalRounds;
         avgClueNumber = Math.round((avgClueNumber + Number.EPSILON) * 100) / 100;
-        avgSuccessNumber = totalCorrect / totalRounds;
+        avgSuccessNumber = rawStats.totalCorrect / rawStats.totalRounds;
         avgSuccessNumber = Math.round((avgSuccessNumber + Number.EPSILON) * 100) / 100;
     }
 
     return {
         avgClueNumber: avgClueNumber,
         avgSuccessNumber: avgSuccessNumber,
-        totalRounds: totalRounds,
+        totalRounds: rawStats.totalRounds,
     }
 }
 
@@ -162,7 +206,7 @@ function calculateSuperheroStats(stats){
 }
 
 // Add row to superhero table.
-function addSuperheroRow(player, stats, color){
+function addSuperheroRow(player, stats, color, winner){
     var row = document.createElement('tr');
     row.appendChild(addCol(player));
     row.appendChild(addCol(stats.correct));

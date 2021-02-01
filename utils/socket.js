@@ -94,6 +94,9 @@ function socket(io) {
                     io.to(data.roomname).emit('chat', messageObject);
                 });
             }
+
+            // Add player to leaderboard database if not there already.
+            Mongo.addToLeaderboard(data.username, data.roomname);
         })
 
         socket.on('join-message', async (data) => {
@@ -408,6 +411,17 @@ function socket(io) {
         // When game is over, add statistics to monogDb.
         socket.on('add-endgame-statistic', async (data) => {
             await Mongo.addEndgameStatistic(data.roomname, data.gameStats);
+        })
+
+        socket.on('update-leaderboard', async (data) => {
+            for (const [username, stats] of Object.entries(data.leaderboardStats)) {
+                if(stats.role === "sidekick"){
+                    Mongo.addSidekickToLeaderboard(username, data.roomname, stats);
+                } else {
+                    Mongo.addSuperheroToLeaderboard(username, data.roomname, stats);
+                }
+            }
+            console.log(data);
         })
     
         // Emitting messages to Clients.

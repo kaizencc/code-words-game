@@ -12,6 +12,7 @@ var client;
 var db;
 var users;
 var wordDb;
+var leaderboard;
 
 /**
  * Opens a connection with the MongoDB database and populates the `client` and `db` variables.
@@ -28,6 +29,8 @@ async function openMongoConnection(){
 
         // Remove all documents in collection at start of application.
         clearAll();
+
+        leaderboard = client.db('alltime-data').collection('leaderboard');
 
         // Add in word lists if necessary
         initializeMongoWordlists(wordDb);
@@ -703,6 +706,70 @@ async function getGameStatisticsInRoom(room){
     return [];
 }
 
+/************************************************************************************
+ *                              Leaderboard Functions
+ ***********************************************************************************/
+
+async function addToLeaderboard(username, room){
+    const _id = `${username}_${room}`;
+
+    // Check if exists already.
+    const result = await leaderboard.countDocuments({_id: _id}, { limit: 1 });
+    if (result === 0) {
+        // Does not exist
+        await leaderboard.insertOne({
+            _id: _id,
+            games: 0,
+            wins: 0,
+            losses: 0,
+            cryptonight: 0,
+            games_superhero: 0,
+            correct: 0,
+            wrong: 0,
+            turns_superhero: 0,
+            games_sidekick: 0,
+            clues: 0,
+            correct: 0,
+            turns_sidekick: 0,
+            time: 0,
+        });
+    }
+}
+
+async function addSuperheroToLeaderboard(username, room, stats){
+    const _id = `${username}_${room}`;
+
+    const query = { _id: _id};
+    const updateDocument = { $inc: { 
+        "games": 1, 
+        "games_superhero": 1,
+        "wins": stats.wins,
+        "losses": stats.losses,
+        "correct": stats.correct,
+        "wrong": stats.opposite + stats.yellow + stats.cryptonight,
+        "cryptonight": stats.cryptonight,
+    }};
+    await leaderboard.updateOne(query, updateDocument); 
+}
+
+async function addSidekickToLeaderboard(username, room, stats){
+    const _id = `${username}_${room}`;
+
+    const query = { _id: _id};
+    const updateDocument = { $inc: { 
+        "games": 1, 
+        "games_sidekick": 1,
+        "wins": stats.wins,
+        "losses": stats.losses,
+        "clues": stats.totalWords,
+        "correct": stats.totalCorrect,
+        "turns": stats.totalRounds,
+        "cryptonight": stats.cryptonight,
+    }};
+    await leaderboard.updateOne(query, updateDocument); 
+}
+
+
 module.exports = {
     openMongoConnection, 
     closeMongoConnection,
@@ -744,5 +811,8 @@ module.exports = {
     garbageCollector,
     getTime,
     changeTime,
+    addToLeaderboard,
+    addSuperheroToLeaderboard,
+    addSidekickToLeaderboard,
 };
  
