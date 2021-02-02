@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </head>
@@ -60,11 +61,29 @@
                     <th scope="col"><i class="fas fa-check"></i>/<i class="fas fa-redo"></i></th>
                   </tr>
                 </thead>
-                <tbody id = "total-table">
+                <tbody id = "leaderboard">
+                    <% for(var i=0; i<board.length; i++) { %>
+                        <tr>
+                            <th scope="row"><%= board[i]._id %></th>
+                            <td><%= board[i].games %></td>
+                            <td><%= board[i].wins %></td>
+                            <td><%= board[i].losses %></td>
+                            <td><%= board[i].cryptonight %></td>
+                            <td><%= board[i].games_superhero %></td>
+                            <td><%= board[i].correct %></td>
+                            <td><%= board[i].wrong %></td>
+                            <td><%= board[i].turns_superhero %></td>
+                            <td><%= board[i].games_sidekick %></td>
+                            <td><%= board[i].clues %></td>
+                            <td><%= board[i].turns_sidekick %></td>
+                            <td><%= board[i].time %></td>
+                            <td><%= board[i].turns %></td>
+                        </tr>
+                    <% } %>
                 </tbody>
               </table>
         </div>
-
+    </div>
     <div class="row mt-5 justify-content-center">
         <div class="col-6">
             <div class="row justify-content-center border border-success rounded">
@@ -94,5 +113,6 @@
     <div class="row w-100 fixed-row-bottom">
         <%- include('partials/footer'); %>
     </div>
+    <script src="/leaderboard.js"></script>
 </body>
 </html>

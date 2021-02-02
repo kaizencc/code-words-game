@@ -769,6 +769,13 @@ async function addSidekickToLeaderboard(username, room, stats){
     await leaderboard.updateOne(query, updateDocument); 
 }
 
+async function getLeaderboard(){
+    const cursor = await leaderboard.find();
+    const allValues = await cursor.toArray();
+    console.log(allValues);
+    return allValues;
+}
+
 
 module.exports = {
     openMongoConnection, 
@@ -814,5 +821,6 @@ module.exports = {
     addToLeaderboard,
     addSuperheroToLeaderboard,
     addSidekickToLeaderboard,
+    getLeaderboard,
 };
  

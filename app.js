@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
 const alertMessage = require('./utils/messages');
-const {openMongoConnection, closeMongoConnection} = require('./database/mongoDB');
 const path = require('path');
 
 const app = express();
@@ -19,9 +18,9 @@ var alert = alertMessage.NONE;
 // Render Index page
 app.get('/', (req, res) => {
     res.render('index', {
-        alert: alert
+        alert: alert,
     })
-    alert = alertMessage.NONE
+    alert = alertMessage.NONE;
 })
 
 // Middleware to validate room creation
@@ -59,8 +58,11 @@ app.post('/room', (req, res) => {
 })
 
 // Leaderboard
-app.get('/leaderboard', (req, res)=>{
-    res.render('leaderboard');
+app.get('/leaderboard', async (req, res)=>{
+    const leaderboard = await Mongo.getLeaderboard();
+    res.render('leaderboard', {
+        board: leaderboard,
+    });
 })
 
 // Rules
@@ -77,7 +79,7 @@ app.get('/room', (req, res)=>{
 const server = app.listen(port, async () => {
     console.log(`Server Running on ${port}`)
     // Open Mongo Connection to populate the `client` and `db` variables in mongoDB.js.
-    await openMongoConnection();
+    await Mongo.openMongoConnection();
 })
 
 const io = socket(server);
@@ -85,7 +87,7 @@ require('./utils/socket')(io);
 
 // Close Mongo Connection when exiting program.
 process.on('SIGINT', function() {
-    closeMongoConnection();
+    Mongo.closeMongoConnection();
     process.exit();
   });
 
