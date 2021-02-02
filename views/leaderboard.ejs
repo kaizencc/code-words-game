@@ -12,6 +12,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </head>
+<style>
+.item:nth-child(1) {
+  background: gold;
+}
+
+.item:nth-child(2) {
+  background: #c0c0c0;
+}
+
+.item:nth-child(3) {
+  background: #cd7f32;
+}
+</style>
 <body>
     <%- include('partials/tagmanager'); %>
     <nav class="navbar fixed-top navbar-light bg-light">
@@ -63,10 +76,10 @@
                 </thead>
                 <tbody id = "leaderboard">
                     <% for(var i=0; i<board.length; i++) { %>
-                        <tr>
+                        <tr class="item">
                             <th scope="row"><%= board[i]._id %></th>
                             <td><%= board[i].games %></td>
-                            <td><%= board[i].wins %></td>
+                            <td class="wins"><%= board[i].wins %></td>
                             <td><%= board[i].losses %></td>
                             <td><%= board[i].cryptonight %></td>
                             <td><%= board[i].games_superhero %></td>
@@ -74,7 +87,7 @@
                             <td><%= board[i].wrong %></td>
                             <td><%= board[i].turns_superhero %></td>
                             <td><%= board[i].games_sidekick %></td>
-                            <td><%= board[i].clues %></td>
+                            <td class="clues"><%= board[i].clues %></td>
                             <td><%= board[i].turns_sidekick %></td>
                             <td><%= board[i].time %></td>
                             <td><%= board[i].turns %></td>
