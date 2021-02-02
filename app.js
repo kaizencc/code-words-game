@@ -69,6 +69,10 @@ app.get('/leaderboard', async (req, res)=>{
 
 function processLeaderData(leaderboard){
     leaderboard.forEach(l => {
+        // Encrypt id
+        info = l._id.split("_");
+        l._id = info[0] + " -- " + encrypt(info[1]);
+
         // Add win percentage
         if(l.losses > 0){
             percentage = l.wins / (l.wins + l.losses);
@@ -78,6 +82,7 @@ function processLeaderData(leaderboard){
         } else {
             l.winPercentage = 0;
         }
+
         // Add correct percentage
         if(l.wrong > 0){
             percentage = l.correct / (l.correct + l.wrong);
@@ -87,12 +92,13 @@ function processLeaderData(leaderboard){
         } else {
             l.correctPercentage = 0;
         }
-        // Add clue percentage
+
+        // Add clue percentage + partner Percentage
         if(l.turns_sidekick > 0){
             percentage = l.clues / l.turns_sidekick;
             l.cluePercentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
 
-            percentage = l.partnerCorrect / l.turns_sidekick;
+            percentage = l.partner_correct / l.turns_sidekick;
             l.partnerPercentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
         } else {
             l.cluePercentage = 0;
@@ -100,6 +106,10 @@ function processLeaderData(leaderboard){
         }
     })
     return leaderboard;
+}
+
+function encrypt(str){
+    return str.substring(0,3) + "#".repeat(str.length-3);
 }
 
 // Rules

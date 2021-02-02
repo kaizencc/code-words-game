@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear the container
     leaderboard.innerHTML = '';
     // Sort the array from highest to lowest
-    elements.sort((a, b) => b.querySelector('.clues').textContent - a.querySelector('.clues').textContent);
+    elements.sort((a, b) => b.querySelector('.winP').textContent - a.querySelector('.winP').textContent);
     // Put the elements back into the container
     console.log(elements);
     elements.forEach(e => leaderboard.appendChild(e));
