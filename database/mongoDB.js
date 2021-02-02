@@ -723,15 +723,15 @@ async function addToLeaderboard(username, room){
             wins: 0,
             losses: 0,
             cryptonight: 0,
+            time: 0,
             games_superhero: 0,
             correct: 0,
             wrong: 0,
             turns_superhero: 0,
             games_sidekick: 0,
             clues: 0,
-            correct: 0,
+            partner_correct: 0,
             turns_sidekick: 0,
-            time: 0,
         });
     }
 }
@@ -743,6 +743,7 @@ async function addSuperheroToLeaderboard(username, room, stats){
     const updateDocument = { $inc: { 
         "games": 1, 
         "games_superhero": 1,
+        "turns_superhero": stats.totalRounds,
         "wins": stats.wins,
         "losses": stats.losses,
         "correct": stats.correct,
@@ -759,11 +760,11 @@ async function addSidekickToLeaderboard(username, room, stats){
     const updateDocument = { $inc: { 
         "games": 1, 
         "games_sidekick": 1,
+        "turns_sidekick": stats.totalRounds,
         "wins": stats.wins,
         "losses": stats.losses,
         "clues": stats.totalWords,
-        "correct": stats.totalCorrect,
-        "turns": stats.totalRounds,
+        "partner_correct": stats.totalCorrect,
         "cryptonight": stats.cryptonight,
     }};
     await leaderboard.updateOne(query, updateDocument); 

@@ -79,18 +79,18 @@
                         <tr class="item">
                             <th scope="row"><%= board[i]._id %></th>
                             <td><%= board[i].games %></td>
+                            <td><%= board[i].time %></td>
+                            <td><%= board[i].cryptonight %></td>
                             <td class="wins"><%= board[i].wins %></td>
                             <td><%= board[i].losses %></td>
-                            <td><%= board[i].cryptonight %></td>
+                            <td><%= board[i].winPercentage %></td>
                             <td><%= board[i].games_superhero %></td>
                             <td><%= board[i].correct %></td>
                             <td><%= board[i].wrong %></td>
-                            <td><%= board[i].turns_superhero %></td>
+                            <td><%= board[i].correctPercentage %></td>
                             <td><%= board[i].games_sidekick %></td>
-                            <td class="clues"><%= board[i].clues %></td>
-                            <td><%= board[i].turns_sidekick %></td>
-                            <td><%= board[i].time %></td>
-                            <td><%= board[i].turns %></td>
+                            <td class="clues"><%= board[i].cluePercentage %></td>
+                            <td><%= board[i].partnerPercentage %></td>
                         </tr>
                     <% } %>
                 </tbody>

@@ -59,11 +59,48 @@ app.post('/room', (req, res) => {
 
 // Leaderboard
 app.get('/leaderboard', async (req, res)=>{
-    const leaderboard = await Mongo.getLeaderboard();
+    var leaderboard = await Mongo.getLeaderboard();
+    leaderboard = processLeaderData(leaderboard);
+    console.log(leaderboard);
     res.render('leaderboard', {
         board: leaderboard,
     });
 })
+
+function processLeaderData(leaderboard){
+    leaderboard.forEach(l => {
+        // Add win percentage
+        if(l.losses > 0){
+            percentage = l.wins / (l.wins + l.losses);
+            l.winPercentage = Math.round((percentage + Number.EPSILON) * 100);
+        } else if (l.wins > 0) {
+            l.winPercentage = 100;
+        } else {
+            l.winPercentage = 0;
+        }
+        // Add correct percentage
+        if(l.wrong > 0){
+            percentage = l.correct / (l.correct + l.wrong);
+            l.correctPercentage = Math.round((percentage + Number.EPSILON) * 100);
+        } else if (l.correct > 0){
+            l.correctPercentage = 100;
+        } else {
+            l.correctPercentage = 0;
+        }
+        // Add clue percentage
+        if(l.turns_sidekick > 0){
+            percentage = l.clues / l.turns_sidekick;
+            l.cluePercentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
+
+            percentage = l.partnerCorrect / l.turns_sidekick;
+            l.partnerPercentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
+        } else {
+            l.cluePercentage = 0;
+            l.partnerPercentage = 0;
+        }
+    })
+    return leaderboard;
+}
 
 // Rules
 app.get('/rules', (req, res) => {
