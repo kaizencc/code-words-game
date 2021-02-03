@@ -57,16 +57,16 @@
                     </tr>
                 </thead>
                 <thead class="thead-dark">
-                  <tr>
+                  <tr id="headers">
                     <th scope="col">Username+Room</th>
-                    <th scope="col">G</th>
+                    <th id="g" scope="col">G</th>
                     <th scope="col"><i class="far fa-clock"></i></th>
                     <th scope="col"><i class="fas fa-bomb"></i></th>
-                    <th scope="col">W</th>
+                    <th id="w" scope="col">W</th>
                     <th scope="col">L</th>
                     <th scope="col">W<i class="fas fa-percent"></i></th>
                     <th scope="col">G</th>
-                    <th scope="col"><i class="fas fa-check"></i></th>
+                    <th id="c" scope="col"><i class="fas fa-check"></i></th>
                     <th scope="col"><i class="fas fa-times"></i></th>
                     <th scope="col"><i class="fas fa-percent"></i></th>
                     <th scope="col">G</th>
@@ -76,21 +76,21 @@
                 </thead>
                 <tbody id = "leaderboard">
                     <% for(var i=0; i<board.length; i++) { %>
-                        <tr class="item">
-                            <th scope="row"><%= board[i]._id %></th>
-                            <td><%= board[i].games %></td>
-                            <td><%= board[i].time %></td>
-                            <td><%= board[i].cryptonight %></td>
+                        <tr id="bodyitems" class="item">
+                            <th class="id" scope="row"><%= board[i]._id %></th>
+                            <td class="games"><%= board[i].games %></td>
+                            <td class="time"><%= board[i].time %></td>
+                            <td class="crypto"><%= board[i].cryptonight %></td>
                             <td class="wins"><%= board[i].wins %></td>
-                            <td><%= board[i].losses %></td>
+                            <td class ="loss"><%= board[i].losses %></td>
                             <td class="winP"><%= board[i].winPercentage %></td>
-                            <td><%= board[i].games_superhero %></td>
-                            <td><%= board[i].correct %></td>
-                            <td><%= board[i].wrong %></td>
-                            <td><%= board[i].correctPercentage %></td>
-                            <td><%= board[i].games_sidekick %></td>
+                            <td class="g-sup"><%= board[i].games_superhero %></td>
+                            <td class="correct"><%= board[i].correct %></td>
+                            <td class="wrong"><%= board[i].wrong %></td>
+                            <td class="corrP"><%= board[i].correctPercentage %></td>
+                            <td class="g-side"><%= board[i].games_sidekick %></td>
                             <td class="clues"><%= board[i].cluePercentage %></td>
-                            <td><%= board[i].partnerPercentage %></td>
+                            <td class="partP"><%= board[i].partnerPercentage %></td>
                         </tr>
                     <% } %>
                 </tbody>
