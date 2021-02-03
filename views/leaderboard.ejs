@@ -24,6 +24,10 @@
 .item:nth-child(3) {
   background: #cd7f32;
 }
+
+.clickable{
+        cursor: pointer;
+    }
 </style>
 <body>
     <%- include('partials/tagmanager'); %>
@@ -58,20 +62,20 @@
                 </thead>
                 <thead class="thead-dark">
                   <tr id="headers">
-                    <th scope="col">Username+Room</th>
-                    <th id="g" scope="col">G</th>
-                    <th scope="col"><i class="far fa-clock"></i></th>
-                    <th scope="col"><i class="fas fa-bomb"></i></th>
-                    <th id="w" scope="col">W</th>
-                    <th scope="col">L</th>
-                    <th scope="col">W<i class="fas fa-percent"></i></th>
-                    <th scope="col">G</th>
-                    <th id="c" scope="col"><i class="fas fa-check"></i></th>
-                    <th scope="col"><i class="fas fa-times"></i></th>
-                    <th scope="col"><i class="fas fa-percent"></i></th>
-                    <th scope="col">G</th>
-                    <th scope="col"><i class="fas fa-search"></i>/<i class="fas fa-redo"></i></th>
-                    <th scope="col"><i class="fas fa-check"></i>/<i class="fas fa-redo"></i></th>
+                    <th class="clickable" scope="col">Username+Room</th>
+                    <th class="clickable" id="g" scope="col">G</th>
+                    <th class="clickable" scope="col"><i class="far fa-clock"></i></th>
+                    <th class="clickable" scope="col"><i class="fas fa-bomb"></i></th>
+                    <th class="clickable" id="w" scope="col">W</th>
+                    <th class="clickable" scope="col">L</th>
+                    <th class="clickable" scope="col">W<i class="fas fa-percent"></i></th>
+                    <th class="clickable" scope="col">G</th>
+                    <th class="clickable" id="c" scope="col"><i class="fas fa-check"></i></th>
+                    <th class="clickable" scope="col"><i class="fas fa-times"></i></th>
+                    <th class="clickable" scope="col"><i class="fas fa-percent"></i></th>
+                    <th class="clickable" scope="col">G</th>
+                    <th class="clickable" scope="col"><i class="fas fa-search"></i>/<i class="fas fa-redo"></i></th>
+                    <th class="clickable" scope="col"><i class="fas fa-check"></i>/<i class="fas fa-redo"></i></th>
                   </tr>
                 </thead>
                 <tbody id = "leaderboard">
