@@ -2,7 +2,11 @@
  *                              Game Over Modal
  ***********************************************************************************/
 
-// Injects information of the game to the end game modal.
+/**
+ * Receives information about who won and statistics for the game.
+ * Processes the information and sends it to the endgame modal that pops up.
+ * Processes the information and sends it to the leaderboard.
+ */
 socket.on('game-over', async (data) => {
     // Allow user to toggle between roles after clicking out of modal.
     endTimer();
@@ -113,6 +117,7 @@ socket.on('game-over', async (data) => {
         leaderboardStats[data.blueSidekick] = rawStats;
     }
 
+    // Send processed data to endgame modal and to leaderboard.
     if (username === data.redSuperhero){
         // Add time into gameStats
         avgTimes.forEach(o =>{
@@ -138,11 +143,25 @@ socket.on('game-over', async (data) => {
     });
 })
 
+/**
+ * Helper function to isolate a single players statistics from the stats object.
+ * 
+ * @param {{}} stats An object that holds statistics for all players in the room.
+ * @param {string} username The username of the user we are trying to pull information from.
+ * @returns {{}} The statistics for just the player we asked for.
+ */
 function getPlayerStatistics(stats, username){
     const result = stats.filter(statistic => statistic.username === username);
     return result[0].stats;
 }
 
+/**
+ * Helper function to calculate sidekick statistics, broken up into 2. This is part 1.
+ * 
+ * @param {{}} sidekickStats statistics for the sidekick
+ * @param {{}} superheroStats statistics for the accompanying superhero on the same team.
+ * @returns raw statistics to be used in both leaderboard and end game modal.
+ */
 function calculateRawSidekickStats(sidekickStats, superheroStats){
     var totalWords = 0;
     var totalRounds= 0;
@@ -166,6 +185,12 @@ function calculateRawSidekickStats(sidekickStats, superheroStats){
     }
 }
 
+/**
+ * Processes data to be consumed by end game modal. This is the second part that processes data from part 1.
+ * 
+ * @param {{}} rawStats raw statistics from part 1.
+ * @returns data to be used by the end game modal.
+ */
 function calculateSidekickStats(rawStats){
     var avgClueNumber = 0;
     var avgSuccessNumber = 0;
@@ -183,6 +208,12 @@ function calculateSidekickStats(rawStats){
     }
 }
 
+/**
+ * Calculates superhero statistics. Used for both end game modal and leaderboard.
+ * 
+ * @param {{}} stats statistics relevant to superhero players.
+ * @returns statistics to be consumed by end game modal and leaderboard.
+ */
 function calculateSuperheroStats(stats){
     var correct = 0;
     var opposite = 0;
@@ -205,10 +236,17 @@ function calculateSuperheroStats(stats){
     }
 }
 
-// Add row to superhero table.
-function addSuperheroRow(player, stats, color, winner){
+/**
+ * Creates the html elements necessary to add a row to the superhero table in the end game modal.
+ * 
+ * @param {string} username The players username
+ * @param {{}} stats The processed statistics relevant to the player
+ * @param {"red" | "blue"} color The team that the player is on.
+ * @returns data to be consumed by leaderboard, since the data overlaps.
+ */
+function addSuperheroRow(username, stats, color){
     var row = document.createElement('tr');
-    row.appendChild(addCol(player));
+    row.appendChild(addCol(username));
     row.appendChild(addCol(stats.correct));
     const totalWrong = stats.opposite + stats.yellow + stats.cryptonight;
     row.appendChild(addCol(totalWrong));
@@ -237,10 +275,17 @@ function addSuperheroRow(player, stats, color, winner){
     }
 }
 
-// Add row to sidekick table.
-function addSidekickRow(player, stats, color){
+/**
+ * Creates the html elements necessary to add a row to the sidekick table in the end game modal.
+ * 
+ * @param {string} username The players username
+ * @param {{}} stats The processed statistics relevant to the player
+ * @param {"red" | "blue"} color The team that the player is on.
+ * @returns data to be consumed by leaderboard, since the data overlaps.
+ */
+function addSidekickRow(username, stats, color){
     var row = document.createElement('tr');
-    row.appendChild(addCol(player));
+    row.appendChild(addCol(username));
     row.appendChild(addCol(stats.avgClueNumber));
     row.appendChild(addCol(stats.avgSuccessNumber));
 
@@ -259,7 +304,11 @@ function addSidekickRow(player, stats, color){
     }
 }
 
-// Helper function to add a column to a table.
+/**
+ * Helper function to add a column to the table.
+ * @param {string} text 
+ * @returns {HTMLElement} the column
+ */
 function addCol(text){
     const col = document.createElement('th');
     col.scope = "col";
@@ -267,16 +316,11 @@ function addCol(text){
     return col;
 }
 
-// Creates title of either red or blue win.
-function createModalTitle(winner){
-    const modalTitle = document.getElementById('modal-title');
-    modalTitle.innerHTML = "";
-    modalTitle.appendChild(createIcon(winner));
-    modalTitle.appendChild(document.createTextNode(` ${capitalizeFirstLetter(winner)} Wins! `));
-    modalTitle.appendChild(createIcon(winner));
-}
-
-// Creates time statistics of all 4 players
+/**
+ * Creates the time statistic in the end gmae modal for all players.
+ * 
+ * @param {{}} times data structure that holds the time data for all playesr.
+ */
 function createModalTimeStatistic(times){
     const list = document.getElementById('time-stats');
     list.innerHTML = "";
@@ -296,7 +340,12 @@ function createModalTimeStatistic(times){
     }
 }
 
-// stats is a [{username: username, stats: stats}]
+/**
+ * Calculates the average time spent of each player and then sorts the array in ascending order.
+ * 
+ * @param {[{username, stats}]} playerStats list of team time stats unsorted, without average.
+ * @returns {[{username, avg, team}]} list of team time stats sorted by average time.
+ */
 function sortTimeByAvg(playerStats){
     avgTimes = [];
     // Calculate total time from each stat.
@@ -327,6 +376,26 @@ function sortTimeByAvg(playerStats){
     return avgTimes;
 }
 
+/**
+ * Creates the title of the end game modal.
+ * 
+ * @param {"red" | "blue"} winner The winning team 
+ */
+function createModalTitle(winner){
+    const modalTitle = document.getElementById('modal-title');
+    modalTitle.innerHTML = "";
+    modalTitle.appendChild(createIcon(winner));
+    modalTitle.appendChild(document.createTextNode(` ${capitalizeFirstLetter(winner)} Wins! `));
+    modalTitle.appendChild(createIcon(winner));
+}
+
+/**
+ * Create final scores for each team in end game modal.
+ * 
+ * @param {number} redScore 
+ * @param {number} blueScore 
+ * @param {"red" | "blue"} winner 
+ */
 function createModalFinalScores(redScore, blueScore, winner){
     document.getElementById('red-final').innerHTML = redScore;
     document.getElementById('blue-final').innerHTML = blueScore;
@@ -343,10 +412,20 @@ function createModalFinalScores(redScore, blueScore, winner){
     }
 }
 
+/**
+ * Helper function that capitalizes the first letter of the string.
+ * 
+ * @param {string} string 
+ */
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/**
+ * Helper function that creates a red or blue icon
+ * 
+ * @param {"red" | "blue"} color 
+ */
 function createIcon(color){
     const icon = document.createElement("span");
     if (color === "red"){
@@ -358,17 +437,14 @@ function createIcon(color){
     return icon;
 }
 
-// Helper function to wait for other processes to finish.
+/**
+ * Helper function that waits for the number of milliseconds given.
+ * Used to wait for other processes to finish.
+ * 
+ * @param {number} ms milliseconds
+ */
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
 }
-
-// Listening for new game request.
-newGameBtn.addEventListener('click', () =>{
-    socket.emit('new-game',{
-        username: username, 
-        roomname: roomname,
-    });
-})

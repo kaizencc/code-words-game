@@ -370,3 +370,12 @@ function resetTurns(){
         roomname: roomname,
     });
 }
+
+// Listening for new game request.
+newGameBtn.addEventListener('click', () =>{
+    socket.emit('new-game',{
+        username: username, 
+        roomname: roomname,
+    });
+})
+
