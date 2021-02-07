@@ -233,19 +233,7 @@ socket.on('found-word', (data) => {
 
         if (data.username === username){
             explosion.play();
-            showIdleDisplay();
-            socket.emit('game-over', {
-                roomname: roomname,
-                username: username,
-                time: elapsedTime,
-                buttonCount: Number(sessionStorage.getItem('button-count')),
-                cryptonight: Number(sessionStorage.getItem('cryptonight')),
-                wrong: Number(sessionStorage.getItem('wrong')),
-                yellow: Number(sessionStorage.getItem('yellow')),
-                winner: winningTeam,
-                redScore: finalRedScore,
-                blueScore: finalBlueScore,
-            });
+            gameOverActions(elapsedTime, winningTeam, finalRedScore, finalBlueScore);
         }
 
     } else if (color === buttonColor.RED){
@@ -265,19 +253,7 @@ socket.on('found-word', (data) => {
 
         // Game is over, red team wins.
         if (redScore == 1 && data.username === username){
-            showIdleDisplay();
-            socket.emit('game-over', {
-                roomname: roomname,
-                username: username,
-                time: elapsedTime,
-                buttonCount: Number(sessionStorage.getItem('button-count')),
-                cryptonight: Number(sessionStorage.getItem('cryptonight')),
-                wrong: Number(sessionStorage.getItem('wrong')),
-                yellow: Number(sessionStorage.getItem('yellow')),
-                winner: "red",
-                redScore: "0",
-                blueScore: blueTeam.innerHTML,
-            });
+            gameOverActions(elapsedTime, "red", "0", blueTeam.innerHTML);
         }
 
         // Red team subtracts a point
@@ -298,19 +274,7 @@ socket.on('found-word', (data) => {
 
         // Game is over
         if (blueScore == 1 && data.username === username){
-            showIdleDisplay();
-            socket.emit('game-over', {
-                roomname: roomname,
-                username: username,
-                time: elapsedTime,
-                buttonCount: Number(sessionStorage.getItem('button-count')),
-                cryptonight: Number(sessionStorage.getItem('cryptonight')),
-                wrong: Number(sessionStorage.getItem('wrong')),
-                yellow: Number(sessionStorage.getItem('yellow')),
-                winner: "blue",
-                redScore: redTeam.innerHTML,
-                blueScore: "0",
-            });
+            gameOverActions(elapsedTime, "blue", redTeam.innerHTML, "0");
         }
 
         // Blue team subtracts a point
@@ -328,6 +292,22 @@ socket.on('found-word', (data) => {
         }
     }
 })
+
+function gameOverActions(elapsedTime, winner, redScore, blueScore){
+    showIdleDisplay();
+    socket.emit('game-over', {
+        roomname: roomname,
+        username: username,
+        time: elapsedTime,
+        buttonCount: Number(sessionStorage.getItem('button-count')),
+        cryptonight: Number(sessionStorage.getItem('cryptonight')),
+        wrong: Number(sessionStorage.getItem('wrong')),
+        yellow: Number(sessionStorage.getItem('yellow')),
+        winner: winner,
+        redScore: redScore,
+        blueScore: blueScore,
+    });
+}
 
 function updateBlueScore(score){
     blueTeam.innerHTML = score;
