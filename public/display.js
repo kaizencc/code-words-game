@@ -12,14 +12,19 @@ const displayIdle = document.getElementById('display-idle');
 
 const startGameBtn = document.getElementById('start-game');
 
-// On click, start 3-step cascade to validate conditions before beginning game.
+/**
+ * when start game button is clicked, there is a 3 step verification cascade to validate game conditions.
+ * Each step needs to communicate with the server which in turn sends the return data to a new socket function.
+ */
 startGameBtn.addEventListener('click', ()=>{
     console.log('game started');
     // Authenticate current game conditions.
     checkConditions();
 })
 
-// Step 1: Communicate with socket to ensure that there are 4 players.
+/**
+ * step 1: Check to see if room has 4 players.
+ */
 function checkConditions(){
     console.log('checking conditions');
     socket.emit('ensure-four-players', {
@@ -28,7 +33,9 @@ function checkConditions(){
     });
 }
 
-// Step 2: Receive answer and if valid, ensure that all roles are set.
+/**
+ * Step 2: If room has 4 players, ensure that all 4 roles are occupied.
+ */
 socket.on('ensure-four-players', (data)=>{
     if (data.username === username){
         console.log('ensure 4 players');
@@ -44,7 +51,9 @@ socket.on('ensure-four-players', (data)=>{
     }
 })
 
-// Step 3: Receive answer and start game if valid.
+/**
+ * Step 3: If all 4 roles are occupied, start game.
+ */
 socket.on('ensure-all-roles', (data) => {
     if (data.username === username){
         console.log('ensure all roles');
@@ -70,6 +79,9 @@ socket.on('ensure-all-roles', (data) => {
     }
 })
 
+/**
+ * Lock (or hide) all game settings once game has started.
+ */
 socket.on('lock-variables', () => {
     lockRoles();
     lockTeams();
@@ -100,6 +112,9 @@ const sendClueBtn = document.getElementById('sendin');
 const clue = document.getElementById('clue');
 const number = document.getElementById('number');
 
+/**
+ * When the send clue button is clicked, the sidekick turn is finished.
+ */
 sendClueBtn.addEventListener('click', () => {
     // Make sure number is valid.
     if (checkNumber()){
@@ -107,6 +122,18 @@ sendClueBtn.addEventListener('click', () => {
     }
 })
 
+/**
+ * If time runs out, the server will end the sidekicks turn before the send clue button is clicked.
+ */
+socket.on('sidekick-turn-over', (data) => {
+    if (data.username === username){
+        sidekickTurnFinished();
+    }
+})
+
+/**
+ * Tells the server to go on to the next turn, and sends message in the chat.
+ */
 function sidekickTurnFinished(){
     // Find total time spent
     const startTime = sessionStorage.getItem('start-time') || "60";
@@ -133,12 +160,9 @@ function sidekickTurnFinished(){
     clue.value = "";
 }
 
-socket.on('sidekick-turn-over', (data) => {
-    if (data.username === username){
-        sidekickTurnFinished();
-    }
-})
-
+/**
+ * Ensure that a number is sent in the clue # box.
+ */
 function checkNumber() {
     var x= number.value;
     var regex=/^[0-9]+$/;
@@ -156,18 +180,25 @@ function checkNumber() {
 const receivedClue = document.getElementById('received-clue');
 const endTurnBtn = document.getElementById('end-turn');
 
-// If user clicks end turn.
+/**
+ * End turn when the 'end turn' button is clicked.
+ */
 endTurnBtn.addEventListener('click', () => {
     superheroTurnFinished();
 })
 
-// Called if user clicks a wrong color button.
+/**
+ * The server may end a turn before the 'end turn' button is clicked, for example when a wrong button is clicked.
+ */
 socket.on('turn-over', (data) => {
     if (data.username === username){
         superheroTurnFinished();
     }
 })
 
+/**
+ * When the superhero turn is finished, tell the server to move on to next turn.
+ */
 function superheroTurnFinished(){
     // Determine amount of time spent.
     const startTime = sessionStorage.getItem('start-time') || "60";
@@ -183,8 +214,6 @@ function superheroTurnFinished(){
         wrong: Number(sessionStorage.getItem('wrong')),
         yellow: Number(sessionStorage.getItem('yellow')),
     });
-
-
 }
 
 /************************************************************************************
@@ -196,7 +225,6 @@ const idleClue = document.getElementById('idle-clue');
 /************************************************************************************
  *                              Gameplay Helper Functions
  ***********************************************************************************/
-
 
 function showStartDisplay(){
     sessionStorage.setItem('display','start');
@@ -252,13 +280,15 @@ function turnOnButtons(){
  *                              Gameplay Socket Communications
  ***********************************************************************************/
 
-
 socket.on('reset-display', ()=>{
     setReceivedClue("");
     setIdleClue("");
     showStartDisplay();
 })
 
+/**
+ * Show the display necessary when it is a sidekick's turn.
+ */
 socket.on('show-current-sidekick', (data)=>{
     clock(data.username, data.time);
 
@@ -279,9 +309,9 @@ socket.on('show-current-sidekick', (data)=>{
     }
 })
 
-function startSidekickStorageClickStats(){
-}
-
+/**
+ * Show the display necessary when it is a superhero's turn.
+ */
 socket.on('show-current-superhero', (data)=>{
     clock(data.username, data.time);
     if (data.username === username){
@@ -302,6 +332,13 @@ socket.on('show-current-superhero', (data)=>{
     setIdleClue(data.clue + ", " + data.number);
 })
 
+/************************************************************************************
+ *                              Clue Helper Functions
+ ***********************************************************************************/
+
+/**
+ * Reset all session storage elements that keep track of statistics.
+ */
 function startSuperheroStorageClickStats(){
     sessionStorage.setItem('button-count','0');
     sessionStorage.setItem('cryptonight','0');
@@ -330,6 +367,10 @@ function changeClueColor(element, color){
         element.classList.add("text-primary");        
     }
 }
+
+/************************************************************************************
+ *                              Broadcast Helper Functions
+ ***********************************************************************************/
 
 function broadcastTurn(text, turn){
     changeBroadcast(text, null);
