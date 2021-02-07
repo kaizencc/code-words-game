@@ -1,7 +1,6 @@
-/************************************************************************************
- *                              Refresh Helper Functions
- ***********************************************************************************/
-
+/**
+ * Called when a user refreshes the page.
+ */
 function returnToGameState(){
     console.log('restoring');
     sessionStorage.setItem('restore','0');
@@ -23,8 +22,11 @@ function returnToGameState(){
 
     // Saved word set.
     setWordSet();
-
 }
+
+/************************************************************************************
+ *                              Refresh Helper Functions
+ ***********************************************************************************/
 
 function setSavedScore(){
     redTeam.innerHTML = sessionStorage.getItem('redscore');
