@@ -2,11 +2,13 @@
  *                              Get Statistics Helpers
  ***********************************************************************************/
 
+/**
+ * Recieves all statistics as "data.stats" and sends it to the requested function for processing.
+ */
 socket.on('get-statistics', (data)=>{
     if(username !== data.username){
         return;
     }
-    //data.stats
     switch(data.request){
         case "record":
             getRecordStats(data.stats);
@@ -27,8 +29,18 @@ socket.on('get-statistics', (data)=>{
  *                              Sidekick Stats
  ***********************************************************************************/
 
+ /**
+  * Parses for sidekick statistics and sends the data to the chat.
+  * 
+  * @param {{}} stats All statistics being kept.
+  */
 function getSidekickStats(stats){
-    header = ["Username", "G", `<i class="fas fa-search"></i>/<i class="fas fa-redo"></i>`,`<i class="fas fa-check"></i>/<i class="fas fa-redo"></i>`];
+    header = [
+        "Username", 
+        "G", 
+        `<i class="fas fa-search"></i>/<i class="fas fa-redo"></i>`,
+        `<i class="fas fa-check"></i>/<i class="fas fa-redo"></i>`
+    ];
     statistics = parseSidekickStats(stats);
     socket.emit('chat', {
         username: username,
@@ -38,6 +50,12 @@ function getSidekickStats(stats){
     })
 }
 
+/**
+ * Helper function to parse sidekick statistics.
+ * 
+ * @param {{}} data All statistics
+ * @returns {{string: [number, number, number, number, number]}} {username: [rounds, clues, success, games, avg]}
+ */
 function parseSidekickStats(data){
     statistics = {};
     data.forEach(gameStat => {
@@ -76,8 +94,19 @@ function parseSidekickStats(data){
  *                              Superhero Stats
  ***********************************************************************************/
 
+/**
+ * Parses for superhero statistics and sends the results to the chat.
+ * 
+ * @param {{}} stats All statistics. 
+ */
 function getSuperheroStats(stats){
-    header = ["Username", "G", `<i class="fas fa-check"></i>`, `<i class="fas fa-times"></i>`, `<i class="fas fa-percent"></i>`];
+    header = [
+        "Username", 
+        "G", 
+        `<i class="fas fa-check"></i>`, 
+        `<i class="fas fa-times"></i>`, 
+        `<i class="fas fa-percent"></i>`
+    ];
     statistics = parseSuperheroStats(stats);
     socket.emit('chat', {
         username: username,
@@ -87,6 +116,12 @@ function getSuperheroStats(stats){
     })
 }
 
+/**
+ * Helper function to parse the data for relevant info.
+ * 
+ * @param {{}} data All statistics.
+ * @returns {{string: [number, number, number, number]}} {username: [rounds, correct, wrong, percent]}
+ */
 function parseSuperheroStats(data){
     statistics = {};
     data.forEach(gameStat => {
@@ -118,6 +153,11 @@ function parseSuperheroStats(data){
  *                              Time Stats
  ***********************************************************************************/
 
+/**
+ * Parses statistics for relevant time statistics.
+ * 
+ * @param {{}} stats All statistics.
+ */
 function getTimeStats(stats){
     statistics = parseTimeStats(stats);
     socket.emit('chat', {
@@ -128,7 +168,12 @@ function getTimeStats(stats){
     })
 }
 
-// Returns {username: [time:0, turns:0]}
+/**
+ * Parses the data for time statistics.
+ * 
+ * @param {{}} data All statistics.
+ * @returns {{string: [number, number]}} {username: [time, turns]}
+ */
 function parseTimeStats(data){
     statistics = {};
     data.forEach(gameStat => {
@@ -158,6 +203,11 @@ function parseTimeStats(data){
  *                              Win Loss Record Stats
  ***********************************************************************************/
 
+/**
+ * Parses data for W/L statistics.
+ * 
+ * @param {{}} stats All statistics.
+ */
 function getRecordStats(stats){
     statistics = parseRecordStats(stats);
     socket.emit('chat', {
@@ -168,7 +218,12 @@ function getRecordStats(stats){
     })
 }
 
-// Returns {username: [wins:0 losses:0]}
+/**
+ * Helper function to parse data.
+ * 
+ * @param {{}} data All statistics.
+ * @returns {{string: [number, number]}} {username: [wins, losses]}
+ */
 function parseRecordStats(data){
     statistics = {};
     data.forEach(gameStat => {
