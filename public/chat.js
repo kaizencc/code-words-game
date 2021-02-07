@@ -24,7 +24,11 @@ prompts = {
     "/stats sidekick": getStats, 
 }
 
-// CryptoNight Statistics
+/**
+ * Determine which statistics function was requested and ask for it from the server.
+ * 
+ * @param {string} command The command key to use.
+ */
 function getStats(command){
     var request = "record";
     if(command.length > 1){
@@ -47,7 +51,9 @@ function getStats(command){
     })
 }
 
-// CryptoNight Command Helper
+/**
+ * Ask for available commands.
+ */
 function getHelp(){
     socket.emit('chat', {
         username: username,
@@ -60,13 +66,17 @@ function getHelp(){
 // Display the roomname the user is connected to.
 roomMessage.innerHTML = `${roomname} Chat`;
 
-// Emitting username and roomname of newly joined user to server.
+/**
+ * Emitting username and roomname of newly joined user to server.
+ */
 socket.emit('joined-user', {
     username: username,
     roomname: roomname,
 })
 
-// Sending data when user clicks send.
+/**
+ * Sending data when user clicks send.
+ */
 send.addEventListener('click', () =>{
     var isPrompt = false;
     if (message.value[0] === "/"){
@@ -87,14 +97,18 @@ send.addEventListener('click', () =>{
     message.value = "";
 })
 
-// Allow the enter key to send a message.
+/**
+ * Allow the enter key to send a message.
+ */
 window.addEventListener('keypress', function(e){
     if(e.key === "Enter" && message.value !== ""){
         document.getElementById('send').click();
     }
 })
 
-// Sending username if the user is typing.
+/**
+ * Sending username if the user is typing.
+ */
 message.addEventListener('keypress', () => {
     socket.emit('typing', {
         username: username, 
@@ -102,19 +116,25 @@ message.addEventListener('keypress', () => {
     })
 })
 
-// Displaying if new user has joined the room.
+/**
+ * Displaying if new user has joined the room.
+ */
 socket.on('joined-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Joined the Room</em></p>';
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
-// Displaying if a user disconnects from the room.
+/**
+ * Displaying if a user disconnects from the room.
+ */
 socket.on('disconnected-user', (data)=>{
     output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>has Left the Room</em></p>';
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
-// Display button clicks, switched users, and messages.
+/**
+ * Display all possible messages that are sent to the chat window.
+ */
 socket.on('chat', (data) => {
     if (data.forUser && data.forUser !== username){
         return;
@@ -181,12 +201,16 @@ socket.on('chat', (data) => {
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
 
-// Displaying if a user is typing.
+/**
+ * Displaying if a user is typing.
+ */
 socket.on('typing', (user) => {
     feedback.innerHTML = '<p><em>' + user + ' is typing...</em></p>';
 })
 
-// Displaying online users.
+/**
+ * Displaying online users.
+ */
 socket.on('online-users', (data) =>{
     // Clear anything previous.
     redUsers.innerHTML = "";
@@ -215,6 +239,9 @@ socket.on('online-users', (data) =>{
     });
 })
 
+/**
+ * Checking if user refreshed and updating session storage.
+ */
 socket.on('check-refresh', (data) =>{
     if(data.username === username){
         if(sessionStorage.getItem('refresh')) {
