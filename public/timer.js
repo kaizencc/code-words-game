@@ -4,9 +4,15 @@
 
 const counter = document.getElementById('timer');
 var timer;
+// Audio for timer when below 10 seconds.
 var tickAudio = new Audio('https://freesound.org/data/previews/254/254316_4062622-lq.mp3');
 
-// Begins countdown, responding to socket if time is up.
+/**
+ * Begins the timer count down and sends to socket if time is up.
+ * 
+ * @param {number} count The time that each player gets.
+ * @param {string} forPlayer The current player whose turn it is.
+ */
 function startTimer(count, forPlayer){
     timer = setInterval(function() {
         counter.innerHTML = count;
@@ -28,12 +34,16 @@ function startTimer(count, forPlayer){
     }, 1000);
 }
 
-// Resets timer.
+/**
+ * Resets timer.
+ */
 function clearTimer(){
     clearInterval(timer);
 }
 
-// Stops timer altogether.
+/**
+ * Stops timer completely.
+ */
 function endTimer(){
     clearInterval(timer);
     counter.innerHTML = "----";
@@ -41,7 +51,12 @@ function endTimer(){
     sessionStorage.removeItem('time-for');
 }
 
-// Start the clock.
+/**
+ * Starts the timer.
+ * 
+ * @param {string} forPlayer The player whose turn it is.
+ * @param {number} time How much time the player gets.
+ */
 function clock(forPlayer, time){
     sessionStorage.setItem('time', String(time));
     sessionStorage.setItem('time-for', forPlayer);
@@ -50,6 +65,10 @@ function clock(forPlayer, time){
         startTimer(time, forPlayer);
     }
 }
+
+/************************************************************************************
+ *                              Change Timer Event Listeners
+ ***********************************************************************************/
 
 const normalTime = document.getElementById('Normal');
 const speedTime = document.getElementById('Speed');
@@ -77,6 +96,9 @@ socket.on('change-time', (data) => {
     setTime();
 })
 
+/**
+ * sets the new requested time and updates the selected icon.
+ */
 function setTime(){
     if (sessionStorage.getItem('start-time')){
         switch (sessionStorage.getItem('start-time')){
@@ -95,18 +117,11 @@ function setTime(){
     }
 }
 
-function hideSettings(){
-    console.log("HIDE");
-    document.getElementById('set2').style.display = "none";
-    document.getElementById('set1').style.display = "none";
-}
-
-function showSettings(){
-    console.log("SHOW");
-    document.getElementById('set2').style.display = null;
-    document.getElementById('set1').style.display = null;
-}
-
+/**
+ * Called when a user changes the time setting.
+ * 
+ * @param {number} newTime The new time per turn
+ */
 function changeTime(newTime) {
     console.log("changing time");
     socket.emit('change-time', {
@@ -114,4 +129,20 @@ function changeTime(newTime) {
         username, username,
         time: newTime,
     });
+}
+
+/**
+ * Hides both time and wordset button dropdowns.
+ */
+function hideSettings(){
+    document.getElementById('set2').style.display = "none";
+    document.getElementById('set1').style.display = "none";
+}
+
+/**
+ * Shows both time and wordset button dropdowns.
+ */
+function showSettings(){
+    document.getElementById('set2').style.display = null;
+    document.getElementById('set1').style.display = null;
 }

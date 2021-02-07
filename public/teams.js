@@ -2,7 +2,9 @@
  *                              Drag/Drop Teams
  ***********************************************************************************/
 
-// Move user from one list to the other, and changing its color.
+/**
+ * Move user from one list to the other, and change its color.
+ */
 socket.on('move-user', (data) => {
     console.log('haaaa');
     console.log(data.username, username, data.team);
@@ -30,7 +32,9 @@ socket.on('move-user', (data) => {
 
 })
 
-// Code to determine Sortable characteristics.
+/**
+ * Determines Sortable.js characteristics.
+ */
 $(document).ready(function() {
     new Sortable(redUsers, {
         group: {
@@ -99,6 +103,11 @@ $(document).ready(function() {
     });
 });
 
+/**
+ * Send switch team message in chat.
+ * 
+ * @param {"red" | "blue"} team Team that user switched to.
+ */
 function sendTeamMessage(team){
     socket.emit('chat', {
         username: username,
@@ -108,6 +117,11 @@ function sendTeamMessage(team){
     });
 }
 
+/**
+ * Updates the switched team in the database.
+ *  
+ * @param {"red" | "blue"} team Team that user switched to. 
+ */
 function updateTeamInDatabase(team){
     sessionStorage.setItem('team',team);
     socket.emit('change-teams', {
