@@ -5,24 +5,32 @@ const sidekick = document.getElementById('side');
 const redTeam = document.getElementById('red-team');
 const blueTeam = document.getElementById('blue-team');
 
+// Sound bite for clicking the cryptonight clue.
 var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
 
 /************************************************************************************
  *                              Build Board Buttons
  ***********************************************************************************/
 
-// Build board buttons when a new user joins the room.
+/**
+ * Begins a new board game for the players in the room.
+ * Includes all the necessary set up:
+ * 1) Reset or continue (if refreshed) all game settings 
+ * 2) Display all buttons.
+ * 
+ */
 socket.on('board-game', (data) => {
+    // If the socket provides a username, only build board for that user.
     if (data.username && data.username !== username){
         return;
     }
 
-    // Build board triggered by new game button.
+    // If triggered by new game button, reset all game settings.
     if (data.new || (!isRefreshed() && data.username && data.username === username)){
         newGameSettings();
     }
 
-    // Start session storage off at 'start'
+    // Start session storage off at 'start'.
     if (!sessionStorage.getItem('display')){
         sessionStorage.setItem('display', 'start'); 
     }
@@ -56,7 +64,13 @@ socket.on('board-game', (data) => {
     }
 })
 
-// Helper function to create buttons.
+/**
+ * Helper function to create board buttons.
+ * 
+ * @param {string} word The word to display
+ * @param {boolean} role The role of the player (true for sidekick).
+ * @param {boolean} myturn Whether or not it is the players turn
+ */
 function createButton(word, role, myturn){
     var btn = document.createElement("button");
     btn.style.width = "18%";
@@ -93,18 +107,29 @@ function createButton(word, role, myturn){
     return btn;
 }
 
+/**
+ * Check if current board game call is due to a refreshed player.
+ */
 function isRefreshed(){
     return sessionStorage.getItem('restore') === '1';
 }
 
+/**
+ * Helper function to create HTML for a font-awesome icon
+ * 
+ * @param {string} name Name of the icon (i.e. "fa fa-icon")
+ * @param {string} color Color of the text
+ */
 function icon(name, color){
     return `<span class="text-${color}">
         <i class="${name}"></i>
         </span>`
 }
 
+/**
+ * Resets game to original settings and stores necessary info in session storage.
+ */
 function newGameSettings(){
-    console.log("new game new game");
     turnBroadcast.style.display = "none";
     unlockTeams();
     unlockRoles();
@@ -126,7 +151,13 @@ function newGameSettings(){
  ***********************************************************************************/
 
 
-// Sending a message in the chat when a user clicks a button.
+/**
+ * Perform necessary actions when user presses a button.
+ * 1) Update database to show the word.
+ * 2) Find the word to determine its color.
+ * 3) Send a message in the chat.
+ * 4) Update statistics.
+ */
 board.addEventListener('click', function(e){
     const text = e.target.id;
     if (text !== "board"){
@@ -166,6 +197,10 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
+/**
+ * Called after "socket.emit("found-word"), after the socket retrieves the information needed.
+ * Performs actions based on the color of the word and keeps track of statistics.
+ */
 socket.on('found-word', (data) => {
     // Find elapsed time, necessary if game is over.
     const startTime = sessionStorage.getItem('start-time') || "60";
