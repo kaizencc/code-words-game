@@ -4,7 +4,9 @@
 
 displayAlert();
 
-// Determine whether to display alert with error message.
+/**
+ * Determine whether to display alert with error message.
+ */
 function displayAlert() {
     var alert = document.getElementById("alert");
     const name = alert.getAttribute("name")
@@ -23,7 +25,9 @@ function displayAlert() {
     
 }
 
-// Clear session storage from rooms when on home page.
+/**
+ * Clear session storage from rooms when on home page.
+ */
 window.onload = function () {
     sessionStorage.clear();
 }
