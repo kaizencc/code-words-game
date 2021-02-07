@@ -293,6 +293,14 @@ socket.on('found-word', (data) => {
     }
 })
 
+/**
+ * Helper function for sending message when a game is finished.
+ * 
+ * @param {number} elapsedTime The amount of time the turn took.
+ * @param {"red" | "blue"} winner Who won the game. 
+ * @param {string} redScore Red team score.
+ * @param {string} blueScore Blue team score.
+ */
 function gameOverActions(elapsedTime, winner, redScore, blueScore){
     showIdleDisplay();
     socket.emit('game-over', {
@@ -320,10 +328,9 @@ function updateRedScore(score){
 }
 
 /************************************************************************************
- *                              Switch Role Radio Buttons
+ *                              Helper Functions for Setting Controls
  ***********************************************************************************/
 
-// Helper functions to change HTML buttons.
 function changeToSidekick(){
     sidekick.classList.add("active");
     superhero.classList.remove("active");
