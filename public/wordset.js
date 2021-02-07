@@ -1,11 +1,16 @@
-const basicSet = document.getElementById('Basic');
-const nsfwSet = document.getElementById('NSFW');
-const duetSet = document.getElementById('Duet');
-
+// Dictionary that translates actual collection names to display page names.
 var setTranslate = {};
 setTranslate["codewords"]="Basic";
 setTranslate["codewords-nsfw"] = "NSFW";
 setTranslate["codewords-duet"] = "Duet";
+
+/************************************************************************************
+ *                              Change Wordset Events
+ ***********************************************************************************/
+
+const basicSet = document.getElementById('Basic');
+const nsfwSet = document.getElementById('NSFW');
+const duetSet = document.getElementById('Duet');
 
 basicSet.addEventListener('click', () =>{
     changeSet("codewords");
@@ -33,6 +38,9 @@ socket.on('change-word-set', (data) => {
     setWordSet();
 })
 
+/**
+ * Moves the icon to the correct word set.
+ */
 function setWordSet(){
     if (sessionStorage.getItem('word-set')){
         switch (sessionStorage.getItem('word-set')){
@@ -49,6 +57,12 @@ function setWordSet(){
     }
 }
 
+/**
+ * Moves the icon to the correct location.
+ * 
+ * @param {HTMLElement} to The button that was clicked.
+ * @param {string} at The drop down the button belongs to.
+ */
 function moveIcon(to, at){
     var children = document.getElementById(at).children;
     for (var i = 0; i < children.length; i++) {
