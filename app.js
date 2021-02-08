@@ -4,6 +4,8 @@ const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
 const alertMessage = require('./utils/messages');
 const path = require('path');
+var Filter = require('bad-words'),
+filter = new Filter();
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -28,8 +30,24 @@ app.use('/room', async function (req, res, next) {
     console.log("middleware");
     alert = alertMessage.NONE;
     const action = req.query.action;
-    const username = req.body.username;
-    const roomname = req.body.roomname;
+    console.log(req.body.username, req.body.roomname);
+    var username = req.body.username;
+    var roomname = req.body.roomname;
+    console.log(username, roomname)
+
+    // Ensure that username and roomname has no profanity.
+    if (username && username !== filter.clean(username)){
+        alert = alertMessage.BAD_USERNAME;
+        res.redirect('/');
+        return;
+    }
+    if (roomname && roomname !== filter.clean(roomname)){
+        alert = alertMessage.BAD_ROOMNAME;
+        res.redirect('/');
+        return;
+    }
+
+    console.log(username, roomname);
     const exists = await Mongo.roomExists(roomname, true);
     console.log("exists", exists);
     console.log("act", action);

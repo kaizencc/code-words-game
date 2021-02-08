@@ -1,3 +1,13 @@
+// Enum for index page alert banner
+const alertMessage = {
+    NONE: 'none',
+    JOIN_DOES_NOT_EXIST: 'join-does-not-exist',
+    JOIN_USERNAME_EXISTS: 'join-username-exists',
+    CREATE_ALREADY_EXISTS: 'create-already-exists',
+    BAD_USERNAME: 'bad-username',
+    BAD_ROOMNAME: 'bad-roomname',
+}
+
 /************************************************************************************
  *                              Home Page Alert
  ***********************************************************************************/
@@ -12,17 +22,22 @@ function displayAlert() {
     const name = alert.getAttribute("name")
     if (name == "none") {
         alert.style.display = "none";
-    } else if (name == "join-does-not-exist") {
+    } else if (name == alertMessage.JOIN_DOES_NOT_EXIST) {
         alert.style.display = "block";
-        alert.innerHTML = "Room does not exist"
-    } else if (name == "join-username-exists") {
+        alert.innerHTML = "Room does not exist";
+    } else if (name == alertMessage.JOIN_USERNAME_EXISTS) {
         alert.style.display = "block";
-        alert.innerHTML = "Username already exists"
-    } else if (name == "create-already-exists") {
-        alert.style.display = "block"
+        alert.innerHTML = "Username already exists";
+    } else if (name == alertMessage.CREATE_ALREADY_EXISTS) {
+        alert.style.display = "block";
         alert.innerHTML = "Room already exists";
+    } else if (name == alertMessage.BAD_USERNAME){
+        alert.style.display = "block";
+        alert.innerHTML = "Username has profanity";
+    } else if (name == alertMessage.BAD_ROOMNAME){
+        alert.style.display = "block";
+        alert.innerHTML = "Roomname has profanity";
     }
-    
 }
 
 /**
