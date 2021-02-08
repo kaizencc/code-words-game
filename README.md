@@ -6,7 +6,7 @@
 
 ![CryptoNight Screen](images/cryptoscreen.png)
 
-If you are a recruiter or are interested in the technical features I implemented, please jump to [Features](https://github.com/kaizen3031593/code-words-game#features)
+If you are a **recruiter** (hi!) or are interested in the technical features I implemented, please jump to [Features](https://github.com/kaizen3031593/code-words-game#features).
 
 ## Inspiration
 
@@ -41,6 +41,46 @@ Handling my production server is an **AWS EC2** instance in the cloud. I've got 
   - Without following extremely detailed tutorials on **DigitalOcean** for setting up a production server, I would have not been able to work through the multitude of challenges I faced configuring AWS and nginx. Even still, I had a misstep – I set up my firewall without allowing SSH access and locked myself out of my first EC2 server; I had to start over with a new one.
   
 ## Features
+
+Here is a comprehensive list of non-trivial features implemented as part of this project:
+
+**Home Page**
+
+  - [x] Ability to create a room or join an existing one.
+  - [ ] Single Player Lobby where users without the required 4 players can join together to create their own room.
+  - [x] Each roomname/username is checked for availability and profanity, with problematic instances returned as an "alert" to the user.
+  
+**Rules**
+
+  - [x] Progress bar that provides real time feedback to the user regarding how far they have scrolled.
+  
+**Leaderboard**
+
+  - [x] Relevant all-time statistics for all players including _wins_, _losses_, _time/turn_, _correct guess percentage_, and much, much more.
+  - [x] Responsive leaderboard can sort players on each individual statistic.
+  
+**Room**
+
+  - **Chatbox**
+
+  - [x] Live chatbox where users can communicate with each other, with profanity filtered.
+  - [x] Commands including _/help_, _/stats_, _/stats superhero_, _/stats sidekick_, _/stats time_ that can be typed into the chatbox for real time statistics returned as a table in the chat.
+  
+  - **Settings**
+  
+  - [x] Drop-down settings for changing between multiple word sets and different timers.
+  - [x] Team selection area where cards representing each player can be moved drag-n-drop style.
+  - [x] Separate interfaces for "superhero" players and "sidekick" players toggled by a radio button.
+  - [x] Changes are broadcast in the chatbox for all players to see.
+  
+  - **Gameplay**
+  - [x] Game settings become inactive when game starts.
+  - [x] Each player's turn is managed by the game engine and their moves broadcast to the chat.
+  - [x] Necessary statistics like time and correct/wrong clicks are harvested for later.
+  - [x] Audio reminders for when time is almost up and when the "cryptonight" word is selected.
+  
+  - **Game Finish**
+  - [x] Pop-up modal is created with information on which team won and statistic options for time per turn, superhero statistics, and sidekick statistics.
 
 ## Using this Repository
 
