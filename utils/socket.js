@@ -1,6 +1,7 @@
 const {newGame} = require('./newgame');
-const {Statistics} = require('./statistics');
 const Mongo = require('../database/mongoDB');
+var Filter = require('bad-words'),
+filter = new Filter();
 
 function randomTeam(){
     if (Math.floor(Math.random() * 2) === 0){
@@ -428,7 +429,7 @@ function socket(io) {
         socket.on('chat', async (data) => {
             const messageObject = {
                 username: data.username, 
-                message: data.message, 
+                message: filter.clean(data.message), 
                 event: data.event
             };
             await Mongo.addMessage(data.roomname, messageObject);

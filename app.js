@@ -85,6 +85,11 @@ app.get('/leaderboard', async (req, res)=>{
     });
 })
 
+/**
+ * Process the dataset of players into one row each.
+ * 
+ * @param {{}} leaderboard Every player in the leaderboard.
+ */
 function processLeaderData(leaderboard){
     leaderboard.forEach(l => {
         // Encrypt id
