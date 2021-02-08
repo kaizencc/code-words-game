@@ -8,6 +8,11 @@ const buttonColor = {
     YELLOW: 'btn-warning'
 }
 
+/**
+ * Picks 25 random words to be used on the board, shuffles them, and assigns each a color.
+ * 
+ * @param {string} room The roomname.
+ */
 async function newGame(room){
     // Find number of words in the current word set.
     const size = await Mongo.countNumberOfWords(room);
@@ -33,6 +38,11 @@ async function newGame(room){
     return newWords;
 }
 
+/**
+ * Selects random non-repeating ID numbers between 0 and size.
+ * 
+ * @param {number} size The maximum ID number
+ */
 function selectRandomIDs(size){
     // Randomly select 25 words from the set.
     var arr = []
@@ -50,12 +60,21 @@ function selectRandomIDs(size){
     return arr;
 }
 
-// Helper function in `getWordArray`
+/**
+ * Helper function to get a random number between min and max.
+ * @param {number} min 
+ * @param {number} max 
+ */
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// Utility function to randomly select words for each team, along with the bomb word.
+/**
+ * Helper function to randomly select colors for each word.
+ * 9 red cards, 8 blue cards, 1 green (bomb) card, the rest yellow.
+ * 
+ * @param {[HTMLElement]} array Array of buttons.
+ */
 function selectColors(array){
     randomArray=[]
     for(var i=0; i<25; i++){
@@ -64,7 +83,7 @@ function selectColors(array){
     indexes = shuffle(randomArray);
 
     // Select one black card.
-    array[indexes[0]].color = buttonColor.BLACK
+    array[indexes[0]].color = buttonColor.BLACK;
 
     // Select nine blue cards and eight red cards.
     for(var i=1; i<18; i++){
@@ -78,7 +97,11 @@ function selectColors(array){
     return array;
 }
 
-// Helper function to shuffle using Fisher-Yates.
+/**
+ * Helper function to shuffle array in place using Fisher-Yates algorithm.
+ * 
+ * @param {[number]} array Array if word IDs
+ */
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
   
