@@ -6,6 +6,8 @@
 
 ![CryptoNight Screen](images/cryptoscreen.png)
 
+If you are a recruiter or are interested in the technical features I implemented, please jump to [Features](https://github.com/kaizen3031593/code-words-game#features)
+
 ## Inspiration
 
 This is my take on the popular game, Codenames. I played it every week online with my family during the months of quarantine in 2020. We would play on the website [http://codewordsgame.com](http://codewordsgame.com), which serves as the initial inspiration for this project. However, I came across frustrating issues on that version where my timer was often incorrect leading to me running out of time before sending my clue. I decided it would be worthwhile to create a similar version of the game with my own personal take. 
@@ -37,6 +39,8 @@ Handling my production server is an **AWS EC2** instance in the cloud. I've got 
   - I also could have spent more time researching a well-documented stack. I started with a vanilla tutorial and only considered a database from there. I should have started with full knowledge of the stack I was going to try, like the **MERN** stack. Funnily enough, I ended up quite close to that stack anyway.
   - I researched **Colyseus.io** after having completed a signficant portion of my project, so I didn't go in that direction. But the next time I use Node.js to build a game I would certainly start with that open-source library, which is like **socket.io** on steroids and made for online multiplayer games.
   - Without following extremely detailed tutorials on **DigitalOcean** for setting up a production server, I would have not been able to work through the multitude of challenges I faced configuring AWS and nginx. Even still, I had a misstep – I set up my firewall without allowing SSH access and locked myself out of my first EC2 server; I had to start over with a new one.
+  
+## Features
 
 ## Using this Repository
 
