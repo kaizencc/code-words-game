@@ -10,6 +10,13 @@ const dbPassword = "bJr6m5UqPuYoZMaR";
 const dbName = "Cluster0";
 const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
+/**
+ * Add words from a csv file to a new mongoDB collection.
+ * 
+ * @param {dbInstance} db The mongoDB instance.
+ * @param {string} name The name of the collection.
+ * @param {string} filename Name of the file to parse.
+ */
 async function addWords(db, name, filename) {
     const newClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -24,14 +31,22 @@ async function addWords(db, name, filename) {
     }
 }
 
-// Helper function to wait for other processes to finish.
+/**
+ * Helper function to wait for other processes to finish.
+ * 
+ * @param {number} ms milliseconds
+ */
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
 }
 
-// Transform array of words into array of word documents.
+/**
+ * Transform array of words into array of word documents.
+ * 
+ * @param {[{string, number}]} data The word data
+ */
 function createMongoDocuments(data){
     var mongoDocuments = []
     data.forEach((word, index) =>{
@@ -44,7 +59,12 @@ function createMongoDocuments(data){
     return mongoDocuments;
 }
 
-// Process the given file name data into mongo documents.
+/**
+ * Process the given file name data into mongo documents.
+ * 
+ * @param {string} filename The name of the parsed file.
+ * @param {string} collection The collection name.
+ */
 async function processFile(filename, collection){
     fs.readFile(filename, 'utf8', async (err,data)=>{
         if(err){
@@ -58,15 +78,33 @@ async function processFile(filename, collection){
     return true;
 }
 
-//Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+/**
+ * Helper function to prepare regex expression of a string needing to replace all instances of a character.
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions.
+ * 
+ * @param {string} string 
+ */
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
+
+/**
+ * Helper function to replace all instances of 'match' with 'replacement'.
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions.
+ * 
+ * @param {string} str The string to get replacements.
+ * @param {string} match The character to remove.
+ * @param {string} replacement The new character to add.
+ */
 function replaceAll(str, match, replacement){
     return str.replace(new RegExp(escapeRegExp(match), 'g'), replacement);
 }
 
-// Process data for consumption by mongo.
+/**
+ * Process data for consumption by mongoDB.
+ * 
+ * @param {[string]} data 
+ */
 function processData(data){
     data = replaceAll(data,"\r",",");
     data = replaceAll(data,"\n",",");
@@ -80,6 +118,12 @@ function processData(data){
 }
 
 // create the collection (must not exist)
+/**
+ * Create a new database collection. It must not exist yet.
+ * 
+ * @param {dbInstance} db The database to add a collection to.
+ * @param {string} name The name of the new collection.
+ */
 async function createCollection(db, name){
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
@@ -95,6 +139,11 @@ async function createCollection(db, name){
     return await db.collection(name);
 }
 
+/**
+ * Initialize the selected word lists at the start of the application if they somehow are not present in the database yet.
+ * 
+ * @param {dbInstance} db The database.
+ */
 function initializeMongoWordlists(db){
     addWords(db, 'codewords',path.join(__dirname, "files/codes.csv")).catch(console.error);
     addWords(db, 'codewords-nsfw',path.join(__dirname, "files/nsfw.csv")).catch(console.error);
