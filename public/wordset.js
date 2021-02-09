@@ -3,6 +3,7 @@ var setTranslate = {};
 setTranslate["codewords"]="Basic";
 setTranslate["codewords-nsfw"] = "NSFW";
 setTranslate["codewords-duet"] = "Duet";
+setTranslate["custom"] = "Custom";
 
 /************************************************************************************
  *                              Change Wordset Events
@@ -24,10 +25,6 @@ nsfwSet.addEventListener('click', () => {
 duetSet.addEventListener('click', () => {
     changeSet("codewords-duet");
 })
-
-// customSet.addEventListener('click', () => {
-//     changeSet("custom");
-// })
 
 function changeSet(newSet) {
     console.log("changing set");
@@ -76,11 +73,22 @@ function moveIcon(to, at){
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (child === to){
-            child.innerHTML = `${child.id} <i class="fas fa-gem"></i>`;
+            // Special case for custom
+            if (to.id === "Custom"){
+                child.innerHTML = `${child.id} <i class="fas fa-gem"></i> <input type="file" id="file-selector" name="custom" accept=".csv" onchange='triggerValidation(this)'/>`;
+                addFileEventListener();
+            } else {
+                child.innerHTML = `${child.id} <i class="fas fa-gem"></i>`;
+            }
         } else {
-            child.innerHTML = child.id;
+            if (child.id === "Custom"){
+                child.innerHTML = `${child.id} <input type="file" id="file-selector" name="custom" accept=".csv" onchange='triggerValidation(this)'/>`;
+                addFileEventListener();
+            } else {
+                child.innerHTML = child.id;
+            }
         }
-      }
+    }
 }
 
 var regex = new RegExp("(.*?)\.(csv)$");
@@ -92,28 +100,36 @@ function triggerValidation(el) {
   }
 }
 
-const fileSelector = document.getElementById('file-selector');
+addFileEventListener();
 
-fileSelector.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    console.log(file);
-    if (!file.type) {
-        status.textContent = 'Error: The File.type property does not appear to be supported on this browser.';
-        return;
-    }
-    const reader = new FileReader();
-    reader.readAsText(file);
-
-    reader.onload = function() {
-        socket.emit('change-word-set', {
-            roomname: roomname,
-            username, username,
-            set: 'custom',
-            filestring: reader.result,
-        });
-    };
+function addFileEventListener(){
+    document.getElementById('file-selector').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        console.log(file);
+        if (!file.type) {
+            status.textContent = 'Error: The File.type property does not appear to be supported on this browser.';
+            return;
+        }
     
-    reader.onerror = function() {
-        console.log(reader.error);
-    };
-});
+        // Name file something unique to ensure no overlap.
+        var filename = file.name.substring(0, file.name.lastIndexOf('.')) + Date.now();
+        console.log(filename);
+    
+        const reader = new FileReader();
+        reader.readAsText(file);
+    
+        reader.onload = function() {
+            socket.emit('change-word-set', {
+                roomname: roomname,
+                username, username,
+                set: 'custom',
+                filestring: reader.result,
+                filename: filename,
+            });
+        };
+        
+        reader.onerror = function() {
+            console.log(reader.error);
+        };
+    });
+}

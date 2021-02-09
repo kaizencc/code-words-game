@@ -116,8 +116,7 @@ function socket(io) {
         socket.on('change-word-set', async (data) => {
 
             if (data.set === "custom"){
-                console.log("CUSTOM");
-                await Mongo.addCustomWordSet("apples", data.filestring);
+                await Mongo.addCustomWordSet(data.filename, data.filestring);
             }
 
             io.to(data.roomname).emit('change-word-set', {set: data.set});
