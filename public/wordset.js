@@ -102,6 +102,9 @@ function triggerValidation(el) {
 
 addFileEventListener();
 
+/**
+ * Connects (or reconnects) the file-selector to the event listener.
+ */
 function addFileEventListener(){
     document.getElementById('file-selector').addEventListener('change', (event) => {
         const file = event.target.files[0];
