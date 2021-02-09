@@ -710,6 +710,12 @@ async function getGameStatisticsInRoom(room){
  *                              Leaderboard Functions
  ***********************************************************************************/
 
+/**
+ * Add a player to the leaderboard. No statistics 
+ * 
+ * @param {string} username Player's username.
+ * @param {string} room Player's room.
+ */
 async function addToLeaderboard(username, room){
     const _id = `${username}_${room}`;
 
@@ -736,6 +742,13 @@ async function addToLeaderboard(username, room){
     }
 }
 
+/**
+ * Add all superhero relevant statistics to an existing player.
+ * 
+ * @param {string} username username
+ * @param {string} room roomname
+ * @param {{}} stats Superhero statistics
+ */
 async function addSuperheroToLeaderboard(username, room, stats){
     const _id = `${username}_${room}`;
 
@@ -753,6 +766,13 @@ async function addSuperheroToLeaderboard(username, room, stats){
     await leaderboard.updateOne(query, updateDocument); 
 }
 
+/**
+ * Add all sidekick relevant statistics to an existing player.
+ * 
+ * @param {string} username username
+ * @param {string} room roomname
+ * @param {{}} stats Sidekick statistics
+ */
 async function addSidekickToLeaderboard(username, room, stats){
     const _id = `${username}_${room}`;
 
@@ -770,6 +790,9 @@ async function addSidekickToLeaderboard(username, room, stats){
     await leaderboard.updateOne(query, updateDocument); 
 }
 
+/**
+ * Get all the data from the leaderboard collection.
+ */
 async function getLeaderboard(){
     const cursor = await leaderboard.find();
     const allValues = await cursor.toArray();
@@ -777,6 +800,17 @@ async function getLeaderboard(){
     return allValues;
 }
 
+/************************************************************************************
+ *                              Add Custom Words
+ ***********************************************************************************/
+
+/**
+ * Since this file is the only file connected to socket.js, this function is necessary
+ * to reroute the request to addCustomWords in addWordsScript.js.
+ * 
+ * @param {string} name The name of the collection.
+ * @param {string} filestring The contents of the file.
+ */
 async function addCustomWordSet(name, filestring){
     await addCustomWords(wordDb, name, filestring);
 }

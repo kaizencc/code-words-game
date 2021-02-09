@@ -2,6 +2,13 @@ const {MongoClient} = require('mongodb');
 const fs = require('fs');
 const path = require('path'); 
 
+/**
+ * Allow a user to input a csv of custom words to be parsed and added as a mongoDb collection.
+ * 
+ * @param {dbInstance} db The mongoDb instance.
+ * @param {string} name The name of the collection.
+ * @param {string} string The file string to process as csv.
+ */
 async function addCustomWords(db, name, string){
     const collection = await createCollection(db, name);
     const newData = processData(string);
