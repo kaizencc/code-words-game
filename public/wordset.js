@@ -11,18 +11,23 @@ setTranslate["codewords-duet"] = "Duet";
 const basicSet = document.getElementById('Basic');
 const nsfwSet = document.getElementById('NSFW');
 const duetSet = document.getElementById('Duet');
+const customSet = document.getElementById('Custom');
 
-basicSet.addEventListener('click', () =>{
+basicSet.addEventListener('click', () => {
     changeSet("codewords");
 })
 
-nsfwSet.addEventListener('click', () =>{
+nsfwSet.addEventListener('click', () => {
     changeSet("codewords-nsfw");
 })
 
-duetSet.addEventListener('click', () =>{
+duetSet.addEventListener('click', () => {
     changeSet("codewords-duet");
 })
+
+// customSet.addEventListener('click', () => {
+//     changeSet("custom");
+// })
 
 function changeSet(newSet) {
     console.log("changing set");
@@ -53,6 +58,9 @@ function setWordSet(){
             case "codewords-duet":
                 moveIcon(duetSet, "dd1");
                 break;
+            case "custom":
+                moveIcon(customSet, "dd1");
+                break;
         }
     }
 }
@@ -74,3 +82,38 @@ function moveIcon(to, at){
         }
       }
 }
+
+var regex = new RegExp("(.*?)\.(csv)$");
+
+function triggerValidation(el) {
+  if (!(regex.test(el.value.toLowerCase()))) {
+    el.value = '';
+    alert('Please select correct file format');
+  }
+}
+
+const fileSelector = document.getElementById('file-selector');
+
+fileSelector.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if (!file.type) {
+        status.textContent = 'Error: The File.type property does not appear to be supported on this browser.';
+        return;
+    }
+    const reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = function() {
+        socket.emit('change-word-set', {
+            roomname: roomname,
+            username, username,
+            set: 'custom',
+            filestring: reader.result,
+        });
+    };
+    
+    reader.onerror = function() {
+        console.log(reader.error);
+    };
+});

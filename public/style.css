@@ -93,16 +93,23 @@ p { margin:0 !important; }
     background-color: #5cb85c !important;
 }
 
-/* table {
-    border-collapse: separate !important;
-} */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
 
-/* .table>tbody>tr>td,
-.table>tbody>tr>th,
-.table>tfoot>tr>td,
-.table>tfoot>tr>th,
-.table>thead>tr>td,
-.table>thead>tr>th {
-    padding: 8px;
-    border-radius: 5px !important;
-} */
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: text;
+    display: block;
+}

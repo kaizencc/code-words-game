@@ -2,13 +2,12 @@ const {MongoClient} = require('mongodb');
 const fs = require('fs');
 const path = require('path'); 
 
-/**
- * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
- * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
- */
-const dbPassword = "bJr6m5UqPuYoZMaR";
-const dbName = "Cluster0";
-const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+async function addCustomWords(db, name, string){
+    const collection = await createCollection(db, name);
+    const newData = processData(string);
+    const documents = createMongoDocuments(newData);
+    await collection.insertMany(documents);
+}
 
 /**
  * Add words from a csv file to a new mongoDB collection.
@@ -18,8 +17,6 @@ const uri = `mongodb+srv://dbUser:${dbPassword}@cluster0.z40bi.mongodb.net/${dbN
  * @param {string} filename Name of the file to parse.
  */
 async function addWords(db, name, filename) {
-    const newClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
     try {
         const collection = await createCollection(db, name);
         if (collection) {
@@ -150,4 +147,4 @@ function initializeMongoWordlists(db){
     addWords(db, 'codewords-duet',path.join(__dirname, "files/code-duet.csv")).catch(console.error);
 }
 
-module.exports = {initializeMongoWordlists};
+module.exports = {initializeMongoWordlists, addCustomWords};

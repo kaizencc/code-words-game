@@ -4,6 +4,9 @@ const socket = require('socket.io');
 const Mongo = require('./database/mongoDB');
 const alertMessage = require('./utils/messages');
 const path = require('path');
+const multer = require('multer');
+var upload = multer({ dest: 'uploads/' });
+
 var Filter = require('bad-words'),
 filter = new Filter();
 
@@ -73,6 +76,13 @@ app.post('/room', (req, res) => {
     roomname = req.body.roomname;
     username = req.body.username;
     res.redirect(`/room?username=${username}&roomname=${roomname}`)
+})
+
+app.post('/custom', upload.single('custom'), (req, res, next) => {
+    const filename = req.file.originalname;
+    const name = req.file.filename;
+
+    console.log("HELLO", filename, name);
 })
 
 // Leaderboard

@@ -1,5 +1,6 @@
 const {newGame} = require('./newgame');
 const Mongo = require('../database/mongoDB');
+const fs = require('fs');
 var Filter = require('bad-words'),
 filter = new Filter();
 
@@ -113,6 +114,12 @@ function socket(io) {
 
         // Changing word set.
         socket.on('change-word-set', async (data) => {
+
+            if (data.set === "custom"){
+                console.log("CUSTOM");
+                await Mongo.addCustomWordSet("apples", data.filestring);
+            }
+
             io.to(data.roomname).emit('change-word-set', {set: data.set});
             await Mongo.changeWordSet(data.roomname, data.set);
             // Emitting word set change to clients.

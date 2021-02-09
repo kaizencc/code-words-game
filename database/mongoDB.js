@@ -1,7 +1,7 @@
 const {MongoClient} = require('mongodb');
 const {uri} = require('./mongoConfig.js'); 
 // const {uri} = require('./mongoConfigExample.js'); // Example Mongo Credentials. 
-const {initializeMongoWordlists} = require ('./addWordsScript');
+const {initializeMongoWordlists, addCustomWords} = require ('./addWordsScript');
  
 /************************************************************************************
  *                              Connection Information
@@ -777,6 +777,10 @@ async function getLeaderboard(){
     return allValues;
 }
 
+async function addCustomWordSet(name, filestring){
+    await addCustomWords(wordDb, name, filestring);
+}
+
 
 module.exports = {
     openMongoConnection, 
@@ -823,5 +827,6 @@ module.exports = {
     addSuperheroToLeaderboard,
     addSidekickToLeaderboard,
     getLeaderboard,
+    addCustomWordSet,
 };
  
