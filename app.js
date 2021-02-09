@@ -133,7 +133,11 @@ function processLeaderData(leaderboard){
 }
 
 function encrypt(str){
-    return str.substring(0,3) + "#".repeat(str.length-3);
+    if (str.length > 4){
+        return str.substring(0,3) + "#".repeat(str.length-3);
+    } else {
+        return str;
+    }
 }
 
 // Rules
