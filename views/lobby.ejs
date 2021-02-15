@@ -1,13 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('partials/header'); %>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="/signin.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
-<body class="text-center">
+<body>
     <%- include('partials/tagmanager'); %>
-    <h1> HELLO </h1>
+    <nav class="navbar fixed-top navbar-light bg-light">
+        <div class="col-2">
+            <form action="/" method="GET">
+                <button name="home" class="w-100 btn btn-lg btn-outline-dark" type="submit">Back</button>
+            </form>            
+        </div>
+        <div class="col">
+            <h1>
+                <span class="text-success">
+                    <i class="fas fa-universal-access"></i>
+                </span>
+                Single Player Lobby
+                <span class="text-success">
+                    <i class="fas fa-universal-access"></i>
+                </span>
+            </h1>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row mt-5">
+        </div>
+        <div class="row mt-5">
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1> Enter your username to join the lobby and you will be paired with the next 4 players available!</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-row justify-content-center" id="display-form">
+                    <div class="col-md-6">
+                        <input id="clue" type="text" class="form-control" placeholder="Username">
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <button id="lobby" type="submit" class="btn btn-outline-success">Enter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron mt-5">
+            <h1>Player Lobby</h1>
+        </div>
+    </div>
+    <div class="row w-100">
+        <%- include('partials/footer'); %>
+    </div>
+    <script src="/rules.js"></script>
 </body>
 </html>
