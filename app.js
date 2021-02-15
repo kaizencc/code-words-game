@@ -150,6 +150,11 @@ app.get('/room', (req, res)=>{
     res.render('room');
 })
 
+// Single Player Lobby
+app.get('/lobby', (req, res)=>{
+    res.render('lobby');
+})
+
 // Start Server
 const server = app.listen(port, async () => {
     console.log(`Server Running on ${port}`)
