@@ -18,9 +18,25 @@ function sleep(ms) {
     });
 }
 
+playersInLobby = [];
+
 // Socket connection.
 function socket(io) {
     io.on('connection', (socket) => {
+
+        // Lobby is one room that everyone can access
+        socket.on('lobby', () => {
+            socket.join('lobby');
+            io.to('lobby').emit('display-lobby', {players: playersInLobby})
+        })
+
+        socket.on('join-lobby', (data) => {
+            playersInLobby.push({
+                username: data.username, 
+                socket: socket.id
+            })
+            io.to('lobby').emit('display-lobby', {players: playersInLobby})
+        })
 
         socket.on('joined-user', async (data) => { 
             // Store connected user in database.

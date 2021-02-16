@@ -1,3 +1,7 @@
+const socket = io.connect();
+
+socket.emit('lobby', {})
+
 const lobbyBtn = document.getElementById('lobbybtn');
 const usernameSpace = document.getElementById('username');
 const lobby = document.getElementById('playerlobby');
@@ -6,7 +10,14 @@ const lobby = document.getElementById('playerlobby');
  * When enter is clicked, validate the username and create an avatar in the player lobby.
  */
 lobbyBtn.addEventListener('click', () =>{
-    createPlayerAvatar(usernameSpace.value);
+    socket.emit('join-lobby', {username: usernameSpace.value});
+})
+
+socket.on('display-lobby', (data) => {
+    lobby.innerHTML = "";
+    data.players.forEach((player) => {
+        createPlayerAvatar(player.username);
+    })
 })
 
 /**
