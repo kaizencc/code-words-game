@@ -40,7 +40,8 @@
                 <h1> Enter your username to join the lobby and you will be paired with the next 4 players available!</h1>
             </div>
         </div>
-        <div class="row justify-content-center">
+        <!-- Enter Lobby Form -->
+        <div id="enter-form" class="row justify-content-center">
             <div class="col-6">
                 <div class="form-row justify-content-center" id="display-form">
                     <div class="col-md-6">
@@ -52,6 +53,13 @@
                 </div>
             </div>
         </div>
+        <!-- Leave Lobby Form -->
+        <div id="leave-form" class="row justify-content-center" style="display:none">
+            <div class="col-md-4 text-center">
+                <button id="leavebtn" type="submit" class="btn btn-outline-success">Leave</button>
+            </div>
+        </div>
+        <!-- Lobby -->
         <div class="jumbotron mt-5">
             <h1>Player Lobby</h1>
             <div class="row mt-5">

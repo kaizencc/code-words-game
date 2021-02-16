@@ -51,6 +51,11 @@ function socket(io) {
             }
         })
 
+        socket.on('leave-lobby', () => {
+            playersInLobby = playersInLobby.filter(player => player.socket !== socket.id);
+            io.to('lobby').emit('display-lobby', {players: playersInLobby});
+        })
+
         socket.on('joined-user', async (data) => { 
             // Store connected user in database.
             var user = {
@@ -484,7 +489,6 @@ function socket(io) {
 
             // special case for disconnecting from lobby.
             if (roomname === "lobby"){
-                console.log("HEHWEHEW")
                 playersInLobby = playersInLobby.filter(player => player.socket !== socket.id);
                 io.to('lobby').emit('display-lobby', {players: playersInLobby});
             } else {
@@ -500,7 +504,7 @@ function socket(io) {
                             const messageObject = {
                                 username: username, 
                                 message: "", 
-                                event: "disconnected"
+                                event: "disconnected",
                             };
                             await Mongo.addMessage(roomname, messageObject);
                             io.to(roomname).emit('chat', messageObject);
