@@ -20,6 +20,14 @@ socket.on('display-lobby', (data) => {
     })
 })
 
+socket.on('bad-username', (data) => {
+    if (data.reason === "profanity"){
+        alert("Please do not use profanity in your username");
+    } else if (data.reason === "duplicate"){
+        alert("Your username is in use by someone else, please pick a different name");
+    }
+})
+
 /**
  * Creates the html required for the player avatar to show up on screen.
  * 

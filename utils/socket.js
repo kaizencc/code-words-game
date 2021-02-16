@@ -31,11 +31,24 @@ function socket(io) {
         })
 
         socket.on('join-lobby', (data) => {
-            playersInLobby.push({
-                username: data.username, 
-                socket: socket.id
+            var success = true;
+            if (data.username !== filter.clean(data.username)){
+                io.to('lobby').emit('bad-username', {reason: "profanity"});
+                success = false;
+            }
+            playersInLobby.forEach((player) => {
+                if (player.username === data.username){
+                    io.to('lobby').emit('bad-username', {reason: "duplicate"});
+                    success = false;
+                }
             })
-            io.to('lobby').emit('display-lobby', {players: playersInLobby})
+            if (success){
+                playersInLobby.push({
+                    username: data.username,
+                    socket: socket.id,
+                })
+                io.to('lobby').emit('display-lobby', {players: playersInLobby});
+            }
         })
 
         socket.on('joined-user', async (data) => { 
