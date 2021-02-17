@@ -296,7 +296,7 @@ socket.on('show-current-sidekick', (data)=>{
     setIdleClue("");
     if (data.username === username){
         showFormDisplay();
-        startSidekickStorageClickStats();
+        //startSidekickStorageClickStats();
         broadcastYourTurn(data.turn);
     } else {
         turnOffButtons();

@@ -18,7 +18,8 @@ function sleep(ms) {
     });
 }
 
-playersInLobby = [];
+var playersInLobby = [];
+var roomnumber = 1;
 
 // Socket connection.
 function socket(io) {
@@ -55,9 +56,10 @@ function socket(io) {
                     console.log(playersInLobby[0]);
                     io.to('lobby').emit('enter-room', {
                         players: playersInLobby,
-                        roomname: "lobbyroom1",
+                        roomname: `lobbyroom${roomnumber}`,
                     });
                     playersInLobby = [];
+                    roomnumber +=1;
                 }
                 io.to('lobby').emit('display-lobby', {players: playersInLobby});
             }

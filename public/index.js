@@ -4,6 +4,7 @@ const alertMessage = {
     JOIN_DOES_NOT_EXIST: 'join-does-not-exist',
     JOIN_USERNAME_EXISTS: 'join-username-exists',
     CREATE_ALREADY_EXISTS: 'create-already-exists',
+    CREATE_RESERVED: 'create-reserved',
     BAD_USERNAME: 'bad-username',
     BAD_ROOMNAME: 'bad-roomname',
 }
@@ -31,6 +32,9 @@ function displayAlert() {
     } else if (name == alertMessage.CREATE_ALREADY_EXISTS) {
         alert.style.display = "block";
         alert.innerHTML = "Room already exists";
+    } else if (name == alertMessage.CREATE_RESERVED){
+        alert.style.display = "block";
+        alert.innerHTML = "Roomname is reserved";
     } else if (name == alertMessage.BAD_USERNAME){
         alert.style.display = "block";
         alert.innerHTML = "Username has profanity";

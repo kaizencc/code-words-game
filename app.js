@@ -56,6 +56,9 @@ app.use('/room', async function (req, res, next) {
         alert = alertMessage.CREATE_ALREADY_EXISTS;
         res.redirect('/');
         return;
+    } else if (action == "create" && roomname.includes('lobbyroom')) {
+        alert = alertMessage.CREATE_RESERVED;
+        res.redirect('/');
     } else if (action == "join" && !exists) { 
         alert = alertMessage.JOIN_DOES_NOT_EXIST;
         res.redirect('/');
