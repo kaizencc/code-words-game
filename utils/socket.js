@@ -31,6 +31,7 @@ function socket(io) {
         })
 
         socket.on('join-lobby', (data) => {
+            Mongo.addLobbyPlayer(data.username);
             var success = true;
             if (data.username !== filter.clean(data.username)){
                 io.to('lobby').emit('bad-username', {reason: "profanity"});

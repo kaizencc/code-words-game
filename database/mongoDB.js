@@ -815,6 +815,11 @@ async function addCustomWordSet(name, filestring){
     await addCustomWords(wordDb, name, filestring);
 }
 
+async function addLobbyPlayer(name){
+    const lobbydb = client.db('lobby').collection('players');
+    lobbydb.insertOne({name: name});
+}
+
 
 module.exports = {
     openMongoConnection, 
@@ -862,5 +867,6 @@ module.exports = {
     addSidekickToLeaderboard,
     getLeaderboard,
     addCustomWordSet,
+    addLobbyPlayer,
 };
  
