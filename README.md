@@ -47,8 +47,11 @@ Here is a comprehensive list of non-trivial features implemented as part of this
 **Home Page**
 
   - [x] Ability to create a room or join an existing one.
-  - [ ] Single Player Lobby where users without the required 4 players can join together to create their own room.
   - [x] Each roomname/username is checked for availability and profanity, with problematic instances returned as an "alert" to the user.
+
+**Single Player Lobby**
+
+  - [x] Functionality to enter lobby queue and be added to a room when the required 4 players are present.
   
 **Rules**
 
