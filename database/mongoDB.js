@@ -817,7 +817,11 @@ async function addCustomWordSet(name, filestring){
 
 async function addLobbyPlayer(name){
     const lobbydb = client.db('lobby').collection('players');
-    lobbydb.insertOne({name: name});
+    const time = new Date(Date.now());
+    lobbydb.insertOne({
+        name: name,
+        time: time.toUTCString(),
+    });
 }
 
 
