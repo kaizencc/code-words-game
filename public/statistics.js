@@ -139,8 +139,8 @@ function parseSuperheroStats(data){
     })
     for (const [_, value] of Object.entries(statistics)) {
         var avg=0;
-        if ((value[1]+value[0]) > 0){
-            avg = value[1] / (value[0] + value[1]);
+        if ((value[1]+value[2]) > 0){
+            avg = value[1] / (value[2] + value[1]);
             // Round to 2 decimal places if necessary.
             avg = Math.round((avg + Number.EPSILON) * 100) / 100;
         }
