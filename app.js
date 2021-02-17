@@ -95,6 +95,12 @@ app.get('/leaderboard', async (req, res)=>{
  * @param {{}} leaderboard Every player in the leaderboard.
  */
 function processLeaderData(leaderboard){
+    // remove players who have not played a game.
+    leaderboard = leaderboard.filter(function (l) {
+        return l.games > 0;
+    })
+    
+    // add percentage data.
     leaderboard.forEach(l => {
         // Encrypt id
         info = l._id.split("_");
