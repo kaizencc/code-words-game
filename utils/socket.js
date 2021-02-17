@@ -24,12 +24,13 @@ playersInLobby = [];
 function socket(io) {
     io.on('connection', (socket) => {
 
-        // Lobby is one room that everyone can access
+        // Lobby is one room that everyone can access.
         socket.on('lobby', () => {
             socket.join('lobby');
             io.to('lobby').emit('display-lobby', {players: playersInLobby})
         })
 
+        // Join the lobby queue.
         socket.on('join-lobby', (data) => {
             Mongo.addLobbyPlayer(data.username);
             var success = true;
@@ -47,7 +48,17 @@ function socket(io) {
                 playersInLobby.push({
                     username: data.username,
                     socket: socket.id,
+                    first: false,
                 })
+                if(playersInLobby.length == 4){
+                    playersInLobby[0].first = true;
+                    console.log(playersInLobby[0]);
+                    io.to('lobby').emit('enter-room', {
+                        players: playersInLobby,
+                        roomname: "lobbyroom1",
+                    });
+                    playersInLobby = [];
+                }
                 io.to('lobby').emit('display-lobby', {players: playersInLobby});
             }
         })

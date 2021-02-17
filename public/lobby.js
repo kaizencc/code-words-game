@@ -16,11 +16,17 @@ lobbyBtn.addEventListener('click', () => {
     showLeaveForm();
 })
 
+/**
+ * When leave is clicked, remove the player from the lobby queue.
+ */
 leaveBtn.addEventListener('click', () => {
     socket.emit('leave-lobby', {})
     showEnterForm();
 })
 
+/**
+ * Display all the players currently in the lobby queue.
+ */
 socket.on('display-lobby', (data) => {
     lobby.innerHTML = "";
     data.players.forEach((player) => {
@@ -28,6 +34,24 @@ socket.on('display-lobby', (data) => {
     })
 })
 
+/**
+ * Sends each of the 4 players in the room and handles a race condition by pausing 3 players to allow the room to get created.
+ */
+socket.on('enter-room', (data) => {
+    data.players.forEach(async (player) => {
+        if (socket.id === player.socket){
+            // allow first player to create the room.
+            if (player.first !== true){
+                await sleep(1000);
+            }
+            enterRoomButton(player.username, data.roomname);
+        }
+    })
+})
+
+/**
+ * Handles things when a bad username is detected.
+ */
 socket.on('bad-username', (data) => {
     showEnterForm();
     if (data.reason === "profanity"){
@@ -66,4 +90,29 @@ function showEnterForm(){
 function showLeaveForm(){
     document.getElementById('enter-form').style = "display:none";
     document.getElementById('leave-form').style = null;
+}
+
+/**
+ * This function adds the correct values to the hidden submit form which is then clicked,
+ * redirecting to the room landing page.
+ * 
+ * @param {string} username Players username
+ * @param {string} roomname Room to enter into
+ */
+function enterRoomButton(username, roomname){
+    document.getElementById('name').value = username;
+    document.getElementById('room').value = roomname;
+    document.getElementById('enter').click();
+}
+
+/**
+ * Helper function that waits for the number of milliseconds given.
+ * Used to wait for other processes to finish.
+ * 
+ * @param {number} ms milliseconds
+ */
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
 }

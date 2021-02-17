@@ -54,11 +54,17 @@
             </div>
         </div>
         <!-- Leave Lobby Form -->
-        <div id="leave-form" class="row justify-content-center" style="display:none">
+        <div id="leave-form" class="row justify-content-center" style="display:none;">
             <div class="col-md-4 text-center">
                 <button id="leavebtn" type="submit" class="btn btn-outline-success">Leave</button>
             </div>
         </div>
+        <!-- Enter Room Button (Hidden and javascript will call it) -->
+        <form action="/room" method="POST" style="display:none;">
+            <input id="name" type="text" class="form-control" name="username" required>
+            <input id="room" type="text" class="form-control" name="roomname" required>
+            <button id="enter" type="submit">Enter</button>
+        </form>
         <!-- Lobby -->
         <div class="jumbotron mt-5">
             <h1>Player Lobby</h1>
