@@ -32,6 +32,10 @@ The database was handled by **MongoDB**. After looking at a few options, I turne
 
 Handling my production server is an **AWS EC2** instance in the cloud. I've got an **Elastic IP** and a **Route 53 Hosted Zone** connecting the domain name to the EC2 instance. **nginx** is the reverse proxy that handles both *http* and *https* requests and reroutes them to the port that my node app is running on.
 
+## How It Works
+
+![CryptoNight Architecture](images/architecture.png)
+
 ## Some Thoughts
 
   - Migrating from my initial psuedo-database of Javascript object storages to **MongoDB** was not trivial and took two days. I had lots of issues with `async` and `await`.
