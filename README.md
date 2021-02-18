@@ -2,11 +2,15 @@
 
 ## Visit the site - [cryptonight.codes](https://cryptonight.codes)
 
-## How to play - [cryptonight.codes/rules](https://cryptonight.codes/rules)
+> How to play - [cryptonight.codes/rules](https://cryptonight.codes/rules)
+
+> Check out the live leaderboard - [cryptonight.codes/leaderboard](https://cryptonight.codes/leaderboard)
+
+> Join as a single player and find some friends - [cryptonight.codes/lobby](https://cryptonight.codes/lobby)
 
 ![CryptoNight Screen](images/cryptoscreen.png)
 
-If you are a **recruiter** (hi!) or are interested in the technical features I implemented, please jump to [Features](https://github.com/kaizen3031593/code-words-game#features).
+If you are a **recruiter** (hi!) or are interested in the technical features I implemented, please jump to [Features](https://github.com/kaizen3031593/code-words-game#features). If you are interested in the basic architecture of how it works, please jump to [How It works](https://github.com/kaizen3031593/code-words-game#how-it-works). Thanks for visiting, and if you like what you see, please star the repository or drop me some encouragement at zen.conroy@gmail.com.
 
 ## Inspiration
 
@@ -35,6 +39,8 @@ Handling my production server is an **AWS EC2** instance in the cloud. I've got 
 ## How It Works
 
 ![CryptoNight Architecture](images/architecture.png)
+
+My knowledge of Systems Design tells me that I should avoid bottlenecks in the nginx reverse proxy as well as have duplicate MongoDB databases as a failsafe. However, since I am trying to stay under the free tier of many of these services and the traffic to my site as measured by google analytics is reasonably small, it is probably not necessary for the magnitude of my project.
 
 ## Some Thoughts
 
