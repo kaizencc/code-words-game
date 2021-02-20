@@ -137,6 +137,7 @@ function changeTime(newTime) {
 function hideSettings(){
     document.getElementById('set2').style.display = "none";
     document.getElementById('set1').style.display = "none";
+    document.getElementById('set3').style.display = "none";
 }
 
 /**
@@ -145,4 +146,5 @@ function hideSettings(){
 function showSettings(){
     document.getElementById('set2').style.display = null;
     document.getElementById('set1').style.display = null;
+    document.getElementById('set3').style.display = null;
 }
