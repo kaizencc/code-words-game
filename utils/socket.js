@@ -303,6 +303,7 @@ function socket(io) {
                 io.to(data.roomname).emit('ensure-four-players', {
                     good: true,
                     username: data.username,
+                    situation: data.situation,
                 });
             } else {
                 io.to(data.roomname).emit('ensure-four-players', {
@@ -331,6 +332,10 @@ function socket(io) {
                     users: users,
                 })
             }
+        })
+
+        socket.on('randomize-teams-and-roles', async (data) => {
+            // Randomize teams and roles here
         })
 
         // Finding a word in the room.

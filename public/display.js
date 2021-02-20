@@ -11,6 +11,11 @@ const displayIdle = document.getElementById('display-idle');
  ***********************************************************************************/
 
 const startGameBtn = document.getElementById('start-game');
+const randomizeBtn = document.getElementById('set3');
+
+randomizeBtn.addEventListener('click', ()=> {
+    checkConditions("randomize");
+})
 
 /**
  * when start game button is clicked, there is a 3 step verification cascade to validate game conditions.
@@ -19,17 +24,18 @@ const startGameBtn = document.getElementById('start-game');
 startGameBtn.addEventListener('click', ()=>{
     console.log('game started');
     // Authenticate current game conditions.
-    checkConditions();
+    checkConditions("start");
 })
 
 /**
  * step 1: Check to see if room has 4 players.
  */
-function checkConditions(){
+function checkConditions(situation){
     console.log('checking conditions');
     socket.emit('ensure-four-players', {
         roomname: roomname, 
         username: username,
+        situation: situation,
     });
 }
 
@@ -41,10 +47,18 @@ socket.on('ensure-four-players', (data)=>{
         console.log('ensure 4 players');
         console.log(data.good);
         if (data.good){
-            socket.emit('ensure-all-roles', {
-                roomname: roomname,
-                username: username,
-            });
+            if (data.situation === "randomize"){
+                // Randomize button was pressed
+                socket.emit('randomize-teams-and-roles', {
+                    roomname: roomname,
+                    username: username,
+                })
+            } else {
+                socket.emit('ensure-all-roles', {
+                    roomname: roomname,
+                    username: username,
+                });
+            }
         } else {
             alert("You do not have 4 players in the room yet.");
         }
@@ -59,14 +73,7 @@ socket.on('ensure-all-roles', (data) => {
         console.log('ensure all roles');
         console.log(data.good);
         if (data.good){
-            // Lock role changes and team changes.
-            socket.emit('lock-variables', {
-                roomname: roomname,
-            });
-            // Begin game.
-            socket.emit('play-game-sidekick', {
-                roomname: roomname,
-            });
+            broadcastStartGame();
         } else {
             // Message chat with the current roles of each player.
             socket.emit('chat', {
@@ -78,6 +85,21 @@ socket.on('ensure-all-roles', (data) => {
         }
     }
 })
+
+/**
+ * Broadcasts to the rest of the room that the game has started.
+ * Locks all variables and removes settings from the display.
+ */
+function broadcastStartGame(){
+    // Lock role changes and team changes.
+    socket.emit('lock-variables', {
+        roomname: roomname,
+    });
+    // Begin game.
+    socket.emit('play-game-sidekick', {
+        roomname: roomname,
+    });
+}
 
 /**
  * Lock (or hide) all game settings once game has started.
