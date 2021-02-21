@@ -121,4 +121,4 @@ function shuffle(array) {
     return array;
 }
 
-module.exports = {newGame, buttonColor};
+module.exports = {newGame, buttonColor, shuffle};

@@ -1,4 +1,4 @@
-const {newGame} = require('./newgame');
+const {newGame, shuffle} = require('./newgame');
 const Mongo = require('../database/mongoDB');
 const fs = require('fs');
 var Filter = require('bad-words'),
@@ -335,7 +335,43 @@ function socket(io) {
         })
 
         socket.on('randomize-teams-and-roles', async (data) => {
-            // Randomize teams and roles here
+            const usernames = await Mongo.getUsersInRoom(data.roomname); // [{username, team}]
+            var array = [1,2,3,4];
+            array = shuffle(array);
+            for(var i=0; i<4; i++){
+                const user = usernames[i].username;
+                const team = usernames[i].team;
+                console.log(user, team);
+                if (array[i] === 1){
+                    // Change to red spymaster
+                    if (team === "blue"){
+                        Mongo.changeTeams(user, data.roomname);
+                    }
+                    Mongo.switchRoles(user, data.roomname, true);
+                } else if (array[i] === 2){
+                    // Change to red superhero
+                    if (team === "blue"){
+                        Mongo.changeTeams(user, data.roomname);
+                    }
+                    Mongo.switchRoles(user, data.roomname, false);
+                } else if (array[i] === 3){
+                    // Change to blue spymaster
+                    if (team === "red"){
+                        Mongo.changeTeams(user, data.roomname);
+                    }
+                    Mongo.switchRoles(user, data.roomname, true);
+                } else {
+                    // Change to blue superhero
+                    if (team === "red"){
+                        Mongo.changeTeams(user, data.roomname);
+                    }
+                    Mongo.switchRoles(user, data.roomname, false);
+                }
+            }
+            console.log(await Mongo.getUsernameOfBlueSidekick(data.roomname), 
+            await Mongo.getUsernameOfBlueSuperhero(data.roomname),
+            await Mongo.getUsernameOfRedSidekick(data.roomname), 
+            await Mongo.getUsernameOfRedSuperhero(data.roomname));
         })
 
         // Finding a word in the room.
