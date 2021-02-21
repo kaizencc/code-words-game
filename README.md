@@ -85,6 +85,7 @@ Here is a comprehensive list of non-trivial features implemented as part of this
   - [x] Team selection area where cards representing each player can be moved drag-n-drop style.
   - [x] Separate interfaces for "superhero" players and "sidekick" players toggled by a radio button.
   - [x] Changes are broadcast in the chatbox for all players to see.
+  - [x] Randomize button that automatically sets a player for each of the 4 roles.
   
   - **Gameplay**
   - [x] Game settings become inactive when game starts.
