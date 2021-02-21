@@ -1,6 +1,6 @@
 # Welcome to [CryptoNight!](https://cryptonight.codes)
 
-## Visit the site - [cryptonight.codes](https://cryptonight.codes)
+> Visit the site - [cryptonight.codes](https://cryptonight.codes)
 
 > How to play - [cryptonight.codes/rules](https://cryptonight.codes/rules)
 
