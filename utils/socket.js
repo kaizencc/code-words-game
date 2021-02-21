@@ -378,6 +378,17 @@ function socket(io) {
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 new: false,
             });
+
+            // Alert players in the chat.
+            const messageObject = {
+                username: data.username, 
+                redSuperhero: await Mongo.getUsernameOfRedSuperhero(data.roomname),
+                redSidekick: await Mongo.getUsernameOfRedSidekick(data.roomname), 
+                blueSuperhero: await Mongo.getUsernameOfBlueSuperhero(data.roomname),
+                blueSidekick: await Mongo.getUsernameOfBlueSidekick(data.roomname), 
+                event: "randomize",
+            };
+            io.to(data.roomname).emit('chat', messageObject);
         })
 
         // Finding a word in the room.

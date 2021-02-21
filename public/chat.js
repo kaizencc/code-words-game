@@ -197,6 +197,13 @@ socket.on('chat', (data) => {
             output.innerHTML += data.message;
             feedback.innerHTML = '';
             break; 
+        case "randomize":
+            output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>randomized teams and roles</em></p>';
+            output.innerHTML += `<p class="text-danger"><strong>${data.redSuperhero} is the Red Superhero</strong></p>`;
+            output.innerHTML += `<p class="text-danger"><strong>${data.redSidekick} is the Red Sidekick</strong></p>`;
+            output.innerHTML += `<p class="text-primary"><strong>${data.blueSuperhero} is the Blue Superhero</strong></p>`;
+            output.innerHTML += `<p class="text-primary"><strong>${data.blueSidekick} is the Blue Sidekick</strong></p>`;
+            break;
     }
     document.getElementById('chat-message').scrollTop = document.getElementById('chat-message').scrollHeight;
 })
