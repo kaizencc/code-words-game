@@ -345,25 +345,25 @@ function socket(io) {
                 if (array[i] === 1){
                     // Change to red spymaster
                     if (team === "blue"){
-                        Mongo.changeTeams(user, data.roomname);
+                        Mongo.changeTeams(user, data.roomname, "red");
                     }
                     Mongo.switchRoles(user, data.roomname, true);
                 } else if (array[i] === 2){
                     // Change to red superhero
                     if (team === "blue"){
-                        Mongo.changeTeams(user, data.roomname);
+                        Mongo.changeTeams(user, data.roomname, "red");
                     }
                     Mongo.switchRoles(user, data.roomname, false);
                 } else if (array[i] === 3){
                     // Change to blue spymaster
                     if (team === "red"){
-                        Mongo.changeTeams(user, data.roomname);
+                        Mongo.changeTeams(user, data.roomname, "blue");
                     }
                     Mongo.switchRoles(user, data.roomname, true);
                 } else {
                     // Change to blue superhero
                     if (team === "red"){
-                        Mongo.changeTeams(user, data.roomname);
+                        Mongo.changeTeams(user, data.roomname, "blue");
                     }
                     Mongo.switchRoles(user, data.roomname, false);
                 }
