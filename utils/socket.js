@@ -372,6 +372,9 @@ function socket(io) {
             await Mongo.getUsernameOfBlueSuperhero(data.roomname),
             await Mongo.getUsernameOfRedSidekick(data.roomname), 
             await Mongo.getUsernameOfRedSuperhero(data.roomname));
+
+            // Send online users array.
+            io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)));
         })
 
         // Finding a word in the room.

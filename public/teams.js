@@ -6,10 +6,8 @@
  * Move user from one list to the other, and change its color.
  */
 socket.on('move-user', (data) => {
-    console.log('haaaa');
-    console.log(data.username, username, data.team);
     if (data.username === username){
-        console.log('already done, username')
+        console.log('already done, username');
     } else {
         item = document.getElementById(data.elementId);
         if (data.team === "red"){
