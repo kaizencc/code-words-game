@@ -368,13 +368,16 @@ function socket(io) {
                     Mongo.switchRoles(user, data.roomname, false);
                 }
             }
-            console.log(await Mongo.getUsernameOfBlueSidekick(data.roomname), 
-            await Mongo.getUsernameOfBlueSuperhero(data.roomname),
-            await Mongo.getUsernameOfRedSidekick(data.roomname), 
-            await Mongo.getUsernameOfRedSuperhero(data.roomname));
 
             // Send online users array.
             io.to(data.roomname).emit('online-users', (await Mongo.getUsersInRoom(data.roomname)));
+        
+            // Send new board game roles information.
+            io.to(data.roomname).emit('board-game', {
+                roles: (await Mongo.getRolesInRoom(data.roomname)), 
+                words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                new: false,
+            });
         })
 
         // Finding a word in the room.
@@ -439,6 +442,7 @@ function socket(io) {
         socket.on('role-change-sidekick', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, true);
             io.to(data.roomname).emit('board-game', {
+                username: data.username,
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 new: false,
@@ -449,6 +453,7 @@ function socket(io) {
         socket.on('role-change-superhero', async (data) => {
             await Mongo.switchRoles(data.username, data.roomname, false);
             io.to(data.roomname).emit('board-game', {
+                username: data.username,
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
                 new: false,
