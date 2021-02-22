@@ -231,8 +231,11 @@ socket.on('found-word', (data) => {
             finalBlueScore = blueTeam.innerHTML;
         }
 
+        // When green button is clicked, everyone hears explosion sound.
+        explosion.play();
+
+        // Tell everyone the game is over.
         if (data.username === username){
-            explosion.play();
             gameOverActions(elapsedTime, winningTeam, finalRedScore, finalBlueScore);
         }
 
