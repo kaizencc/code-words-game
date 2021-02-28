@@ -63,6 +63,33 @@ function getHelp(){
     })
 }
 
+/**
+ * Send a random animal.
+ */
+function getAnimal(){
+    socket.emit('chat', {
+        username: username,
+        message: randomAnimal(),
+        color: randomColor(),
+        roomname: roomname,
+        event: "animal",
+    })
+}
+
+function randomAnimal(){
+    const animals = ["fas fa-hippo"];
+    return getRandomElement(animals);
+}
+
+function randomColor(){
+    const colors = ["text-primary", "text-secondary", "text-success", "text-danger", "text-warning", "text-info"];
+    return getRandomElement(colors);
+}
+
+function getRandomElement(items){
+    return items[Math.floor(Math.random() * items.length)];
+}
+
 // Display the roomname the user is connected to.
 roomMessage.innerHTML = `${roomname} Chat`;
 
@@ -84,6 +111,11 @@ send.addEventListener('click', () =>{
         if(components[0] in prompts){
             isPrompt = true;
             prompts[components[0]](components);
+        }
+        if(components[0] === "/animal"){
+            isPrompt = true;
+            console.log("ANIMAL");
+            getAnimal();
         }
     }
     if (!isPrompt && message.value !==""){
@@ -197,6 +229,11 @@ socket.on('chat', (data) => {
             output.innerHTML += data.message;
             feedback.innerHTML = '';
             break; 
+        case "animal":
+            output.innerHTML += `<span class="${data.color}" style="font-size: 3em;">
+                                    <i class="${data.message}"></i>
+                                </span>`;
+            break;
         case "randomize":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>randomized teams and roles</em></p>';
             output.innerHTML += `<p class="text-danger"><strong>${data.redSuperhero} is the Red Superhero</strong></p>`;

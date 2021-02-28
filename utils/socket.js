@@ -544,7 +544,8 @@ function socket(io) {
             const messageObject = {
                 username: data.username, 
                 message: filter.clean(data.message), 
-                event: data.event
+                event: data.event,
+                color: data.color,
             };
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);

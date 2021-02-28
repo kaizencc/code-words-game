@@ -384,9 +384,9 @@ function sortTimeByAvg(playerStats){
 function createModalTitle(winner){
     const modalTitle = document.getElementById('modal-title');
     modalTitle.innerHTML = "";
-    modalTitle.appendChild(createIcon(winner));
+    modalTitle.appendChild(createIcon(winner, "fas fa-trophy"));
     modalTitle.appendChild(document.createTextNode(` ${capitalizeFirstLetter(winner)} Wins! `));
-    modalTitle.appendChild(createIcon(winner));
+    modalTitle.appendChild(createIcon(winner, "fas fa-trophy"));
 }
 
 /**
@@ -424,16 +424,19 @@ function capitalizeFirstLetter(string) {
 /**
  * Helper function that creates a red or blue icon
  * 
- * @param {"red" | "blue"} color 
+ * @param {"red" | "blue" | "green"} color
+ * @param {string} iconName the name of the icon from font awesome 
  */
-function createIcon(color){
+function createIcon(color, iconName){
     const icon = document.createElement("span");
     if (color === "red"){
         icon.className = "text-danger";
-    } else {
+    } else if (color === "blue") {
         icon.className = "text-primary";
+    } else {
+        icon.className = "text-success";
     }
-    icon.innerHTML = '<i class="fas fa-trophy"></i>';
+    icon.innerHTML = `<i class="${iconName}"></i>`;
     return icon;
 }
 
