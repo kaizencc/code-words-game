@@ -77,8 +77,8 @@ function getAnimal(){
 }
 
 function randomAnimal(){
-    const animals = ["fas fa-hippo"];
-    return getRandomElement(animals);
+    const animals = ["hippo", "fcat", "otter", "crow", "kiwi-bird", "spider", "fish", "frog", "dog", "horse", "dragon"];
+    return `fas fa-${getRandomElement(animals)}`;
 }
 
 function randomColor(){
@@ -230,9 +230,11 @@ socket.on('chat', (data) => {
             feedback.innerHTML = '';
             break; 
         case "animal":
-            output.innerHTML += `<span class="${data.color}" style="font-size: 3em;">
+            output.innerHTML += `<p
+                                <span class="${data.color}" style="font-size: 5em;">
                                     <i class="${data.message}"></i>
-                                </span>`;
+                                </span>
+                                </p>`;
             break;
         case "randomize":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>randomized teams and roles</em></p>';
