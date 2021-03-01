@@ -77,7 +77,7 @@ function getAnimal(){
 }
 
 function randomAnimal(){
-    const animals = ["hippo", "fcat", "otter", "crow", "kiwi-bird", "spider", "fish", "frog", "dog", "horse", "dragon"];
+    const animals = ["hippo", "cat", "otter", "crow", "kiwi-bird", "spider", "fish", "frog", "dog", "horse", "dragon"];
     return `fas fa-${getRandomElement(animals)}`;
 }
 
@@ -114,7 +114,6 @@ send.addEventListener('click', () =>{
         }
         if(components[0] === "/animal"){
             isPrompt = true;
-            console.log("ANIMAL");
             getAnimal();
         }
     }
@@ -235,6 +234,7 @@ socket.on('chat', (data) => {
                                     <i class="${data.message}"></i>
                                 </span>
                                 </p>`;
+            feedback.innerHTML = '';
             break;
         case "randomize":
             output.innerHTML += '<p>--> <strong><em>' + data.username + ' </strong>randomized teams and roles</em></p>';
