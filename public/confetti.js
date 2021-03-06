@@ -15,7 +15,7 @@ function loop() {
 
 function Confetti () {
   //construct confetti
-  const colors = ['#fde132', '#009bde', '#ff6b00'];
+  const colors = ['#fde132', '#009bde', '#ff6b00','#009d00', '#800080'];
   
   this.x = Math.round(Math.random() * w);
   this.y = Math.round(Math.random() * h)-(h/2);
@@ -60,12 +60,9 @@ Confetti.prototype.draw = function() {
   ctx.fill();
 };
 
-
 const ctx = canvasEl.getContext('2d');
 const confNum = Math.floor(w / 4);
 var confs = new Array(confNum).fill().map(_ => new Confetti());
-
-//loop();
 
 function resetConfetti(){
     confs = new Array(confNum).fill().map(_ => new Confetti());
