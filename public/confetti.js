@@ -35,7 +35,7 @@ function Confetti () {
 
 Confetti.prototype.border = function() {
   if (this.y >= h) {
-    this.y = h;
+    this.y = h + 100;
   }
 }
 
