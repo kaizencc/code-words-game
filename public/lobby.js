@@ -11,9 +11,13 @@ const lobby = document.getElementById('playerlobby');
  * When enter is clicked, validate the username and create an avatar in the player lobby.
  */
 lobbyBtn.addEventListener('click', () => {
-    socket.emit('join-lobby', {username: usernameSpace.value});
-    usernameSpace.value = "";
-    showLeaveForm();
+    if(usernameSpace.value != ""){
+        socket.emit('join-lobby', {username: usernameSpace.value});
+        usernameSpace.value = "";
+        showLeaveForm();
+    } else {
+        alert("Pick a username!");
+    }
 })
 
 /**
