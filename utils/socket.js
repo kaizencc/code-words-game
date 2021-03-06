@@ -61,7 +61,10 @@ function socket(io) {
                     playersInLobby = [];
                     roomnumber +=1;
                 }
-                io.to('lobby').emit('display-lobby', {players: playersInLobby});
+                io.to('lobby').emit('display-lobby', {
+                    username: data.username,
+                    players: playersInLobby,
+                });
             }
         })
 

@@ -20,7 +20,7 @@ lobbyBtn.addEventListener('click', () => {
  * When leave is clicked, remove the player from the lobby queue.
  */
 leaveBtn.addEventListener('click', () => {
-    socket.emit('leave-lobby', {})
+    socket.emit('leave-lobby', {});
     showEnterForm();
 })
 
@@ -31,6 +31,9 @@ socket.on('display-lobby', (data) => {
     lobby.innerHTML = "";
     data.players.forEach((player) => {
         createPlayerAvatar(player.username);
+        if(data.username == player.username){
+            runAnimation();
+        }
     })
 })
 
