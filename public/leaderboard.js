@@ -2,7 +2,7 @@
  * Sort initial leaderboard by win percentage.
  */
 document.addEventListener('DOMContentLoaded', () => {
-    sortLeaders('winP'); 
+    sortLeaders('wins'); 
 })
 
 /**
