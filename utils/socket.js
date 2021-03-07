@@ -496,7 +496,22 @@ function socket(io) {
                 new: false,
             });
 
-            // Upon closing the game over screen, reverts back to previous html.
+            // Run confetti for winners.
+            if (data.winner == "red"){
+                winner1 = await Mongo.getUsernameOfRedSuperhero(data.roomname);
+                winner2 = await Mongo.getUsernameOfRedSidekick(data.roomname);
+            } else {
+                winner1 = await Mongo.getUsernameOfBlueSuperhero(data.roomname);
+                winner2 = await Mongo.getUsernameOfBlueSidekick(data.roomname);
+            }
+            io.to(data.roomname).emit('confetti', {
+                winners: [winner1, winner2],
+            })
+
+            // Rest for 3 seconds.
+            await sleep(3000);
+
+            // Emit modal. Upon closing the game over screen, reverts back to previous html.
             io.to(data.roomname).emit('game-over', {
                 winner: data.winner,
                 redScore: data.redScore,
