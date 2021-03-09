@@ -144,11 +144,13 @@ function newGameSettings(){
     sessionStorage.removeItem('broadcast-color');
     sessionStorage.removeItem('time');
     sessionStorage.removeItem('time-for');
+    sessionStorage.removeItem('last-click');
 }
 
 /************************************************************************************
  *                              Clicking Board Buttons
  ***********************************************************************************/
+
 
 
 /**
@@ -160,7 +162,11 @@ function newGameSettings(){
  */
 board.addEventListener('click', function(e){
     const text = e.target.id;
-    if (text !== "board"){
+    // Make sure that no double clicking happened.
+    if (text !== "board" && sessionStorage.getItem('last-click') !== text){
+        // Record the click in session storage.
+        sessionStorage.setItem('last-click', text);
+
         // Update database to show item.
         socket.emit('show-word', {
             roomname: roomname,
