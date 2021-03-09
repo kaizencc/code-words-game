@@ -33,12 +33,14 @@ function Confetti () {
   this.shiftDirection = Math.random() > 0.5 ? 1 : -1;
 }
 
+// Once the confetti has reached the bottom, move it below the page for the effect of disappearing.
 Confetti.prototype.border = function() {
   if (this.y >= h) {
     this.y = h + 100;
   }
 }
 
+// Each update moves the confetti down and rotates it slightly.
 Confetti.prototype.update = function() {
   this.y += this.speed;
   
@@ -50,6 +52,7 @@ Confetti.prototype.update = function() {
   if (this.y > h) this.border();
 };
 
+// Redraw the confetti each time.
 Confetti.prototype.draw = function() {
   ctx.beginPath();
   ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation+(Math.PI/2));
@@ -68,6 +71,11 @@ function resetConfetti(){
     confs = new Array(confNum).fill().map(_ => new Confetti());
 }
 
+/**
+ * This should be the only function called from confetti.js.
+ * Each call will create a new array of confetti at the top of the container,
+ * and then the animation loop will have them slowly fall to the bottom of the container.
+ */
 function runAnimation(){
     resetConfetti();
     loop();
