@@ -171,7 +171,9 @@ function socket(io) {
             }
 
             io.to(data.roomname).emit('change-word-set', {set: data.set});
-            await Mongo.changeWordSet(data.roomname, data.filename);
+            
+            const collection = data.filename || data.set; 
+            await Mongo.changeWordSet(data.roomname, collection);
             // Emitting word set change to clients.
             const messageObject = {
                 username: data.username, 

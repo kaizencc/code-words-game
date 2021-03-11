@@ -3,6 +3,7 @@ var setTranslate = {};
 setTranslate["codewords"]="Basic";
 setTranslate["codewords-nsfw"] = "NSFW";
 setTranslate["codewords-duet"] = "Duet";
+setTranslate["codewords-countries"] = "Countries";
 setTranslate["custom"] = "Custom";
 
 /************************************************************************************
@@ -12,6 +13,7 @@ setTranslate["custom"] = "Custom";
 const basicSet = document.getElementById('Basic');
 const nsfwSet = document.getElementById('NSFW');
 const duetSet = document.getElementById('Duet');
+const countrySet = document.getElementById("Countries");
 const customSet = document.getElementById('Custom');
 
 basicSet.addEventListener('click', () => {
@@ -24,6 +26,10 @@ nsfwSet.addEventListener('click', () => {
 
 duetSet.addEventListener('click', () => {
     changeSet("codewords-duet");
+})
+
+countrySet.addEventListener('click', () => {
+    changeSet("codewords-countries");
 })
 
 function changeSet(newSet) {
@@ -54,6 +60,9 @@ function setWordSet(){
                 break;
             case "codewords-duet":
                 moveIcon(duetSet, "dd1");
+                break;
+            case "codewords-countries":
+                moveIcon(countrySet, "dd1");
                 break;
             case "custom":
                 moveIcon(customSet, "dd1");

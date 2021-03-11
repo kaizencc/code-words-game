@@ -152,6 +152,7 @@ function initializeMongoWordlists(db){
     addWords(db, 'codewords',path.join(__dirname, "files/codes.csv")).catch(console.error);
     addWords(db, 'codewords-nsfw',path.join(__dirname, "files/nsfw.csv")).catch(console.error);
     addWords(db, 'codewords-duet',path.join(__dirname, "files/code-duet.csv")).catch(console.error);
+    addWords(db, 'codewords-countries',path.join(__dirname, "files/countries.csv")).catch(console.error);
 }
 
 module.exports = {initializeMongoWordlists, addCustomWords};
