@@ -105,6 +105,8 @@ function broadcastStartGame(){
  * Lock (or hide) all game settings once game has started.
  */
 socket.on('lock-variables', () => {
+    sessionStorage.setItem('game-in-progress', 'true');
+    console.log(sessionStorage.getItem('game-in-progress'));
     lockRoles();
     lockTeams();
     hideSettings();
