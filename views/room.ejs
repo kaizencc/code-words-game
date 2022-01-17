@@ -16,6 +16,7 @@
 <body>
     <%- include('partials/tagmanager'); %>
     <%- include('partials/endgamemodal'); %>
+    <%- include('partials/confirmmodal.ejs'); %>
     <!-- Canvas for confetti -->
     <canvas id="canvas"></canvas>
     <div class="container-fluid h-100">
@@ -34,6 +35,7 @@
                                     <a id="NSFW" class="dropdown-item text-success">NSFW</a>
                                     <a id="Duet" class="dropdown-item text-success">Duet</a>
                                     <a id="Countries" class="dropdown-item text-success">Countries</a>
+                                    <a id="Chinese" class="dropdown-item text-success">Chinese</a>
                                     <a id="Custom" class="dropdown-item text-success btn-file">Custom
                                         <input type="file" id="file-selector" name="custom" accept=".csv" onchange='triggerValidation(this)'/>
                                     </a>

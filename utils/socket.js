@@ -400,10 +400,15 @@ function socket(io) {
         socket.on('find-word', async (data) => {
             const result = await Mongo.getWordInRoom(data.roomname,data.word);
             const color = await Mongo.getTeam(data.username, data.roomname);
+            const redScore = await Mongo.getScore(data.roomname, 'red');
+            const blueScore = await Mongo.getScore(data.roomname, 'blue');
+            console.log(redScore, blueScore);
             io.to(data.roomname).emit('found-word',{
                 wordButton: result,
                 color: color,
                 username: data.username,
+                redScore: redScore,
+                blueScore: blueScore,
             });
         })
 

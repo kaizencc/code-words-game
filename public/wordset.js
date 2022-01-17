@@ -5,6 +5,7 @@ setTranslate["codewords-nsfw"] = "NSFW";
 setTranslate["codewords-duet"] = "Duet";
 setTranslate["codewords-countries"] = "Countries";
 setTranslate["custom"] = "Custom";
+setTranslate["codewords-chinese"] = "Chinese";
 
 /************************************************************************************
  *                              Change Wordset Events
@@ -15,6 +16,7 @@ const nsfwSet = document.getElementById('NSFW');
 const duetSet = document.getElementById('Duet');
 const countrySet = document.getElementById("Countries");
 const customSet = document.getElementById('Custom');
+const chineseSet = document.getElementById('Chinese');
 
 basicSet.addEventListener('click', () => {
     changeSet("codewords");
@@ -30,6 +32,10 @@ duetSet.addEventListener('click', () => {
 
 countrySet.addEventListener('click', () => {
     changeSet("codewords-countries");
+})
+
+chineseSet.addEventListener('click', () => {
+    changeSet("codewords-chinese");
 })
 
 function changeSet(newSet) {
@@ -63,6 +69,9 @@ function setWordSet(){
                 break;
             case "codewords-countries":
                 moveIcon(countrySet, "dd1");
+                break;
+            case "codewords-chinese":
+                moveIcon(chineseSet, "dd1");
                 break;
             case "custom":
                 moveIcon(customSet, "dd1");

@@ -1,5 +1,8 @@
 const board = document.getElementById('board');
 const newGameBtn = document.getElementById('newgame');
+const confirmModal = document.getElementById('confirm');
+const confirmCancel = document.getElementById('confirm-cancel');
+const confirmOk = document.getElementById('confirm-ok');
 const superhero = document.getElementById('super');
 const sidekick = document.getElementById('side');
 const redTeam = document.getElementById('red-team');
@@ -145,13 +148,12 @@ function newGameSettings(){
     sessionStorage.removeItem('time');
     sessionStorage.removeItem('time-for');
     sessionStorage.removeItem('last-click');
+    sessionStorage.setItem('game-in-progress', 'false');
 }
 
 /************************************************************************************
  *                              Clicking Board Buttons
  ***********************************************************************************/
-
-
 
 /**
  * Perform necessary actions when user presses a button.
@@ -204,7 +206,7 @@ const buttonColor = {
 }
 
 /**
- * Called after "socket.emit("found-word"), after the socket retrieves the information needed.
+ * Called after "socket.emit("find-word"), after the socket retrieves the information needed.
  * Performs actions based on the color of the word and keeps track of statistics.
  */
 socket.on('found-word', (data) => {
@@ -213,41 +215,25 @@ socket.on('found-word', (data) => {
     const elapsedTime = Number(startTime)-Number(counter.innerHTML);
 
     const teamColor = data.color;
-    // Change score if necessary.
     const color = data.wordButton.color;
-    console.log(color);
-    if (color === buttonColor.BLACK){
+    
+    let redScore = data.redScore;
+    let blueScore = data.blueScore;
 
+    if (color === buttonColor.BLACK){
         // Update to show cryptonight clue hit
         sessionStorage.setItem('cryptonight', '1');
 
         // Game is over, other team wins.
-        var winningTeam = "";
-        var finalRedScore = "";
-        var finalBlueScore = "";
         if (teamColor === "red"){
-            winningTeam = "blue";
-            finalBlueScore = "0";
-            updateBlueScore("0");
-            finalRedScore = redTeam.innerHTML;
+            blueScore = "0";
         } else {
-            winningTeam = "red";
-            finalRedScore = "0";
-            updateRedScore("0");
-            finalBlueScore = blueTeam.innerHTML;
+            redScore = "0";
         }
 
         // When green button is clicked, everyone hears explosion sound.
         explosion.play();
-
-        // Tell everyone the game is over.
-        if (data.username === username){
-            gameOverActions(elapsedTime, winningTeam, finalRedScore, finalBlueScore);
-        }
-
-    } else if (color === buttonColor.RED){
-        redScore = Number(redTeam.innerHTML);
-        
+    } else if (color === buttonColor.RED){        
         // If color does not match team color, turn is over.
         if (teamColor !== "red" && data.username === username){
 
@@ -259,17 +245,7 @@ socket.on('found-word', (data) => {
                 username: username,
             });
         }
-
-        // Game is over, red team wins.
-        if (redScore == 1 && data.username === username){
-            gameOverActions(elapsedTime, "red", "0", blueTeam.innerHTML);
-        }
-
-        // Red team subtracts a point
-        updateRedScore(String(redScore-1));
     } else if (color === buttonColor.BLUE){
-        blueScore = Number(blueTeam.innerHTML);
-
         // If color does not match team color, turn is over
         if (teamColor !== "blue" && data.username === username){
             // Update to show cryptonight clue hit
@@ -280,14 +256,6 @@ socket.on('found-word', (data) => {
                 username: username,
             });
         }
-
-        // Game is over
-        if (blueScore == 1 && data.username === username){
-            gameOverActions(elapsedTime, "blue", redTeam.innerHTML, "0");
-        }
-
-        // Blue team subtracts a point
-        updateBlueScore(String(blueScore-1));
     } else {
         if (data.username === username){
             // Update to show cryptonight clue hit
@@ -300,17 +268,26 @@ socket.on('found-word', (data) => {
             });
         }
     }
+
+    // calculate scores after this move
+    updateRedScore(redScore);
+    updateBlueScore(blueScore);
+
+    // Game is over
+    if ((blueScore == 0 || redScore == 0) && data.username === username){
+      gameOverActions(elapsedTime, redScore, blueScore);
+    }
 })
 
 /**
  * Helper function for sending message when a game is finished.
  * 
  * @param {number} elapsedTime The amount of time the turn took.
- * @param {"red" | "blue"} winner Who won the game. 
  * @param {string} redScore Red team score.
  * @param {string} blueScore Blue team score.
  */
-function gameOverActions(elapsedTime, winner, redScore, blueScore){
+function gameOverActions(elapsedTime, redScore, blueScore) {
+    const winner =  redScore < blueScore ? 'red' : 'blue'; 
     showIdleDisplay();
     socket.emit('game-over', {
         roomname: roomname,
@@ -403,10 +380,39 @@ function resetTurns(){
 }
 
 // Listening for new game request.
-newGameBtn.addEventListener('click', () =>{
+newGameBtn.addEventListener('click', () => {
+    // ask for confirmation if a game is in progress
+    console.log('newg', sessionStorage.getItem('game-in-progress'));
+    if (sessionStorage.getItem('game-in-progress') === 'true'){
+      openModal(confirmModal);
+    } else {
+      createNewGame();
+    }
+});
+
+confirmCancel.addEventListener('click', () => {
+    closeModal(confirmModal);
+});
+
+confirmOk.addEventListener('click', () => {
+    closeModal(confirmModal);
+    createNewGame();
+});
+
+function createNewGame() {
     socket.emit('new-game',{
-        username: username, 
-        roomname: roomname,
+      username: username, 
+      roomname: roomname,
     });
-})
+}
+
+function openModal(elem) {
+    elem.style.display="block";
+}
+
+function closeModal(elem) {
+    elem.style.display="none";
+} 
+
+
 
