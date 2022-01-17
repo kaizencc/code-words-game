@@ -1,5 +1,8 @@
 const board = document.getElementById('board');
 const newGameBtn = document.getElementById('newgame');
+const confirmModal = document.getElementById('confirm');
+const confirmCancel = document.getElementById('confirm-cancel');
+const confirmOk = document.getElementById('confirm-ok');
 const superhero = document.getElementById('super');
 const sidekick = document.getElementById('side');
 const redTeam = document.getElementById('red-team');
@@ -403,10 +406,29 @@ function resetTurns(){
 }
 
 // Listening for new game request.
-newGameBtn.addEventListener('click', () =>{
+newGameBtn.addEventListener('click', () => {
+    openModal(confirmModal);
+});
+
+confirmCancel.addEventListener('click', () => {
+    closeModal(confirmModal);
+});
+
+confirmOk.addEventListener('click', () => {
+    closeModal(confirmModal);
     socket.emit('new-game',{
-        username: username, 
-        roomname: roomname,
+      username: username, 
+      roomname: roomname,
     });
-})
+});
+
+function openModal(elem) {
+    elem.style.display="block";
+}
+
+function closeModal(elem) {
+    elem.style.display="none";
+} 
+
+
 

@@ -144,6 +144,7 @@ socket.on('game-over', async (data) => {
 
     // Wait a second and Show modal.
     await sleep(1000);
+    console.log("NOTHERE");
     $("#myModal").modal("show").on('shown.bs.modal', function () {
         $(".modal").css('display', 'block');
     });

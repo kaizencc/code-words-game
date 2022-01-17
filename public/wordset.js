@@ -72,6 +72,7 @@ function setWordSet(){
                 break;
             case "codewords-chinese":
                 moveIcon(chineseSet, "dd1");
+                break;
             case "custom":
                 moveIcon(customSet, "dd1");
                 break;
