@@ -504,7 +504,7 @@ async function getAllMessages(room){
  * Returns the 25 word array in the room.
  * 
  * @param {string} room Roomname
- * @returns {[string]} The 25 words in a room.
+ * @returns {[any]} The 25 words in a room.
  */
 async function getAllWordsInRoom(room){
     const document = await users.findOne({ _id: room});
@@ -512,6 +512,21 @@ async function getAllWordsInRoom(room){
         return document.words;
     }
     return [];
+}
+
+/**
+ * Returns the score of a team. Score is calculated as the number
+ * of words of the teams color with show = false.
+ * 
+ * @param {string} room Roomname
+ * @param {red | blue} team The team color
+ * @returns {string} The team's score
+ */
+async function getScore(room, team) {
+    const color = team === 'red' ? 'btn-danger' : 'btn-primary';
+    const words = await getAllWordsInRoom(room);
+    const result = words.filter(w => w.color === color && w.show === false);
+    return result.length;
 }
 
 /**
@@ -846,6 +861,7 @@ module.exports = {
     resetTurn,
     getIsRedTurn,
     getAllWordsInRoom,
+    getScore,
     resetRoles,
     switchRoles,
     changeTeams,
