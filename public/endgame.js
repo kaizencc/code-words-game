@@ -18,7 +18,10 @@ socket.on('game-over', async (data) => {
     endTimer();
     unlockRoles();
 
+    // Update session storage
     console.log("game over");
+    sessionStorage.setItem('game-in-progress', 'false');
+
     createModalTitle(data.winner);
     createModalFinalScores(data.redScore, data.blueScore, data.winner);
 

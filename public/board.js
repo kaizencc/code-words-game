@@ -148,13 +148,12 @@ function newGameSettings(){
     sessionStorage.removeItem('time');
     sessionStorage.removeItem('time-for');
     sessionStorage.removeItem('last-click');
+    sessionStorage.setItem('game-in-progress', 'false');
 }
 
 /************************************************************************************
  *                              Clicking Board Buttons
  ***********************************************************************************/
-
-
 
 /**
  * Perform necessary actions when user presses a button.
@@ -382,7 +381,13 @@ function resetTurns(){
 
 // Listening for new game request.
 newGameBtn.addEventListener('click', () => {
-    openModal(confirmModal);
+    // ask for confirmation if a game is in progress
+    console.log('newg', sessionStorage.getItem('game-in-progress'));
+    if (sessionStorage.getItem('game-in-progress') === 'true'){
+      openModal(confirmModal);
+    } else {
+      createNewGame();
+    }
 });
 
 confirmCancel.addEventListener('click', () => {
@@ -391,11 +396,15 @@ confirmCancel.addEventListener('click', () => {
 
 confirmOk.addEventListener('click', () => {
     closeModal(confirmModal);
+    createNewGame();
+});
+
+function createNewGame() {
     socket.emit('new-game',{
       username: username, 
       roomname: roomname,
     });
-});
+}
 
 function openModal(elem) {
     elem.style.display="block";
