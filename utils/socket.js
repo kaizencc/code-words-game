@@ -220,6 +220,11 @@ function socket(io) {
             await Mongo.addMessage(data.roomname, messageObject);
             io.to(data.roomname).emit('chat', messageObject);
 
+            // Get word set
+            // only useful for special case Chinese words
+            // TODO: figure out rendering better!
+            const wordset = await Mongo.getWordSet(data.roomname);
+
             // Update words.
             await Mongo.updateAllWordsInRoom(data.roomname, await newGame(data.roomname));
 
@@ -233,6 +238,7 @@ function socket(io) {
             io.to(data.roomname).emit('board-game', {
                 roles: (await Mongo.getRolesInRoom(data.roomname)), 
                 words: (await Mongo.getAllWordsInRoom(data.roomname)),
+                wordset: wordset,
                 new: true,
             });
             io.to(data.roomname).emit('reset-display', {});

@@ -577,6 +577,14 @@ async function changeWordSet(room, newWordSet){
     await updateMongoDocument(query, updateDocument);
 }
 
+async function getWordSet(room){
+  const document = await users.findOne({ _id: room});
+  if(document){
+      return document.wordSet;
+  }
+  return []; 
+}
+
 /**
  * Gets the current word set of the room.
  * 
@@ -874,6 +882,7 @@ module.exports = {
     getAllMessages,
     getWordArray,
     changeWordSet,
+    getWordSet,
     getAllStatisticsInRoom,
     addTurnStatistics,
     addEndgameStatistic,

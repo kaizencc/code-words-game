@@ -29,8 +29,8 @@ function returnToGameState(){
  ***********************************************************************************/
 
 function setSavedScore(){
-    redTeam.innerHTML = sessionStorage.getItem('redscore');
-    blueTeam.innerHTML = sessionStorage.getItem('bluescore');
+    redTeam.innerHTML = `Red Team: ${sessionStorage.getItem('redscore')}`;
+    blueTeam.innerHTML = `Blue Team: ${sessionStorage.getItem('bluescore')}`;
 }
 
 function setSavedBroadcast(){

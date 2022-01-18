@@ -115,6 +115,7 @@ function processData(data){
     data = replaceAll(data,",,,",",");
     data = replaceAll(data,",,",",");
     //data = replaceAll(data," ", ",");
+
     data = data.split(",");
     data = data.filter(word => word.length > 2);
     console.log(data);

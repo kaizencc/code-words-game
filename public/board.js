@@ -11,6 +11,8 @@ const blueTeam = document.getElementById('blue-team');
 // Sound bite for clicking the cryptonight clue.
 var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
 
+function linebreak() { return document.createElement('br'); }
+
 /************************************************************************************
  *                              Build Board Buttons
  ***********************************************************************************/
@@ -105,9 +107,28 @@ function createButton(word, role, myturn){
             btn.innerHTML = icon("fas fa-minus-circle", "dark");
         }
     }
-    var t = document.createTextNode(word.text);
-    btn.appendChild(t);
+    renderText(btn, word.text);
     return btn;
+}
+
+/**
+ * Special case for '*' which is used to
+ * demand a new line.
+ * 
+ * @param {HTMLButtonElement} btn
+ * @param {string} text
+ */
+function renderText(btn, text) {
+  const split = text.split('*');
+  if (split.length > 1) {
+    let first = document.createTextNode(split[0]);
+    let second = document.createTextNode(split[1]);
+    btn.appendChild(first);
+    btn.appendChild(linebreak());
+    btn.appendChild(second);
+  } else {
+    btn.appendChild(document.createTextNode(text));
+  }
 }
 
 /**
@@ -304,12 +325,12 @@ function gameOverActions(elapsedTime, redScore, blueScore) {
 }
 
 function updateBlueScore(score){
-    blueTeam.innerHTML = score;
+    blueTeam.innerHTML = `Blue Team: ${score}`;
     sessionStorage.setItem('bluescore', score);
 }
 
 function updateRedScore(score){
-    redTeam.innerHTML = score;
+    redTeam.innerHTML = `Red Team: ${score}`;
     sessionStorage.setItem('redscore', score);
 }
 
