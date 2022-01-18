@@ -1,4 +1,5 @@
 const board = document.getElementById('board');
+const boardHeight = document.getElementById('height');
 const newGameBtn = document.getElementById('newgame');
 const confirmModal = document.getElementById('confirm');
 const confirmCancel = document.getElementById('confirm-cancel');
@@ -61,6 +62,15 @@ socket.on('board-game', (data) => {
     data.words.forEach(word => {
         board.appendChild(createButton(word, role, myturn));
     })
+
+    // Update height for chinese words (special case)
+    boardHeight.classList.remove('h-60');
+    boardHeight.classList.remove('h-50');
+    if (sessionStorage.getItem('word-set') === 'codewords-chinese') {
+        boardHeight.classList.add('h-60');
+    } else {
+        boardHeight.classList.add('h-50');
+    }
 
     // If refreshed, return to saved game state.
     console.log('when it matters: ', sessionStorage.getItem('restore'))
