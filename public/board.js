@@ -13,6 +13,7 @@ const blueTeam = document.getElementById('blue-team');
 var explosion = new Audio('https://freesound.org/data/previews/156/156031_2703579-lq.mp3');
 
 function linebreak() { return document.createElement('br'); }
+function tab() { return document.createElement('&nbsp;'); }
 
 /************************************************************************************
  *                              Build Board Buttons
